@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     build: .
-    container_name: backend_sellout
+    container_name: backend_sellout_backend
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app
