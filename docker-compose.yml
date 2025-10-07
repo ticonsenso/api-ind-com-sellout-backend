@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: backend_consenso
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    ports:
+      - "3012:3008"
+    environment:
+      - NODE_ENV=development
+      - PORT=3008
+      - BASE_URL=http://localhost:3008
+      - DB_USER=jpsolanoc
+      - DB_HOST=82.165.47.88
+      - DB_NAME=consenso
+      - DB_PASSWORD=holatuten123.
+      - DB_PORT=5432
+      - DB_DEFAULT_SCHEMA=db-consenso
+      - DATABASE_URL=postgres://postgres:holatuten123.@localhost:5432/consenso?sslmode=disable
+      - JWT_SECRET=consenso_2025$$
+    command: sh -c "npm install && npm run qa"
+
+volumes:
+  node_modules:
