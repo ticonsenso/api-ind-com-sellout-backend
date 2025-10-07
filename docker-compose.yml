@@ -9,7 +9,7 @@ services:
       - .:/usr/src/app
       - node_modules:/usr/src/app/node_modules
     ports:
-      - "3012:3008"
+      - "3011:3008"
     environment:
       - NODE_ENV=development
       - PORT=3008
