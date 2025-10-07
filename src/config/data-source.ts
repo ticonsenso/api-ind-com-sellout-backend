@@ -35,7 +35,7 @@ const AppDataSource = new DataSource({
 export const initializeDataSource = async () => {
   try {
     await AppDataSource.initialize();
-    const message = `Conexión a la base de datos (${env.NODE_ENV}), host: ${env.DB_HOST} establecida correctamente`;
+    const message = `Conexión a la base de datos (${env.NODE_ENV}), host: ${env.DB_HOST}, base de datos: ${env.DB_NAME}, esquema: ${env.DB_DEFAULT_SCHEMA} establecida correctamente`;
     console.log(message);
     statusConeccion = { status: true, message: message };
   } catch (error) {

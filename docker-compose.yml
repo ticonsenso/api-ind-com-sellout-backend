@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     build: .
-    container_name: backend_consenso
+    container_name: backend_sellout
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app
@@ -19,9 +19,9 @@ services:
       - DB_NAME=consenso
       - DB_PASSWORD=holatuten123.
       - DB_PORT=5432
-      - DB_DEFAULT_SCHEMA=db-consenso
+      - DB_DEFAULT_SCHEMA=db_sellout
       - DATABASE_URL=postgres://postgres:holatuten123.@localhost:5432/consenso?sslmode=disable
-      - JWT_SECRET=consenso_2025$$
+      - JWT_SECRET=sellout_2025$$
     command: sh -c "npm install && npm run qa"
 
 volumes:
