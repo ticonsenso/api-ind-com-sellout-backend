@@ -57,7 +57,7 @@ coverage/
 # Yarn Integrity file
 .yarn-integrity 
 
-#Dockerfile
-#docker-compose.yml
-#docker-compose.yml
+Dockerfile
+docker-compose.yml
+docker-compose.yml
 ../src/controllers/auth.controller.ts
