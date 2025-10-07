@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:fed="http://docs.oasis-open.org/wsfed/federation/200706" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" entityID="https://const.mentetec.com/saml/metadata" ID="_orsq20286" validUntil="2026-03-31T19:43:12.003Z"><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><Reference URI="#_orsq20286"><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>PzjXGRxG8QwYYXZjrdYSgsETG4qpDfCxG6g0mONBfqc=</DigestValue></Reference></SignedInfo><SignatureValue>NbqZ6PouPg3jDL3oVgjVfPZic45qPhnJwcT1IQ7OksDedcnYrmeyOWtwFIiqB2vV+zlxsTQD/FXb+EMGjz7HQd1HZCtDBQ1Kilf0Fy8BIPL+2pAT4uL6hqYnuNGpJzKq91vJmv9utX3MX3lQYIUoSyTJdHOd0XYN0G6qj4WKl1bdC/BtyXwIzF9rZhvpkL9qNyf8Wb+EpBceK1Lh6vOh7+ypz9YMnScasdwxiWIOQu6dMjaeaWaJ9fLrvFNkce20XtrKnR95KZYPDHPgU8xe3KvnDClJZITWokGgwi3eFLCCDLNUH/2mMWs71N1i73AUTMRGZaGKyJr5uZOmFmcUPA==</SignatureValue><KeyInfo><ds:X509Data>
+MIID+TCCAuGgAwIBAgIUfbLEsGtR82ocY3Si05/yLoMwhSkwDQYJKoZIhvcNAQELBQAwgYsxCzAJBgNVBAYTAkVDMQ0wCwYDVQQIDARMb2phMQ0wCwYDVQQHDARMb2phMREwDwYDVQQKDAhjb25zZW5zbzERMA8GA1UECwwIY29uc2Vuc28xFDASBgNVBAMMC0pvaG4gU29sYW5vMSIwIAYJKoZIhvcNAQkBFhNqcHNvbGFub2NAZ21haWwuY29tMB4XDTI1MDMzMTE2MTE1NVoXDTI2MDMzMTE2MTE1NVowgYsxCzAJBgNVBAYTAkVDMQ0wCwYDVQQIDARMb2phMQ0wCwYDVQQHDARMb2phMREwDwYDVQQKDAhjb25zZW5zbzERMA8GA1UECwwIY29uc2Vuc28xFDASBgNVBAMMC0pvaG4gU29sYW5vMSIwIAYJKoZIhvcNAQkBFhNqcHNvbGFub2NAZ21haWwuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyLeD1cy3ZOmln8F4QpGhW983NrZ3DOitNiIYcPkPYQ7dLJhN9sjXd+A4HVWNqjTDdE7sgjN+WliwdIZc0ALo6t/pub53+zWti7G3+XqXnuj2pDdZRm7XRteQymAzj3XY/R50igtnl2L4MpSfp3w1FYngiYTsUmm7hLwBXtuxfDcej/PN0Kc0K9I+3UHmoaFvWSxG19gEtST25es69FHsnh78ZMIhu2tE2YjmmcnkANanSwlWEYdp5yHen6umYIO5X4zGvHKPJeipCgjKOpbahF6sk/KUip4siXofpR472pCc3472/0BSB57dUgEguCU29CzQj8O/EwnEd3YvclhRhwIDAQABo1MwUTAdBgNVHQ4EFgQUaTLvIdT18k+osil7ny+LRNcQYJUwHwYDVR0jBBgwFoAUaTLvIdT18k+osil7ny+LRNcQYJUwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAfM6srVpo5vvKthuSKCtzUIkj0/weLQedgev+myTaXmaQrMcYvfVmu9th3jn5FeZujMABEz5m6KCZX64sS1o8jcgzwc9SRBwP7SOV/+cMfWKOq5lfmphZuAsPQybRI56Do/YGLlsPG1gaYZCjnWkYQVFRstdGTY0oO++1Y8N1NA4Ny41JYGNJN1r2jEjUECSY4HorflZTe/WKRVsuy2GNNYZvqJcbLjMdb1jT08WNy8VW0bW2NAYAlLrGJyydVrNB6iqdcU1g4Lq+haiZnz+0k2cg4I7/VDDwB3K3hvNcpUAlYmir+FH7xuEBhBRGb9A5GL3nJELRDdELMSd4u7dXtQ==</ds:X509Certificate></ds:X509Data></KeyInfo></Signature>
+  <SPSSODescriptor WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor use="signing">
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>MIID+TCCAuGgAwIBAgIUfbLEsGtR82ocY3Si05/yLoMwhSkwDQYJKoZIhvcNAQELBQAwgYsxCzAJBgNVBAYTAkVDMQ0wCwYDVQQIDARMb2phMQ0wCwYDVQQHDARMb2phMREwDwYDVQQKDAhjb25zZW5zbzERMA8GA1UECwwIY29uc2Vuc28xFDASBgNVBAMMC0pvaG4gU29sYW5vMSIwIAYJKoZIhvcNAQkBFhNqcHNvbGFub2NAZ21haWwuY29tMB4XDTI1MDMzMTE2MTE1NVoXDTI2MDMzMTE2MTE1NVowgYsxCzAJBgNVBAYTAkVDMQ0wCwYDVQQIDARMb2phMQ0wCwYDVQQHDARMb2phMREwDwYDVQQKDAhjb25zZW5zbzERMA8GA1UECwwIY29uc2Vuc28xFDASBgNVBAMMC0pvaG4gU29sYW5vMSIwIAYJKoZIhvcNAQkBFhNqcHNvbGFub2NAZ21haWwuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyLeD1cy3ZOmln8F4QpGhW983NrZ3DOitNiIYcPkPYQ7dLJhN9sjXd+A4HVWNqjTDdE7sgjN+WliwdIZc0ALo6t/pub53+zWti7G3+XqXnuj2pDdZRm7XRteQymAzj3XY/R50igtnl2L4MpSfp3w1FYngiYTsUmm7hLwBXtuxfDcej/PN0Kc0K9I+3UHmoaFvWSxG19gEtST25es69FHsnh78ZMIhu2tE2YjmmcnkANanSwlWEYdp5yHen6umYIO5X4zGvHKPJeipCgjKOpbahF6sk/KUip4siXofpR472pCc3472/0BSB57dUgEguCU29CzQj8O/EwnEd3YvclhRhwIDAQABo1MwUTAdBgNVHQ4EFgQUaTLvIdT18k+osil7ny+LRNcQYJUwHwYDVR0jBBgwFoAUaTLvIdT18k+osil7ny+LRNcQYJUwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAfM6srVpo5vvKthuSKCtzUIkj0/weLQedgev+myTaXmaQrMcYvfVmu9th3jn5FeZujMABEz5m6KCZX64sS1o8jcgzwc9SRBwP7SOV/+cMfWKOq5lfmphZuAsPQybRI56Do/YGLlsPG1gaYZCjnWkYQVFRstdGTY0oO++1Y8N1NA4Ny41JYGNJN1r2jEjUECSY4HorflZTe/WKRVsuy2GNNYZvqJcbLjMdb1jT08WNy8VW0bW2NAYAlLrGJyydVrNB6iqdcU1g4Lq+haiZnz+0k2cg4I7/VDDwB3K3hvNcpUAlYmir+FH7xuEBhBRGb9A5GL3nJELRDdELMSd4u7dXtQ==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </KeyDescriptor>
+    <KeyDescriptor use="encryption">
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>MIID+TCCAuGgAwIBAgIUfbLEsGtR82ocY3Si05/yLoMwhSkwDQYJKoZIhvcNAQELBQAwgYsxCzAJBgNVBAYTAkVDMQ0wCwYDVQQIDARMb2phMQ0wCwYDVQQHDARMb2phMREwDwYDVQQKDAhjb25zZW5zbzERMA8GA1UECwwIY29uc2Vuc28xFDASBgNVBAMMC0pvaG4gU29sYW5vMSIwIAYJKoZIhvcNAQkBFhNqcHNvbGFub2NAZ21haWwuY29tMB4XDTI1MDMzMTE2MTE1NVoXDTI2MDMzMTE2MTE1NVowgYsxCzAJBgNVBAYTAkVDMQ0wCwYDVQQIDARMb2phMQ0wCwYDVQQHDARMb2phMREwDwYDVQQKDAhjb25zZW5zbzERMA8GA1UECwwIY29uc2Vuc28xFDASBgNVBAMMC0pvaG4gU29sYW5vMSIwIAYJKoZIhvcNAQkBFhNqcHNvbGFub2NAZ21haWwuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyLeD1cy3ZOmln8F4QpGhW983NrZ3DOitNiIYcPkPYQ7dLJhN9sjXd+A4HVWNqjTDdE7sgjN+WliwdIZc0ALo6t/pub53+zWti7G3+XqXnuj2pDdZRm7XRteQymAzj3XY/R50igtnl2L4MpSfp3w1FYngiYTsUmm7hLwBXtuxfDcej/PN0Kc0K9I+3UHmoaFvWSxG19gEtST25es69FHsnh78ZMIhu2tE2YjmmcnkANanSwlWEYdp5yHen6umYIO5X4zGvHKPJeipCgjKOpbahF6sk/KUip4siXofpR472pCc3472/0BSB57dUgEguCU29CzQj8O/EwnEd3YvclhRhwIDAQABo1MwUTAdBgNVHQ4EFgQUaTLvIdT18k+osil7ny+LRNcQYJUwHwYDVR0jBBgwFoAUaTLvIdT18k+osil7ny+LRNcQYJUwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAfM6srVpo5vvKthuSKCtzUIkj0/weLQedgev+myTaXmaQrMcYvfVmu9th3jn5FeZujMABEz5m6KCZX64sS1o8jcgzwc9SRBwP7SOV/+cMfWKOq5lfmphZuAsPQybRI56Do/YGLlsPG1gaYZCjnWkYQVFRstdGTY0oO++1Y8N1NA4Ny41JYGNJN1r2jEjUECSY4HorflZTe/WKRVsuy2GNNYZvqJcbLjMdb1jT08WNy8VW0bW2NAYAlLrGJyydVrNB6iqdcU1g4Lq+haiZnz+0k2cg4I7/VDDwB3K3hvNcpUAlYmir+FH7xuEBhBRGb9A5GL3nJELRDdELMSd4u7dXtQ==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </KeyDescriptor>
+    <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://const.mentetec.com/saml/logout"/>
+    <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://const.mentetec.com/saml/logout"/>
+    <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
+    <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://const.mentetec.com/saml/acs" index="0" isDefault="true"/>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact" Location="https://const.mentetec.com/saml/acs" index="1"/>
+    <RoleDescriptor xsi:type="fed:ApplicationServiceType" protocolSupportEnumeration="http://docs.oasis-open.org/ws-sx/ws-trust/200512 http://schemas.xmlsoap.org/ws/2005/02/trust http://docs.oasis-open.org/wsfed/federation/200706" ServiceDisplayName="CommissionsPortal">
+      <fed:ClaimTypesRequested>
+        <auth:ClaimType Uri="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress" Optional="true" xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706">
+          <auth:DisplayName>E-Mail Address</auth:DisplayName>
+          <auth:Description>The e-mail address of the user</auth:Description>
+        </auth:ClaimType>
+        <auth:ClaimType Uri="http://schemas.consensocorp.com/identity/claims/employeeId" Optional="false" xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706">
+          <auth:DisplayName>ID de Empleado</auth:DisplayName>
+          <auth:Description>Identificador único del empleado para cálculo de comisiones</auth:Description>
+        </auth:ClaimType>
+        <auth:ClaimType Uri="http://schemas.consensocorp.com/identity/claims/role" Optional="false" xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706">
+          <auth:DisplayName>Rol del Usuario</auth:DisplayName>
+          <auth:Description>Rol del usuario en el sistema de comisiones</auth:Description>
+        </auth:ClaimType>
+        <auth:ClaimType Uri="http://schemas.consensocorp.com/identity/claims/department" Optional="true" xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706">
+          <auth:DisplayName>Departamento</auth:DisplayName>
+          <auth:Description>Departamento al que pertenece el usuario para cálculo de comisiones</auth:Description>
+        </auth:ClaimType>
+        <auth:ClaimType Uri="http://schemas.consensocorp.com/identity/claims/cedula" Optional="false" xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706">
+          <auth:DisplayName>Cédula de Identidad</auth:DisplayName>
+          <auth:Description>Número de cédula de identidad del usuario</auth:Description>
+        </auth:ClaimType>
+        <auth:ClaimType Uri="http://schemas.consensocorp.com/identity/claims/fullName" Optional="false" xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706">
+          <auth:DisplayName>Nombres Completos</auth:DisplayName>
+          <auth:Description>Nombres y apellidos completos del usuario</auth:Description>
+        </auth:ClaimType>
+      </fed:ClaimTypesRequested>
+    </RoleDescriptor>
+    <ContactPerson contactType="support">
+      <Company>Consenso Corp</Company>
+      <EmailAddress>support@consensocorp.com</EmailAddress>
+    </ContactPerson>
+    <ContactPerson contactType="technical">
+      <Company>Consenso Corp</Company>
+      <EmailAddress>tech@consensocorp.com</EmailAddress>
+    </ContactPerson>
+  </SPSSODescriptor>
+</EntityDescriptor>
