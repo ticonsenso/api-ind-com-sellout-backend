@@ -20,13 +20,13 @@ ENV NODE_ENV=production \
   PORT=3008 \
   BASE_URL=https://cmi.consensocorp.com \
   DB_USER=comisiones \
-  DB_HOST=10.101.2.25 \
-  DB_NAME=consenso \
-  DB_PASSWORD=c0m1s10ne$. \
-  DB_PORT=5433 \
-  DB_DEFAULT_SCHEMA=db-consenso \
-  DATABASE_URL=postgres://postgres:10.101.2.25@localhost:5432/consenso?sslmode=disable \
-  JWT_SECRET=consenso_2025$$
+  DB_HOST=cpdbep.consensocorp.com \
+  DB_NAME=sellout \
+  DB_PASSWORD=S3ll0ut. \
+  DB_PORT=5435 \
+  DB_DEFAULT_SCHEMA=db-sellout \
+  DATABASE_URL=postgres://postgres:cpdbep.consensocorp.com@localhost:5435/consenso?sslmode=disable \
+  JWT_SECRET=sellout_2025$$
 
 # Exponemos el puerto que la aplicación usará dentro del contenedor
 EXPOSE 3008

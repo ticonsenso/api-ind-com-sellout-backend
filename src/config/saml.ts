@@ -10,6 +10,7 @@ const cert = fs.readFileSync(certPath, "utf-8");
 const key = fs.readFileSync(keyPath, "utf-8");
 const idpCert = fs.readFileSync(idpCertPath, "utf-8");
 
+//const BASE_URL = "https://const.mentetec.com";
 const BASE_URL = "https://sellout.indurama.com/api-ind-com-sellout-backend";
 // Extraer información del archivo de metadatos XML
 let idpConfig = {

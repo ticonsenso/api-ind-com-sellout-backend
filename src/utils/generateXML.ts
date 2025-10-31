@@ -10,8 +10,8 @@ dotenv.config();
 const BASE_URL = "https://cmi.consensocorp.com/app-con-comisiones";
 
 // Cargar certificado y clave privada
-const certPath = path.join(__dirname, "../../cert/prod/cert.pem");
-const keyPath = path.join(__dirname, "../../cert/prod/key.pem");
+const certPath = path.join(__dirname, "../../cert/prod-sellout/cert.pem");
+const keyPath = path.join(__dirname, "../../cert/prod-sellout/key.pem");
 const cert = fs
   .readFileSync(certPath, "utf-8")
   .replace(/-----BEGIN CERTIFICATE-----|-----END CERTIFICATE-----|\n/g, "");

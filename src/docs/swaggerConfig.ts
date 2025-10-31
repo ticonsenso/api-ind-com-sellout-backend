@@ -3,7 +3,7 @@ import { env } from "../config/env";
 
 const baseUrl =
   env.NODE_ENV === "production"
-    ? "https://compensaciones.consensocorp.com"
+    ? "https://sellout.indurama.com"
     : env.NODE_ENV === "qa"
       ? "https://const.mentetec.com"
       : "http://localhost:3008";
