@@ -4,7 +4,7 @@ import { IdentityProvider, ServiceProvider } from "saml2-js";
 
 const certPath = path.join(__dirname, "../../cert/prod-sellout/cert.pem");
 const keyPath = path.join(__dirname, "../../cert/prod-sellout/key.pem");
-const idpCertPath = path.join(__dirname, "../../cert//prod-sellout/idp_cert.pem");
+const idpCertPath = path.join(__dirname, "../../cert/prod-sellout/idp_cert.pem");
 
 const cert = fs.readFileSync(certPath, "utf-8");
 const key = fs.readFileSync(keyPath, "utf-8");
