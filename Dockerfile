@@ -32,4 +32,4 @@ ENV NODE_ENV=production \
 EXPOSE 3008
 
 # Comando por defecto para iniciar la aplicación en modo de producción
-CMD ["sh", "-c", "npm install && npm run qa"]
+CMD ["sh", "-c", "npm install && npm run prod"]
