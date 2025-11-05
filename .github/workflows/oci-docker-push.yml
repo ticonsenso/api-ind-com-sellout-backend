@@ -8,7 +8,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     env:
-      PROJECT_NAME: app-con-comisiones-backend
+      PROJECT_NAME: api-ind-com-sellout-backend
       OCI_USER: idv8iz9jzccy/oci_ti_integraciones
       OCI_REGION: iad.ocir.io
 
@@ -39,5 +39,6 @@ jobs:
 
       - name: Push Docker image to OCIR
         run: docker push ${{ env.IMAGE_TAG }}
+
 
 
