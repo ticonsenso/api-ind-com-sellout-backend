@@ -213,7 +213,7 @@ export class AuthController {
           return res.status(400).json({ error: err.message });
         }
         //res.redirect("http://localhost:3000/"); // Redirige al frontend tras logout
-        res.redirect("https://compensaciones.consensocorp.com"); // Redirige al frontend tras logout
+        res.redirect("https://sellout.indurama.com"); // Redirige al frontend tras logout
       }
     );
   }
