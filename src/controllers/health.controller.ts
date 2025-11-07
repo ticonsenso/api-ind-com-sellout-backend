@@ -9,7 +9,7 @@ export class HealthController {
       res.status(200).json({
         status: "ok",
         timestamp: new Date().toISOString(),
-        service: "consenso-backend",
+        service: "sellout-backend",
         environment: process.env.NODE_ENV || "development",
         database: dbStatus,
         app: appStatus,
