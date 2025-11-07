@@ -18,7 +18,7 @@ export const env = {
   DB_NAME: process.env.DB_NAME || "consenso",
   DB_PASSWORD: process.env.DB_PASSWORD || "holatuten123.",
   DB_PORT: parseInt(process.env.DB_PORT || "5432"),
-  DB_DEFAULT_SCHEMA: process.env.DB_DEFAULT_SCHEMA || "db_sellout",
+  DB_DEFAULT_SCHEMA: process.env.DB_DEFAULT_SCHEMA || "db-sellout",
 
   // En producción, es posible que DATABASE_URL venga de las variables de entorno del contenedor
   DATABASE_URL:
