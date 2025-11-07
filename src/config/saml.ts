@@ -2,16 +2,16 @@ import * as fs from "fs";
 import path from "path";
 import { IdentityProvider, ServiceProvider } from "saml2-js";
 
-const certPath = path.join(__dirname, "../../cert/prod-sellout/cert.pem");
-const keyPath = path.join(__dirname, "../../cert/prod-sellout/key.pem");
-const idpCertPath = path.join(__dirname, "../../cert/prod-sellout/idp_cert.pem");
+const certPath = path.join(__dirname, "../../cert/cert.pem");
+const keyPath = path.join(__dirname, "../../cert/key.pem");
+const idpCertPath = path.join(__dirname, "../../cert/idp_cert.pem");
 
 const cert = fs.readFileSync(certPath, "utf-8");
 const key = fs.readFileSync(keyPath, "utf-8");
 const idpCert = fs.readFileSync(idpCertPath, "utf-8");
 
 //const BASE_URL = "https://const.mentetec.com";
-const BASE_URL = "https://sellout.indurama.com/api-ind-com-sellout-backend";
+const BASE_URL = "https://const.mentetec.com";
 // Extraer información del archivo de metadatos XML
 let idpConfig = {
   sso_login_url: "https://sso.consensocorp.com/adfs/ls/",
