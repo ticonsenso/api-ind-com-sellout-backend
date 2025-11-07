@@ -143,8 +143,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
           'asesor_comercial' AS source,
           SUM(ac.commission_total) AS gasto_comisiones,
           e."month"
-      FROM "db-consenso".advisor_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".advisor_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"
@@ -155,8 +155,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
           'consolidado_indurama' AS source,
           SUM(ac.total_nomina) AS gasto_comisiones,
           e."month"
-      FROM "db-consenso".consolidated_commission_calculation ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".consolidated_commission_calculation ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"
@@ -167,8 +167,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
           'jefe_tienda' AS source,
           SUM(ac.total_payroll_amount) AS gasto_comisiones,
           e."month"
-      FROM "db-consenso".store_manager_calculation_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".store_manager_calculation_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"
@@ -226,8 +226,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         e."month" AS mes,
         SUM(CASE WHEN ac.commission_total > 0 THEN 1 ELSE 0 END) AS comisionan,
         SUM(CASE WHEN ac.commission_total <= 0 THEN 1 ELSE 0 END) AS no_comisionan
-      FROM "db-consenso".advisor_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".advisor_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"
@@ -239,8 +239,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         e."month" AS mes,
         SUM(CASE WHEN ac.total_nomina > 0 THEN 1 ELSE 0 END) AS comisionan,
         SUM(CASE WHEN ac.total_nomina <= 0 THEN 1 ELSE 0 END) AS no_comisionan
-      FROM "db-consenso".consolidated_commission_calculation ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".consolidated_commission_calculation ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"
@@ -252,8 +252,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         e."month" AS mes,
         SUM(CASE WHEN ac.total_payroll_amount > 0 THEN 1 ELSE 0 END) AS comisionan,
         SUM(CASE WHEN ac.total_payroll_amount <= 0 THEN 1 ELSE 0 END) AS no_comisionan
-      FROM "db-consenso".store_manager_calculation_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".store_manager_calculation_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"
@@ -316,9 +316,9 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         e.name AS name,
         cp.name as cargo,
         AVG(ac.strategic_compliance_pct) as porcentaje_cumplimiento
-      FROM "db-consenso".calculation_product_extrategic ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
-      INNER JOIN "db-consenso".company_positions cp ON e.company_position_id  = cp.id
+      FROM "db-sellout".calculation_product_extrategic ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
+      INNER JOIN "db-sellout".company_positions cp ON e.company_position_id  = cp.id
       WHERE 1=1
         ${filterSql}
       GROUP BY e.name, cp.name
@@ -330,9 +330,9 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         e.name as nombre,
         cp.name as cargo,
         AVG(ac.compliance_sale) as porcentaje_cumplimiento
-      FROM "db-consenso".advisor_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
-      INNER JOIN "db-consenso".company_positions cp ON e.company_position_id  = cp.id
+      FROM "db-sellout".advisor_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
+      INNER JOIN "db-sellout".company_positions cp ON e.company_position_id  = cp.id
       WHERE 1=1
         ${filterSql}
       GROUP BY e.name, cp.name
@@ -345,9 +345,9 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         cp.name as cargo,
         AVG(ac.range_compliance) as porcentaje_cumplimiento_venta,
         AVG(ac.profit_compliance) as porcentaje_cumplimiento_utilidad
-      FROM "db-consenso".store_manager_calculation_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
-      INNER JOIN "db-consenso".company_positions cp ON e.company_position_id  = cp.id
+      FROM "db-sellout".store_manager_calculation_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
+      INNER JOIN "db-sellout".company_positions cp ON e.company_position_id  = cp.id
       WHERE 1=1
         ${filterSql}
       GROUP BY e.name, cp.name
@@ -427,9 +427,9 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         e.name AS name,
         cp.name as cargo,
         ac.strategic_compliance_pct as rango_cumplimiento
-      FROM "db-consenso".calculation_product_extrategic ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
-      INNER JOIN "db-consenso".company_positions cp ON e.company_position_id  = cp.id
+      FROM "db-sellout".calculation_product_extrategic ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
+      INNER JOIN "db-sellout".company_positions cp ON e.company_position_id  = cp.id
       WHERE 1=1
         ${filterSql}
     `;
@@ -439,9 +439,9 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         e.name as nombre,
         cp.name as cargo,
         ac.range_apply_bonus as rango_cumplimiento
-      FROM "db-consenso".advisor_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
-      INNER JOIN "db-consenso".company_positions cp ON e.company_position_id  = cp.id
+      FROM "db-sellout".advisor_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
+      INNER JOIN "db-sellout".company_positions cp ON e.company_position_id  = cp.id
       WHERE 1=1
         ${filterSql}
     `;
@@ -452,9 +452,9 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         cp.name as cargo,
         ac.range_compliance_apl  as rango_cumplimiento_venta,
         ac.profit_compliance_apl  as rango_cumplimiento_utilidad
-      FROM "db-consenso".store_manager_calculation_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
-      INNER JOIN "db-consenso".company_positions cp ON e.company_position_id  = cp.id
+      FROM "db-sellout".store_manager_calculation_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
+      INNER JOIN "db-sellout".company_positions cp ON e.company_position_id  = cp.id
       WHERE 1=1
         ${filterSql}
     `;
@@ -534,8 +534,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
           MIN(CASE WHEN ac.commission_total > 0 THEN ac.commission_total END) AS minimo_sin_cero,
           AVG(ac.commission_total) AS promedio,
           e."month" as mes
-      FROM "db-consenso".advisor_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".advisor_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"
@@ -548,8 +548,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
           MIN(CASE WHEN ac.total_nomina > 0 THEN ac.total_nomina END),
           AVG(ac.total_nomina),
           e."month" as mes
-      FROM "db-consenso".consolidated_commission_calculation ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".consolidated_commission_calculation ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"
@@ -562,8 +562,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
           MIN(CASE WHEN ac.total_payroll_amount > 0 THEN ac.total_payroll_amount END),
           AVG(ac.total_payroll_amount),
           e."month" as mes
-      FROM "db-consenso".store_manager_calculation_commission ac
-      INNER JOIN "db-consenso".employees e ON e.id = ac.employee_id
+      FROM "db-sellout".store_manager_calculation_commission ac
+      INNER JOIN "db-sellout".employees e ON e.id = ac.employee_id
       WHERE 1=1
         ${filterSql}
       GROUP BY e."month"

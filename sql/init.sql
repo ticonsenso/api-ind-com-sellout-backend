@@ -149,12 +149,12 @@ CREATE TABLE IF NOT EXISTS employees (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- ultima fecha de sincronizacion
 );
 
---ALTER TABLE "db-consenso".employees ADD ceco varchar(255) NULL;
---ALTER TABLE "db-consenso".employees ADD "section" varchar(255) NULL;
--- ALTER TABLE "db-consenso".employees DROP CONSTRAINT employees_code_key;
--- ALTER TABLE "db-consenso".employees ADD month INTEGER NULL;
--- ALTER TABLE "db-consenso".employees ADD year INTEGER NULL;
--- ALTER TABLE "db-consenso".employees ADD employee_type VARCHAR(12) NULL; // Cambio para tipo de empleado
+--ALTER TABLE "db-sellout".employees ADD ceco varchar(255) NULL;
+--ALTER TABLE "db-sellout".employees ADD "section" varchar(255) NULL;
+-- ALTER TABLE "db-sellout".employees DROP CONSTRAINT employees_code_key;
+-- ALTER TABLE "db-sellout".employees ADD month INTEGER NULL;
+-- ALTER TABLE "db-sellout".employees ADD year INTEGER NULL;
+-- ALTER TABLE "db-sellout".employees ADD employee_type VARCHAR(12) NULL; // Cambio para tipo de empleado
 
 -- Tabla: empleados historico
 CREATE TABLE IF NOT EXISTS employees_history (
@@ -623,7 +623,7 @@ CREATE TABLE IF NOT EXISTS company_positions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
---ALTER TABLE "db-consenso".company_positions ADD is_store_size bool DEFAULT false NULL;
+--ALTER TABLE "db-sellout".company_positions ADD is_store_size bool DEFAULT false NULL;
 
 --Cumplimiento de metas indurama por producto
 CREATE TABLE IF NOT EXISTS product_compliance (

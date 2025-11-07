@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { MatriculationTemplate } from './matriculation.templates.model';
 
-@Entity({ name: 'consolidated_data_stores', schema: 'db-consenso' })
+@Entity({ name: 'consolidated_data_stores', schema: 'db-sellout' })
 export class ConsolidatedDataStores {
 
     @PrimaryGeneratedColumn()
