@@ -132,7 +132,7 @@ router.post(
  *     tags:
  *       - Almacenes Sic
  *     summary: Crear almacenes en masa
- *     description: Crea almacenes en masa en el sistema
+ *     description: Crea múltiples almacenes en el sistema. Cada elemento del arreglo debe seguir la estructura de `CreateStoreSicDto`.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -143,39 +143,81 @@ router.post(
  *             type: array
  *             items:
  *               type: object
+ *               required:
+ *                 - storeCode
+ *                 - storeName
+ *                 - distributor2
+ *                 - distributorSap
+ *                 - endChannel
+ *                 - wholesaleRegion
+ *                 - city
+ *                 - region
+ *                 - province
+ *                 - category
  *               properties:
- *                 distributor:
- *                   type: string
- *                 storeDistributor:    
- *                   type: string
- *                 searchStore:
- *                   type: string
- *                 codeStoreSic:
- *                   type: string
  *                 storeCode:
- *                   type: string
+ *                   type: integer
+ *                   description: Código numérico de la tienda
  *                 storeName:
  *                   type: string
+ *                   description: Nombre de la tienda
+ *                 storeAddress:
+ *                   type: string
+ *                   description: Dirección de la tienda
+ *                 distributor:
+ *                   type: string
+ *                   description: Distribuidor (opcional)
  *                 distributor2:
  *                   type: string
+ *                   description: Distribuidor 2
+ *                 phone:
+ *                   type: string
+ *                   description: Teléfono
+ *                 agencyManager:
+ *                   type: string
+ *                   description: Gerente de agencia
+ *                 size:
+ *                   type: string
+ *                   description: Tamaño
+ *                 ubication:
+ *                   type: string
+ *                   description: Ubicación
+ *                 sales:
+ *                   type: number
+ *                   description: Ventas (numérico)
+ *                 channel:
+ *                   type: string
+ *                   description: Canal de venta
  *                 distributorSap:
  *                   type: string
+ *                   description: Código distribuidor SAP
  *                 endChannel:
  *                   type: string
+ *                   description: Canal final
+ *                 supervisor:
+ *                   type: string
+ *                   description: Supervisor
  *                 wholesaleRegion:
  *                   type: string
+ *                   description: Región mayorista
  *                 city:
  *                   type: string
+ *                   description: Ciudad
  *                 region:
  *                   type: string
- *                 category:
- *                   type: string
+ *                   description: Región
  *                 province:
  *                   type: string
- *                 status:
- *                   type: boolean
+ *                   description: Provincia
+ *                 category:
+ *                   type: string
+ *                   description: Categoría
  *                 zone:
  *                   type: string
+ *                   description: Zona
+ *                 status:
+ *                   type: boolean
+ *                   description: Estado (activo/inactivo)
  *     responses:
  *       200:
  *         description: Almacenes creados correctamente
@@ -194,14 +236,32 @@ router.post(
  *                       id:
  *                         type: integer
  *                       storeCode:
- *                         type: string
+ *                         type: integer
  *                       storeName:
  *                         type: string
+ *                       storeAddress:
+ *                         type: string
+ *                       distributor:
+ *                         type: string
  *                       distributor2:
+ *                         type: string
+ *                       phone:
+ *                         type: string
+ *                       agencyManager:
+ *                         type: string
+ *                       size:
+ *                         type: string
+ *                       ubication:
+ *                         type: string
+ *                       sales:
+ *                         type: number
+ *                       channel:
  *                         type: string
  *                       distributorSap:
  *                         type: string
  *                       endChannel:
+ *                         type: string
+ *                       supervisor:
  *                         type: string
  *                       wholesaleRegion:
  *                         type: string
@@ -209,14 +269,14 @@ router.post(
  *                         type: string
  *                       region:
  *                         type: string
+ *                       province:
+ *                         type: string
  *                       category:
  *                         type: string
- *                       province:
+ *                       zone:
  *                         type: string
  *                       status:
  *                         type: boolean
- *                       zone:
- *                         type: string
  *       400:
  *         description: Datos de entrada inválidos.
  *       401:
@@ -595,108 +655,150 @@ router.post(
 );
 
 /**
- * @swagger
- * /api/stores/product-sic/bulk:
- *   post:
- *     tags:
- *       - Productos SIC
- *     summary: Crear productos SIC en masa
- *     description: Crea productos SIC en masa en el sistema
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: array
- *             items:
- *               type: object
- *               properties:
- *                 jdeCode:
- *                   type: string
- *                   description: Código JDE
- *                 jdeName:
- *                   type: string
- *                   description: Nombre JDE
- *                 companyLine:
- *                   type: string
- *                   description: Línea de la empresa
- *                 category:
- *                   type: string
- *                   description: Categoría
- *                 subCategory:
- *                   type: string
- *                   description: Subcategoría
- *                 marModelLm:
- *                   type: string
- *                   description: Modelo de marca
- *                 designLine:
- *                   type: string
- *                   description: Línea de diseño
- *                 brand:
- *                   type: string
- *                   description: Marca
- *                 discontinued:
- *                   type: boolean
- *                   description: Discontinuado
- *                 equivalentProId:
- *                   type: string
- *                   description: Código equivalente
- *                 equivalent:
- *                   type: string
- *                   description: Equivalente
- *                 validity:
- *                   type: string
- *                   description: Válido
- *     responses:
- *       200:
- *         description: Productos SIC creados correctamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 results:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       jdeCode:
- *                         type: string
- *                       jdeName:
- *                         type: string
- *                       companyLine:
- *                         type: string
- *                 category:
- *                   type: string
- *                 subCategory:
- *                   type: string
- *                 marModelLm:
- *                   type: string
- *                 designLine:
- *                   type: string
- *                 brand:
- *                   type: string
- *                 discontinued:
- *                   type: boolean
- *                 equivalentProId:
- *                   type: string
- *                 equivalent:
- *                   type: string
- *                 validity:
- *                   type: string
- *       400:
- *         description: Datos de entrada inválidos.
- *       401:
- *         description: No autorizado.
- *       500:
- *         description: Error del servidor.
- */
+* @swagger
+* /api/stores/product-sic/bulk:
+*   post:
+*     tags:
+*       - Productos SIC
+*     summary: Crear productos SIC en masa
+*     description: Crea productos SIC en masa en el sistema
+*     security:
+*       - bearerAuth: []
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: array
+*             items:
+*               type: object
+*               properties:
+*                 idProductSic:
+*                   type: integer
+*                   description: ID del producto SIC (opcional)
+*                 jdeCode:
+*                   type: string
+*                   description: Código JDE
+*                 jdeName:
+*                   type: string
+*                   description: Nombre JDE
+*                 imeName:
+*                   type: string
+*                   description: Nombre alterno
+*                 sapCode:
+*                   type: string
+*                   description: Código SAP
+*                 sapName:
+*                   type: string
+*                   description: Nombre SAP
+*                 companyLine:
+*                   type: string
+*                   description: Distribuidor / línea de la empresa
+*                 category:
+*                   type: string
+*                   description: Categoría
+*                 subCategory:
+*                   type: string
+*                   description: Subcategoría
+*                 marModelLm:
+*                   type: string
+*                   description: Región / modelo de marca
+*                 model:
+*                   type: string
+*                   description: Modelo (opcional)
+*                 designLine:
+*                   type: string
+*                   description: Línea de diseño
+*                 brand:
+*                   type: string
+*                   description: Marca
+*                 discontinued:
+*                   type: boolean
+*                   description: Discontinuado
+*                 status:
+*                   type: boolean
+*                   description: Estado (activo/inactivo)
+*                 sheetVisit:
+*                   type: string
+*                   description: Sheet visit
+*                 equivalentProId:
+*                   type: string
+*                   description: Equivalente Pro ID
+*                 equivalent:
+*                   type: string
+*                   description: Equivalente
+*                 validity:
+*                   type: string
+*                   description: Vigencia (opcional)
+*                 repeatedNumbers:
+*                   type: string
+*                   description: Repeated numbers (opcional)
+*     responses:
+*       200:
+*         description: Productos SIC creados correctamente
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 message:
+*                   type: string
+*                 results:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       id:
+*                         type: integer
+*                         description: ID creado
+*                       idProductSic:
+*                         type: integer
+*                         description: ID del producto SIC (si aplica)
+*                       jdeCode:
+*                         type: string
+*                       jdeName:
+*                         type: string
+*                       imeName:
+*                         type: string
+*                       sapCode:
+*                         type: string
+*                       sapName:
+*                         type: string
+*                       companyLine:
+*                         type: string
+*                       category:
+*                         type: string
+*                       subCategory:
+*                         type: string
+*                       marModelLm:
+*                         type: string
+*                       model:
+*                         type: string
+*                       designLine:
+*                         type: string
+*                       brand:
+*                         type: string
+*                       discontinued:
+*                         type: boolean
+*                       status:
+*                         type: boolean
+*                       sheetVisit:
+*                         type: string
+*                       equivalentProId:
+*                         type: string
+*                       equivalent:
+*                         type: string
+*                       validity:
+*                         type: string
+*                       repeatedNumbers:
+*                         type: string
+*       400:
+*         description: Datos de entrada inválidos.
+*       401:
+*         description: No autorizado.
+*       500:
+*         description: Error del servidor.
+*/
 router.post(
     "/product-sic/bulk",
     authenticateToken,
