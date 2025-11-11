@@ -1,17 +1,18 @@
-import { plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import {plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
 import {
-  CreateMonthlyGoalDto,
-  MonthlyGoalResponseDto,
-  MonthlyGoalResponseSearchDto,
-  MonthlyGoalSearchDto,
-  UpdateMonthlyGoalDto,
+    CreateMonthlyGoalDto,
+    MonthlyGoalResponseDto,
+    MonthlyGoalResponseSearchDto,
+    MonthlyGoalSearchDto,
+    UpdateMonthlyGoalDto,
 } from '../dtos/monthly.goals.dto';
-import { MonthlyGoal } from '../models/monthly.goals.model';
-import { CompanyPositionsRepository } from '../repository/company.positions.repository';
-import { EmployeesRepository } from '../repository/employees.repository';
-import { MonthlyGoalsRepository } from '../repository/monthly.goals.repository';
-import { ProductLinesRepository } from '../repository/product.lines.repository';
+import {MonthlyGoal} from '../models/monthly.goals.model';
+import {CompanyPositionsRepository} from '../repository/company.positions.repository';
+import {EmployeesRepository} from '../repository/employees.repository';
+import {MonthlyGoalsRepository} from '../repository/monthly.goals.repository';
+import {ProductLinesRepository} from '../repository/product.lines.repository';
+
 export class MonthlyGoalsService {
   private monthlyGoalRepository: MonthlyGoalsRepository;
   private employeeRepository: EmployeesRepository;

@@ -1,12 +1,6 @@
-import { Expose, Type } from "class-transformer";
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-} from "class-validator";
-import { CompanyResponseDto } from "./commission.configurations.dto";
+import {Expose, Type} from "class-transformer";
+import {IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString,} from "class-validator";
+import {CompanyResponseDto} from "./commission.configurations.dto";
 
 export class CreateStoreSizeDto {
   @IsNotEmpty({ message: "El nombre es requerido" })

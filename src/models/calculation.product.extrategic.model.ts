@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Company } from './companies.model';
-import { CompanyPosition } from './company.positions.model';
-import { Employee } from './employees.model';
-import { KpiConfig } from './kpi.config.model';
-import e from 'express';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Company} from './companies.model';
+import {CompanyPosition} from './company.positions.model';
+import {Employee} from './employees.model';
+import {KpiConfig} from './kpi.config.model';
+
 @Entity('calculation_product_extrategic')
 export class CalculationProductExtrategic {
     @PrimaryGeneratedColumn()

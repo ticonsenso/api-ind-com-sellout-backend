@@ -1,7 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
-import { Employee } from './employees.model';
-import { Stores } from './stores.model';
-import { ProductSic } from './product_sic.model';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm';
+import {Employee} from './employees.model';
+import {StoresSic} from './stores.sic.model';
+import {ProductSic} from './product_sic.model';
 
 @Entity('rotation_base')
 export class RotationBase {
@@ -26,9 +34,9 @@ export class RotationBase {
     @Column({ name: 'store_code', type: 'varchar', length: 255, nullable: false })
     storeCode!: string;
 
-    @ManyToOne(() => Stores, (store) => store.id)
+    @ManyToOne(() => StoresSic, (store) => store.id)
     @JoinColumn({ name: 'id_stores' })
-    store!: Stores;
+    store!: StoresSic;
 
     @Column({ name: 'product_code', type: 'varchar', length: 255, nullable: false })
     productCode!: string;

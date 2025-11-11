@@ -1,6 +1,6 @@
-import { DataSource as TypeORMDataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { CommissionConfigurationsHistory } from "../models/commission.configurations.history.model";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {CommissionConfigurationsHistory} from "../models/commission.configurations.history.model";
 
 export class CommissionConfigurationsHistoryRepository extends BaseRepository<CommissionConfigurationsHistory> {
     constructor(dataSource: TypeORMDataSource) {

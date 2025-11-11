@@ -1,12 +1,5 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
-
-} from 'typeorm';
-import { MatriculationTemplate } from './matriculation.templates.model';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {MatriculationTemplate} from './matriculation.templates.model';
 
 @Entity('sellout_configuration')
 export class SelloutConfiguration {

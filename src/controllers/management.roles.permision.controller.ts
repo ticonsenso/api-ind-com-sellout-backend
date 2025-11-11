@@ -1,12 +1,13 @@
-import { Request, Response } from 'express';
-import { DataSource } from 'typeorm';
-import { PermissionService } from '../services/permissions.service';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass } from 'class-transformer';
-import { CreatePermissionDto, UpdatePermissionDto } from '../dtos/permissions.dto';
-import { CreateRoleDto, UpdateRoleDto } from '../dtos/roles.dto';
-import { RoleService } from '../services/roles.service';
-import { RolesPermissionsService } from '../services/roles.permissions.service';
+import {Request, Response} from 'express';
+import {DataSource} from 'typeorm';
+import {PermissionService} from '../services/permissions.service';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass} from 'class-transformer';
+import {CreatePermissionDto, UpdatePermissionDto} from '../dtos/permissions.dto';
+import {CreateRoleDto, UpdateRoleDto} from '../dtos/roles.dto';
+import {RoleService} from '../services/roles.service';
+import {RolesPermissionsService} from '../services/roles.permissions.service';
+
 export class ManagementRolesPermisionController {
   private permissionService: PermissionService;
   private roleService: RoleService;

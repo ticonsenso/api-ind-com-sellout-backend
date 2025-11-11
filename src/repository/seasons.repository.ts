@@ -1,7 +1,7 @@
-import { DataSource } from 'typeorm';
-import { SearchSeasonDto } from '../dtos/season.dto';
-import { Season } from '../models/seasons.model';
-import { BaseRepository } from './base.respository';
+import {DataSource} from 'typeorm';
+import {SearchSeasonDto} from '../dtos/season.dto';
+import {Season} from '../models/seasons.model';
+import {BaseRepository} from './base.respository';
 
 export class SeasonsRepository extends BaseRepository<Season> {
   constructor(dataSource: DataSource) {

@@ -1,9 +1,5 @@
-import { Expose } from "class-transformer";
-import {
-  IsInt,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import {Expose} from "class-transformer";
+import {IsInt, IsOptional, IsString,} from "class-validator";
 
 export class SearchDataConsensoDto {
     @IsString({ message: "La empresa debe ser una cadena de texto." })

@@ -1,7 +1,6 @@
-import { Between, Brackets, DataSource as TypeORMDataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { ClosingConfiguration } from "../models/closing.configuration.model";
-import { parseLocalDate } from "../utils/utils";
+import {Between, Brackets, DataSource as TypeORMDataSource} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {ClosingConfiguration} from "../models/closing.configuration.model";
 
 export class ClosingConfigurationRepository extends BaseRepository<ClosingConfiguration> {
     constructor(dataSource: TypeORMDataSource) {

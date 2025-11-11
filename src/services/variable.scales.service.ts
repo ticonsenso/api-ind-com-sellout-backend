@@ -1,19 +1,19 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
-import { CommissionConfigurationResponseDto } from "../dtos/commission.configurations.dto";
-import { CompanyPositionResponseDto } from "../dtos/company.positions.dto";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
+import {CommissionConfigurationResponseDto} from "../dtos/commission.configurations.dto";
+import {CompanyPositionResponseDto} from "../dtos/company.positions.dto";
 import {
-  CreateVariableScaleDto,
-  UpdateVariableScaleDto,
-  VariableScaleResponseDto,
-  VariableScaleResponseSearchDto,
-  VariableScaleSearchDto,
+    CreateVariableScaleDto,
+    UpdateVariableScaleDto,
+    VariableScaleResponseDto,
+    VariableScaleResponseSearchDto,
+    VariableScaleSearchDto,
 } from "../dtos/variable.scales.dto";
-import { VariableScale } from "../models/variable.scales.model";
-import { CommissionConfigurationsRepository } from "../repository/commission.configurations.repository";
-import { CompaniesRepository } from "../repository/companies.repository";
-import { CompanyPositionsRepository } from "../repository/company.positions.repository";
-import { VariableScalesRepository } from "../repository/variable.scales.repository";
+import {VariableScale} from "../models/variable.scales.model";
+import {CommissionConfigurationsRepository} from "../repository/commission.configurations.repository";
+import {CompaniesRepository} from "../repository/companies.repository";
+import {CompanyPositionsRepository} from "../repository/company.positions.repository";
+import {VariableScalesRepository} from "../repository/variable.scales.repository";
 
 export class VariableScalesService {
   private variableScalesRepository: VariableScalesRepository;

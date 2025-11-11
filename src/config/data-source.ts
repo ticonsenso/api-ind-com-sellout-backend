@@ -1,6 +1,6 @@
 import path from "path";
-import { DataSource, EntityManager } from "typeorm";
-import { env } from "./env";
+import {DataSource, EntityManager} from "typeorm";
+import {env} from "./env";
 
 export let statusConeccion = { status: false, message: "" };
 

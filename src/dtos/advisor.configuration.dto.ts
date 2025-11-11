@@ -1,13 +1,6 @@
-import {
-    IsNotEmpty,
-    IsNumber,
-    IsPositive,
-    IsDateString,
-    IsOptional,
-    IsString,
-} from 'class-validator';
-import { Expose, Type } from 'class-transformer';
-import { StoreConfigurationResponseDto } from './store.configuration.dto';
+import {IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString,} from 'class-validator';
+import {Expose, Type} from 'class-transformer';
+import {StoreConfigurationResponseDto} from './store.configuration.dto';
 
 export class CreateEmployForMonthDto {
     @IsNotEmpty({ message: 'El nombre del mes es requerido' })

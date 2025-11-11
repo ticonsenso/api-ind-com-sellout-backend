@@ -1,9 +1,9 @@
-import { Expose, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsDate, IsNumber, IsObject, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
-import { SelloutConfigurationDto } from './sellout.configuration.dto';
-import { ExtractionLogsSelloutDto } from './extraction.logs.sellout.dto';
-import { CreateMatriculationLogDto, MatriculationLogResponseDto } from './matriculation.logs.dto';
-import { MatriculationLog } from '../models/matriculation.logs.model';
+import {Expose, Type} from 'class-transformer';
+import {IsArray, IsBoolean, IsDate, IsNumber, IsObject, IsOptional, IsString} from 'class-validator';
+import {SelloutConfigurationDto} from './sellout.configuration.dto';
+import {ExtractionLogsSelloutDto} from './extraction.logs.sellout.dto';
+import {CreateMatriculationLogDto, MatriculationLogResponseDto} from './matriculation.logs.dto';
+import {MatriculationLog} from '../models/matriculation.logs.model';
 
 export class CreateExtractedDataSelloutDto {
     @IsOptional()

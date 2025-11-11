@@ -1,14 +1,14 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
-import { Company } from './companies.model';
-import { CompanyPosition } from './company.positions.model';
+import {Company} from './companies.model';
+import {CompanyPosition} from './company.positions.model';
 
 @Entity('employees')
 export class Employee {

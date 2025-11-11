@@ -1,15 +1,13 @@
-import { DataSource } from 'typeorm';
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass } from 'class-transformer';
-import { CreateEmployForMonthDto, UpdateEmployForMonthDto } from '../dtos/advisor.configuration.dto';
-import { SelloutZoneService } from '../services/sellout.zone.service';
-import { CreateSelloutZoneDto, UpdateSelloutZoneDto } from '../dtos/selleout.zone.dto';
-import { CreateStoreSicDto, NullFieldFiltersSic, UpdateStoreSicDto } from '../dtos/stores.dto';
-import { StoresSicService } from '../services/stores_sic.service';
-import { CreateProductSicDto, UpdateProductSicDto } from '../dtos/product.sic.dto';
-import { ProductSicService } from '../services/produc.sic.service';
-import { CreateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
+import {DataSource} from 'typeorm';
+import {Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass} from 'class-transformer';
+import {SelloutZoneService} from '../services/sellout.zone.service';
+import {CreateSelloutZoneDto, UpdateSelloutZoneDto} from '../dtos/selleout.zone.dto';
+import {CreateStoreSicDto, NullFieldFiltersSic, UpdateStoreSicDto} from '../dtos/stores.sic.dto';
+import {StoresSicService} from '../services/stores_sic.service';
+import {CreateProductSicDto, UpdateProductSicDto} from '../dtos/product.sic.dto';
+import {ProductSicService} from '../services/produc.sic.service';
 
 export class StoresController {
     private selloutZoneService: SelloutZoneService;

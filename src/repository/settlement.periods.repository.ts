@@ -1,7 +1,7 @@
-import { DataSource, Repository, Between, Like } from 'typeorm';
-import { SettlementPeriod } from '../models/settlement.periods.model';
-import { SettlementPeriodSearchDto } from '../dtos/settlement.periods.dto';
-import { BaseRepository } from './base.respository';
+import {DataSource} from 'typeorm';
+import {SettlementPeriod} from '../models/settlement.periods.model';
+import {SettlementPeriodSearchDto} from '../dtos/settlement.periods.dto';
+import {BaseRepository} from './base.respository';
 
 export class SettlementPeriodsRepository extends BaseRepository<SettlementPeriod> {
   constructor(dataSource: DataSource) {

@@ -1,13 +1,13 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
-    UpdateDateColumn,
-    ManyToOne,
+    Entity,
     JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
-import { MatriculationTemplate } from './matriculation.templates.model';
+import {MatriculationTemplate} from './matriculation.templates.model';
 
 @Entity('matriculation_logs')
 export class MatriculationLog {

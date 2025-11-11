@@ -1,9 +1,9 @@
-import { DataSource } from 'typeorm';
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass } from 'class-transformer';
-import { ClosingConfigurationService } from '../services/closing.configuration.service';
-import { CreateClosingConfigurationDto, UpdateClosingConfigurationDto } from '../dtos/closing.cofiguration.dto';
+import {DataSource} from 'typeorm';
+import {Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass} from 'class-transformer';
+import {ClosingConfigurationService} from '../services/closing.configuration.service';
+import {CreateClosingConfigurationDto, UpdateClosingConfigurationDto} from '../dtos/closing.cofiguration.dto';
 
 export class ClosingConfigurationController {
     private closingConfigurationService: ClosingConfigurationService;

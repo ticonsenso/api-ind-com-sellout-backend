@@ -1,82 +1,52 @@
-import { RequestHandler, Router } from "express";
+import {RequestHandler, Router} from "express";
 import AppDataSource from "../config/data-source";
-import { ComissionsConfigController } from "../controllers/comissions.config.controller";
+import {ComissionsConfigController} from "../controllers/comissions.config.controller";
 import {
-  CommissionConfigurationSearchDto,
-  CompanySearchDto,
-  CreateCommissionConfigurationDto,
-  UpdateCommissionConfigurationDto,
+    CommissionConfigurationSearchDto,
+    CreateCommissionConfigurationDto,
+    UpdateCommissionConfigurationDto,
 } from "../dtos/commission.configurations.dto";
 import {
-  CommissionParameterSearchDto,
-  CreateCommissionParameterDto,
-  UpdateCommissionParameterDto,
+    CommissionParameterSearchDto,
+    CreateCommissionParameterDto,
+    UpdateCommissionParameterDto,
 } from "../dtos/commission.parameters.dto";
+import {CommissionRuleSearchDto, CreateCommissionRuleDto, UpdateCommissionRuleDto,} from "../dtos/commission.rules.dto";
+import {CreateCompanyDto, UpdateCompanyDto} from "../dtos/companies.dto";
 import {
-  CommissionRuleSearchDto,
-  CreateCommissionRuleDto,
-  UpdateCommissionRuleDto,
-} from "../dtos/commission.rules.dto";
-import { CreateCompanyDto, UpdateCompanyDto } from "../dtos/companies.dto";
-import {
-  CompanyPositionSearchDto,
-  CreateCompanyPositionDto,
-  UpdateCompanyPositionDto,
+    CompanyPositionSearchDto,
+    CreateCompanyPositionDto,
+    UpdateCompanyPositionDto,
 } from "../dtos/company.positions.dto";
+import {CreateEmployeeDto, EmployeeSearchDto, UpdateEmployeeDto,} from "../dtos/employees.dto";
+import {CreateKpiConfigDto, SearchKpiConfigDto, UpdateKpiConfigDto,} from "../dtos/kpi.config.dto";
+import {CreateMonthlyGoalDto, MonthlyGoalSearchDto, UpdateMonthlyGoalDto,} from "../dtos/monthly.goals.dto";
+import {CreateMonthlyResultDto, MonthlyResultSearchDto, UpdateMonthlyResultDto,} from "../dtos/monthly.results.dto";
 import {
-  CreateEmployeeDto,
-  EmployeeSearchDto,
-  UpdateEmployeeDto,
-} from "../dtos/employees.dto";
-import {
-  CreateKpiConfigDto,
-  SearchKpiConfigDto,
-  UpdateKpiConfigDto,
-} from "../dtos/kpi.config.dto";
-import {
-  CreateMonthlyGoalDto,
-  MonthlyGoalSearchDto,
-  UpdateMonthlyGoalDto,
-} from "../dtos/monthly.goals.dto";
-import {
-  CreateMonthlyResultDto,
-  MonthlyResultSearchDto,
-  UpdateMonthlyResultDto,
-} from "../dtos/monthly.results.dto";
-import {
-  CreateParameterCategoryDto,
-  ParameterCategorySearchDto,
-  UpdateParameterCategoryDto,
+    CreateParameterCategoryDto,
+    ParameterCategorySearchDto,
+    UpdateParameterCategoryDto,
 } from "../dtos/parameter.categories.dto";
 import {
-  CreateParameterLineDto,
-  CreateParameterLineSearchDto,
-  UpdateParameterLineDto,
+    CreateParameterLineDto,
+    CreateParameterLineSearchDto,
+    UpdateParameterLineDto,
 } from "../dtos/parameter.lines.dto";
+import {CreateProductLineDto, ProductLineSearchDto, UpdateProductLineDto,} from "../dtos/product.lines.dto";
+import {SearchSeasonDto} from "../dtos/season.dto";
 import {
-  CreateProductLineDto,
-  ProductLineSearchDto,
-  UpdateProductLineDto,
-} from "../dtos/product.lines.dto";
-import { SearchSeasonDto } from "../dtos/season.dto";
-import {
-  CreateSettlementPeriodDto,
-  SettlementPeriodSearchDto,
-  UpdateSettlementPeriodDto,
+    CreateSettlementPeriodDto,
+    SettlementPeriodSearchDto,
+    UpdateSettlementPeriodDto,
 } from "../dtos/settlement.periods.dto";
+import {CreateStoreSizeDto, StoreSizeSearchDto, UpdateStoreSizeDto,} from "../dtos/store.size.dto";
+import {CreateVariableScaleDto, UpdateVariableScaleDto, VariableScaleSearchDto,} from "../dtos/variable.scales.dto";
+import {authenticateToken} from "../middleware/auth.middleware";
+import {validatorMiddleware} from "../middleware/validator.middleware";
 import {
-  CreateStoreSizeDto,
-  StoreSizeSearchDto,
-  UpdateStoreSizeDto,
-} from "../dtos/store.size.dto";
-import {
-  CreateVariableScaleDto,
-  UpdateVariableScaleDto,
-  VariableScaleSearchDto,
-} from "../dtos/variable.scales.dto";
-import { authenticateToken } from "../middleware/auth.middleware";
-import { validatorMiddleware } from "../middleware/validator.middleware";
-import { CreateSalesRotationConfigurationDto, UpdateSalesRotationConfigurationDto } from "../dtos/sales.rotation.configurations.dto";
+    CreateSalesRotationConfigurationDto,
+    UpdateSalesRotationConfigurationDto
+} from "../dtos/sales.rotation.configurations.dto";
 
 const router = Router();
 

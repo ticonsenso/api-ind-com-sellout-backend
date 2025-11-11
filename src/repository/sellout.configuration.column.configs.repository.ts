@@ -1,7 +1,6 @@
-import { ExtractionLogsSellout } from '../models/extraction.logs.sellout.model';
-import { SelloutConfigurationColumnConfigs } from '../models/sellout.configuration.column.configs.model';
-import { BaseRepository } from './base.respository';
-import { ILike, Like, DataSource as TypeORMDataSource } from 'typeorm';
+import {SelloutConfigurationColumnConfigs} from '../models/sellout.configuration.column.configs.model';
+import {BaseRepository} from './base.respository';
+import {DataSource as TypeORMDataSource, ILike} from 'typeorm';
 
 export class SelloutConfigurationColumnConfigsRepository extends BaseRepository<SelloutConfigurationColumnConfigs> {
     constructor(dataSource: TypeORMDataSource) {

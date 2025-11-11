@@ -1,6 +1,6 @@
-import { SelloutConfiguration } from '../models/sellout.configuration.model';
-import { BaseRepository } from './base.respository';
-import { Brackets, DataSource as TypeORMDataSource } from 'typeorm';
+import {SelloutConfiguration} from '../models/sellout.configuration.model';
+import {BaseRepository} from './base.respository';
+import {Brackets, DataSource as TypeORMDataSource} from 'typeorm';
 
 export class SelloutConfigurationRepository extends BaseRepository<SelloutConfiguration> {
     constructor(dataSource: TypeORMDataSource) {

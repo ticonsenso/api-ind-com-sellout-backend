@@ -1,11 +1,17 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
 
-import { StoresSicRepository } from '../repository/stores.repository';
-import { StoreSicResponseDto, StorePaginatedResponseDto, CreateStoreSicDto, UpdateStoreSicDto, NullFieldFiltersSic } from '../dtos/stores.dto';
-import { Stores } from '../models/stores.model';
-import { ConsolidatedDataStoresRepository } from '../repository/consolidated.data.stores.repository';
-import { chunkArray } from '../utils/utils';
+import {StoresSicRepository} from '../repository/stores.repository';
+import {
+    CreateStoreSicDto,
+    NullFieldFiltersSic,
+    StorePaginatedResponseDto,
+    StoreSicResponseDto,
+    UpdateStoreSicDto
+} from '../dtos/stores.sic.dto';
+import {StoresSic} from '../models/stores.sic.model';
+import {chunkArray} from '../utils/utils';
+
 const normalize = (str: string) => str.replace(/\s+/g, '').trim().toUpperCase();
 
 export class StoresSicService {
@@ -15,8 +21,8 @@ export class StoresSicService {
         this.storesRepository = new StoresSicRepository(dataSource);
     }
 
-    async createStoresSic(stores: CreateStoreSicDto): Promise<Stores> {
-        const entityStore = plainToClass(Stores, stores);
+    async createStoresSic(stores: CreateStoreSicDto): Promise<StoresSic> {
+        const entityStore = plainToClass(StoresSic, stores);
         const store = await this.storesRepository.create(entityStore);
         return store;
     }
@@ -58,13 +64,13 @@ export class StoresSicService {
         await this.storesRepository.delete(id);
     }
 
-    async updateStoresSic(id: number, stores: UpdateStoreSicDto): Promise<Stores> {
+    async updateStoresSic(id: number, stores: UpdateStoreSicDto): Promise<StoresSic> {
         const existingStores = await this.storesRepository.findById(id);
         if (!existingStores) {
             throw new Error(`Almacen con ID ${id} no encontrado`);
         }
 
-        const entityStore = plainToClass(Stores, stores);
+        const entityStore = plainToClass(StoresSic, stores);
         return this.storesRepository.update(id, entityStore);
     }
 

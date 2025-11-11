@@ -1,19 +1,18 @@
-import { Expose, Type } from "class-transformer";
+import {Expose, Type} from "class-transformer";
 import {
-  IsBoolean,
-  IsDate,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  IsOptional,
-  IsPositive,
-  IsString,
-  ValidateNested,
+    IsDate,
+    IsInt,
+    IsNotEmpty,
+    IsNumber,
+    IsObject,
+    IsOptional,
+    IsPositive,
+    IsString,
+    ValidateNested,
 } from "class-validator";
-import { DataSourceResponseDto } from "./data.sources.dto";
-import { UserResponseDto } from "./users.dto";
-import { UserConsenso } from "../interfaces/user.consenso";
+import {DataSourceResponseDto} from "./data.sources.dto";
+import {UserResponseDto} from "./users.dto";
+import {UserConsenso} from "../interfaces/user.consenso";
 
 export class CreateExtractionLogDto {
   @IsNotEmpty({ message: "La hora de inicio es requerida" })

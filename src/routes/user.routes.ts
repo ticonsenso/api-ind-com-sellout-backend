@@ -1,9 +1,9 @@
-import { Router, RequestHandler } from 'express';
-import { UserController } from '../controllers/user.controller';
+import {RequestHandler, Router} from 'express';
+import {UserController} from '../controllers/user.controller';
 import AppDataSource from '../config/data-source';
-import { authenticateToken } from '../middleware/auth.middleware';
-import { validatorMiddleware } from '../middleware/validator.middleware';
-import { CreateUserDto, UpdateUserDto } from '../dtos/users.dto';
+import {authenticateToken} from '../middleware/auth.middleware';
+import {validatorMiddleware} from '../middleware/validator.middleware';
+import {CreateUserDto, UpdateUserDto} from '../dtos/users.dto';
 
 const router = Router();
 const userController = new UserController(AppDataSource);

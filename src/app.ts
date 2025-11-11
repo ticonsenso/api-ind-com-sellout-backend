@@ -1,9 +1,9 @@
 import cors from "cors";
-import express, { Application } from "express";
+import express, {Application} from "express";
 import passport from "passport";
 import "reflect-metadata";
 import swaggerUi from "swagger-ui-express";
-import { env } from "./config/env";
+import {env} from "./config/env";
 import swaggerSpec from "./docs/swaggerConfig";
 import comissionsConfigRoutes from "./routes/comissions.config.routes";
 import configureEtlRoutes from "./routes/configure.etl.routes";
@@ -24,6 +24,7 @@ import matriculationRoutes from "./routes/matriculation.routes";
 import exportDataRoutes from "./routes/export.data.routes";
 import storeManagerCalculationCommissionRoutes from "./routes/store.manager.calculation.routes";
 import morgan from "morgan";
+
 const app: Application = express();
 // Configurar CORS para permitir solicitudes específicas
 const basePath = env.BASE_PATH;

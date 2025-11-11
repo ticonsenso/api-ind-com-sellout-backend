@@ -1,14 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { Role } from './roles.model';
-import { Permission } from './permissions.model';
+import {CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn,} from 'typeorm';
+import {Role} from './roles.model';
+import {Permission} from './permissions.model';
 
 /**
  * Entidad que representa la relación entre roles y permisos en el sistema

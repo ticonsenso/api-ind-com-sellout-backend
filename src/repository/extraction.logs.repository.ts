@@ -1,7 +1,7 @@
-import { SearchExtractionLogDto } from '../dtos/extraction.logs.dto';
-import { ExtractionLog } from '../models/extraction.logs.model';
-import { BaseRepository } from './base.respository';
-import { DataSource as TypeORMDataSource } from 'typeorm';
+import {SearchExtractionLogDto} from '../dtos/extraction.logs.dto';
+import {ExtractionLog} from '../models/extraction.logs.model';
+import {BaseRepository} from './base.respository';
+import {DataSource as TypeORMDataSource} from 'typeorm';
 
 export class ExtractionLogsRepository extends BaseRepository<ExtractionLog> {
   constructor(dataSource: TypeORMDataSource) {

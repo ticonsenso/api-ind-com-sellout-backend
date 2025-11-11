@@ -1,11 +1,11 @@
-import { DataSource } from 'typeorm';
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { BasePptoSelloutService } from '../services/base.ppto.sellout.service';
-import { BaseValuesSelloutService } from '../services/base.values.sellout.service';
-import { CreateBasePptoSelloutDto, UpdateBasePptoSelloutDto } from '../dtos/base.ppto.sellout.dto';
-import { CreateBaseValuesSelloutDto, UpdateBaseValuesSelloutDto } from '../dtos/base.values.sellout.dto';
+import {DataSource} from 'typeorm';
+import {Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {BasePptoSelloutService} from '../services/base.ppto.sellout.service';
+import {BaseValuesSelloutService} from '../services/base.values.sellout.service';
+import {CreateBasePptoSelloutDto, UpdateBasePptoSelloutDto} from '../dtos/base.ppto.sellout.dto';
+import {CreateBaseValuesSelloutDto, UpdateBaseValuesSelloutDto} from '../dtos/base.values.sellout.dto';
 
 export class BaseSelloutController {
     private basePptoSelloutService: BasePptoSelloutService;

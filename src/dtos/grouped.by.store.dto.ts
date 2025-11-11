@@ -1,11 +1,7 @@
-import { Expose, Type } from 'class-transformer';
-import {
-    IsArray,
-    IsInt,
-    IsOptional,
-} from 'class-validator';
+import {Expose, Type} from 'class-transformer';
+import {IsArray, IsInt, IsOptional,} from 'class-validator';
 
-import { StoreConfigurationResponseDto } from './store.configuration.dto'; // Asegúrate de que este exista
+import {StoreConfigurationResponseDto} from './store.configuration.dto'; // Asegúrate de que este exista
 
 export class CreateGroupedByStoreDto {
     @IsOptional()

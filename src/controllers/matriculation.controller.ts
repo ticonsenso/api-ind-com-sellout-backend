@@ -1,11 +1,11 @@
-import { DataSource } from 'typeorm';
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass } from 'class-transformer';
-import { MatriculationService } from '../services/matriculation.service';
-import { CreateMatriculationTemplateDto, UpdateMatriculationTemplateDto } from '../dtos/matriculation.templates.dto';
-import { CreateMatriculationLogDto, UpdateMatriculationLogDto } from '../dtos/matriculation.logs.dto';
-import { CreateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
+import {DataSource} from 'typeorm';
+import {Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass} from 'class-transformer';
+import {MatriculationService} from '../services/matriculation.service';
+import {CreateMatriculationTemplateDto, UpdateMatriculationTemplateDto} from '../dtos/matriculation.templates.dto';
+import {CreateMatriculationLogDto, UpdateMatriculationLogDto} from '../dtos/matriculation.logs.dto';
+import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
 
 export class MatriculationController {
     private matriculationService: MatriculationService;

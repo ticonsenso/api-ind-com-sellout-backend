@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
-import { SignedXml } from "xml-crypto";
+import {SignedXml} from "xml-crypto";
 import xmlbuilder from "xmlbuilder";
-import { MetadataConfig } from "../interfaces/matadata.config";
+import {MetadataConfig} from "../interfaces/matadata.config";
 
 dotenv.config();
 

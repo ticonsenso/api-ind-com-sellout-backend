@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
-import { UserConsenso } from '../interfaces/user.consenso';
+import {UserConsenso} from '../interfaces/user.consenso';
 
 const KEY_SECRET = process.env.JWT_SECRET ?? 'default_secret';
 

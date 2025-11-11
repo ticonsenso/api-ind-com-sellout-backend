@@ -1,10 +1,7 @@
-import { DataSource as TypeORMDataSource } from "typeorm";
-import {
-  CommissionConfigurationDataDto,
-  CommissionConfigurationSearchDto,
-} from "../dtos/commission.configurations.dto";
-import { CommissionConfiguration } from "../models/commission.configurations.model";
-import { BaseRepository } from "./base.respository";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {CommissionConfigurationDataDto, CommissionConfigurationSearchDto,} from "../dtos/commission.configurations.dto";
+import {CommissionConfiguration} from "../models/commission.configurations.model";
+import {BaseRepository} from "./base.respository";
 
 export class CommissionConfigurationsRepository extends BaseRepository<CommissionConfiguration> {
   constructor(dataSource: TypeORMDataSource) {

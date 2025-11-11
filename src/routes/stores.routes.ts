@@ -1,11 +1,11 @@
-import { Router, RequestHandler } from 'express';
+import {RequestHandler, Router} from 'express';
 import AppDataSource from '../config/data-source';
-import { authenticateToken } from '../middleware/auth.middleware';
-import { validatorMiddleware } from '../middleware/validator.middleware';
-import { CreateProductSicDto, UpdateProductSicDto } from '../dtos/product.sic.dto';
-import { StoresController } from '../controllers/stores.controller';
-import { CreateStoreSicDto, UpdateStoreSicDto } from '../dtos/stores.dto';
-import { CreateSelloutZoneDto, UpdateSelloutZoneDto } from '../dtos/selleout.zone.dto';
+import {authenticateToken} from '../middleware/auth.middleware';
+import {validatorMiddleware} from '../middleware/validator.middleware';
+import {CreateProductSicDto, UpdateProductSicDto} from '../dtos/product.sic.dto';
+import {StoresController} from '../controllers/stores.controller';
+import {CreateStoreSicDto, UpdateStoreSicDto} from '../dtos/stores.sic.dto';
+import {CreateSelloutZoneDto, UpdateSelloutZoneDto} from '../dtos/selleout.zone.dto';
 
 const router = Router();
 const storesController = new StoresController(AppDataSource);

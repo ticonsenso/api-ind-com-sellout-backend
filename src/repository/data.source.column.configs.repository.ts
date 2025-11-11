@@ -1,7 +1,7 @@
-import { DataSource as TypeORMDataSource } from "typeorm";
-import { SearchDataSourceColumnConfigDto } from "../dtos/data.source.column.configs.dto";
-import { DataSourceColumnConfig } from "../models/data.source.column.configs.model";
-import { BaseRepository } from "./base.respository";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {SearchDataSourceColumnConfigDto} from "../dtos/data.source.column.configs.dto";
+import {DataSourceColumnConfig} from "../models/data.source.column.configs.model";
+import {BaseRepository} from "./base.respository";
 
 export class DataSourceColumnConfigsRepository extends BaseRepository<DataSourceColumnConfig> {
   constructor(dataSource: TypeORMDataSource) {

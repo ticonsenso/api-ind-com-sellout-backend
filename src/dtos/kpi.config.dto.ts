@@ -1,12 +1,6 @@
-import { Expose, Type } from "class-transformer";
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Max,
-  Min,
-} from "class-validator";
+import {Expose, Type} from "class-transformer";
+import {IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min,} from "class-validator";
+
 export class CreateKpiConfigDto {
   @IsNotEmpty()
   @IsNumber()

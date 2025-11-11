@@ -1,15 +1,16 @@
-import { DataSource } from 'typeorm';
-import { CompanyPositionsRepository } from '../repository/company.positions.repository';
+import {DataSource} from 'typeorm';
+import {CompanyPositionsRepository} from '../repository/company.positions.repository';
 import {
-  CreateCompanyPositionDto,
-  CompanyPositionResponseDto,
-  UpdateCompanyPositionDto,
-  CompanyPositionSearchDto,
-  CompanyPositionResponseSearchDto,
+    CompanyPositionResponseDto,
+    CompanyPositionResponseSearchDto,
+    CompanyPositionSearchDto,
+    CreateCompanyPositionDto,
+    UpdateCompanyPositionDto,
 } from '../dtos/company.positions.dto';
-import { plainToClass } from 'class-transformer';
-import { CompanyPosition } from '../models/company.positions.model';
-import { CompaniesRepository } from '../repository/companies.repository';
+import {plainToClass} from 'class-transformer';
+import {CompanyPosition} from '../models/company.positions.model';
+import {CompaniesRepository} from '../repository/companies.repository';
+
 export class CompanyPositionsService {
   private companyPositionRepository: CompanyPositionsRepository;
   private companyRepository: CompaniesRepository;

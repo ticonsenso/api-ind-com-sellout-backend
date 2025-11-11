@@ -1,9 +1,8 @@
-import { EntityManager, DataSource as TypeORMDataSource } from 'typeorm';
-import { BaseRepository } from './base.respository';
-import { SalesRotationConfiguration } from '../models/sales.rotation.configurations.model';
-import { StoreConfiguration } from '../models/store.configuration.model';
-import { SalesRotationConfigurationSearchDto } from '../dtos/sales.rotation.configurations.dto';
-import { CommissionConfiguration } from '../models/commission.configurations.model';
+import {DataSource as TypeORMDataSource, EntityManager} from 'typeorm';
+import {BaseRepository} from './base.respository';
+import {SalesRotationConfiguration} from '../models/sales.rotation.configurations.model';
+import {SalesRotationConfigurationSearchDto} from '../dtos/sales.rotation.configurations.dto';
+import {CommissionConfiguration} from '../models/commission.configurations.model';
 
 export class SalesRotationConfigurationsRepository extends BaseRepository<SalesRotationConfiguration> {
     constructor(dataSource: TypeORMDataSource) {

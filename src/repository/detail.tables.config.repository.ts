@@ -1,7 +1,7 @@
-import { DataSource } from "typeorm";
-import { DetailTablesConfigSearchParamsDto } from "../dtos/detail.tables.config.dto";
-import { DetailTablesConfig } from "../models/detail.tables.config.model";
-import { BaseRepository } from "./base.respository";
+import {DataSource} from "typeorm";
+import {DetailTablesConfigSearchParamsDto} from "../dtos/detail.tables.config.dto";
+import {DetailTablesConfig} from "../models/detail.tables.config.model";
+import {BaseRepository} from "./base.respository";
 
 export class DetailTablesConfigRepository extends BaseRepository<DetailTablesConfig> {
   constructor(dataSource: DataSource) {

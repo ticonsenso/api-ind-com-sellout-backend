@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString, IsOptional, MaxLength } from 'class-validator';
-import { Expose } from 'class-transformer';
+import {IsNotEmpty, IsOptional, IsString, MaxLength} from 'class-validator';
+import {Expose} from 'class-transformer';
 
 export class CreateParameterLineDto {
   @IsNotEmpty()

@@ -1,5 +1,5 @@
-import { Expose } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {Expose} from 'class-transformer';
+import {IsNotEmpty, IsOptional, IsString} from 'class-validator';
 
 export class CreateBaseValuesSelloutDto {
     @IsNotEmpty()

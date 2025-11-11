@@ -1,10 +1,15 @@
-import { DataSource } from 'typeorm';
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { chunkArray } from '../utils/utils';
-import { format } from 'date-fns';
-import { BaseValuesSelloutRepository } from '../repository/base.values.sellout.repository';
-import { BaseValuesSelloutFiltersResponseDto, BaseValuesSelloutResponseDto, CreateBaseValuesSelloutDto, UpdateBaseValuesSelloutDto } from '../dtos/base.values.sellout.dto';
-import { BaseValuesSellout } from '../models/base.values.sellout.model';
+import {DataSource} from 'typeorm';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {chunkArray} from '../utils/utils';
+import {BaseValuesSelloutRepository} from '../repository/base.values.sellout.repository';
+import {
+    BaseValuesSelloutFiltersResponseDto,
+    BaseValuesSelloutResponseDto,
+    CreateBaseValuesSelloutDto,
+    UpdateBaseValuesSelloutDto
+} from '../dtos/base.values.sellout.dto';
+import {BaseValuesSellout} from '../models/base.values.sellout.model';
+
 export class BaseValuesSelloutService {
     private baseValuesSelloutRepository: BaseValuesSelloutRepository;
 

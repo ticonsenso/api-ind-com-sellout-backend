@@ -1,7 +1,7 @@
-import { IsString, IsNotEmpty, IsBoolean, IsOptional, MinLength, MaxLength } from 'class-validator';
-import { Expose, Type } from 'class-transformer';
-import { PermissionResponseDto } from './permissions.dto';
-import { UserResponseDto } from './users.dto';
+import {IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength} from 'class-validator';
+import {Expose, Type} from 'class-transformer';
+import {PermissionResponseDto} from './permissions.dto';
+import {UserResponseDto} from './users.dto';
 
 export class CreateRoleDto {
   @IsString()

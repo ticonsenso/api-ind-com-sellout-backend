@@ -1,6 +1,6 @@
-import { ExtractionLogsSellout } from '../models/extraction.logs.sellout.model';
-import { BaseRepository } from './base.respository';
-import { Brackets, DataSource as TypeORMDataSource } from 'typeorm';
+import {ExtractionLogsSellout} from '../models/extraction.logs.sellout.model';
+import {BaseRepository} from './base.respository';
+import {DataSource as TypeORMDataSource} from 'typeorm';
 
 export class ExtractionLogsSelloutRepository extends BaseRepository<ExtractionLogsSellout> {
     constructor(dataSource: TypeORMDataSource) {

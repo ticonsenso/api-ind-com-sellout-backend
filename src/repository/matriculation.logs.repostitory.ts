@@ -1,7 +1,6 @@
-import { Between, DataSource } from 'typeorm';
-import { MatriculationLog } from '../models/matriculation.logs.model';
-import { BaseRepository } from './base.respository';
-import { parseLocalDate } from '../utils/utils';
+import {Between, DataSource} from 'typeorm';
+import {MatriculationLog} from '../models/matriculation.logs.model';
+import {BaseRepository} from './base.respository';
 
 export class MatriculationLogsRepository extends BaseRepository<MatriculationLog> {
     constructor(dataSource: DataSource) {

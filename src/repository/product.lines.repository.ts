@@ -1,7 +1,7 @@
-import { DataSource as TypeORMDataSource } from "typeorm";
-import { ProductLineSearchDto } from "../dtos/product.lines.dto";
-import { ProductLine } from "../models/product.lines.model";
-import { BaseRepository } from "./base.respository";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {ProductLineSearchDto} from "../dtos/product.lines.dto";
+import {ProductLine} from "../models/product.lines.model";
+import {BaseRepository} from "./base.respository";
 
 export class ProductLinesRepository extends BaseRepository<ProductLine> {
   constructor(dataSource: TypeORMDataSource) {

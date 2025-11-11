@@ -1,7 +1,7 @@
-import { SearchDataSourceDto } from '../dtos/data.sources.dto';
-import { DataSource } from '../models/data.sources.model';
-import { BaseRepository } from './base.respository';
-import { DataSource as TypeORMDataSource } from 'typeorm';
+import {SearchDataSourceDto} from '../dtos/data.sources.dto';
+import {DataSource} from '../models/data.sources.model';
+import {BaseRepository} from './base.respository';
+import {DataSource as TypeORMDataSource} from 'typeorm';
 
 export class DataSourceRepository extends BaseRepository<DataSource> {
   constructor(dataSource: TypeORMDataSource) {

@@ -1,19 +1,20 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
-import { CommissionConfigurationResponseDto } from "../dtos/commission.configurations.dto";
-import { ParameterLineResponseDto } from "../dtos/parameter.lines.dto";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
+import {CommissionConfigurationResponseDto} from "../dtos/commission.configurations.dto";
+import {ParameterLineResponseDto} from "../dtos/parameter.lines.dto";
 import {
-  CreateProductLineDto,
-  ProductLineListResponseDto,
-  ProductLineListResponseSearchDto,
-  ProductLineResponseDto,
-  ProductLineSearchDto,
-  UpdateProductLineDto,
+    CreateProductLineDto,
+    ProductLineListResponseDto,
+    ProductLineListResponseSearchDto,
+    ProductLineResponseDto,
+    ProductLineSearchDto,
+    UpdateProductLineDto,
 } from "../dtos/product.lines.dto";
-import { ProductLine } from "../models/product.lines.model";
-import { CommissionConfigurationsRepository } from "../repository/commission.configurations.repository";
-import { ParameterLinesRepository } from "../repository/parameter.lines.repository";
-import { ProductLinesRepository } from "../repository/product.lines.repository";
+import {ProductLine} from "../models/product.lines.model";
+import {CommissionConfigurationsRepository} from "../repository/commission.configurations.repository";
+import {ParameterLinesRepository} from "../repository/parameter.lines.repository";
+import {ProductLinesRepository} from "../repository/product.lines.repository";
+
 export class ProductLinesService {
   private productLineRepository: ProductLinesRepository;
   private commissionConfigurationsRepository: CommissionConfigurationsRepository;

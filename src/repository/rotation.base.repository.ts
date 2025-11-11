@@ -1,6 +1,6 @@
-import { Brackets, DataSource as TypeORMDataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { RotationBase } from "../models/rotation.base.model";
+import {Brackets, DataSource as TypeORMDataSource} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {RotationBase} from "../models/rotation.base.model";
 
 export class RotationBaseRepository extends BaseRepository<RotationBase> {
     constructor(dataSource: TypeORMDataSource) {

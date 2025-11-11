@@ -1,15 +1,11 @@
-import { Brackets, DataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { StoreManagerCalculationCommission } from "../models/store.manager.calculation.commission.model";
-import { FilterReportCommissionDto } from "../dtos/report.dto";
-import { AdvisorCommissionRepository } from "./advisor.commission.repository";
-import { CommissionCalculationController } from "../controllers/commission.calculation.controller";
-import { ConsolidatedCommissionCalculationRepository } from "./consolidated.commission.calculation.repository";
-import {
-  ResponseDataConsensoDto,
-  SearchDataConsensoDto,
-} from "../dtos/search.data.consenso";
-import { plainToInstance } from "class-transformer";
+import {Brackets, DataSource} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {StoreManagerCalculationCommission} from "../models/store.manager.calculation.commission.model";
+import {FilterReportCommissionDto} from "../dtos/report.dto";
+import {AdvisorCommissionRepository} from "./advisor.commission.repository";
+import {ConsolidatedCommissionCalculationRepository} from "./consolidated.commission.calculation.repository";
+import {ResponseDataConsensoDto, SearchDataConsensoDto,} from "../dtos/search.data.consenso";
+import {plainToInstance} from "class-transformer";
 
 export class StoreManagerCalculationCommissionRepository extends BaseRepository<StoreManagerCalculationCommission> {
   private advisorComissionRepository: AdvisorCommissionRepository;

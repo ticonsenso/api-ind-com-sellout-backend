@@ -1,7 +1,8 @@
-import { DataSource } from "typeorm";
-import { SearchKpiConfigDto } from "../dtos/kpi.config.dto";
-import { KpiConfig } from "../models/kpi.config.model";
-import { BaseRepository } from "./base.respository";
+import {DataSource} from "typeorm";
+import {SearchKpiConfigDto} from "../dtos/kpi.config.dto";
+import {KpiConfig} from "../models/kpi.config.model";
+import {BaseRepository} from "./base.respository";
+
 export class KpiConfigRepository extends BaseRepository<KpiConfig> {
   constructor(dataSource: DataSource) {
     super(KpiConfig, dataSource);

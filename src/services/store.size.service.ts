@@ -1,15 +1,15 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
 import {
-  CreateStoreSizeDto,
-  StoreSizePaginatedResponseDto,
-  StoreSizeResponseDto,
-  StoreSizeSearchDto,
-  UpdateStoreSizeDto,
+    CreateStoreSizeDto,
+    StoreSizePaginatedResponseDto,
+    StoreSizeResponseDto,
+    StoreSizeSearchDto,
+    UpdateStoreSizeDto,
 } from "../dtos/store.size.dto";
-import { StoreSize } from "../models/store.size.model";
-import { CompaniesRepository } from "../repository/companies.repository";
-import { StoreSizeRepository } from "../repository/store.size.repository";
+import {StoreSize} from "../models/store.size.model";
+import {CompaniesRepository} from "../repository/companies.repository";
+import {StoreSizeRepository} from "../repository/store.size.repository";
 
 export class StoreSizeService {
   private storeSizeRepository: StoreSizeRepository;

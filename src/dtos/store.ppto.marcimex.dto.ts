@@ -1,6 +1,6 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { StoreConfigurationResponseDto } from './store.configuration.dto';
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsNotEmpty, IsNumber, IsOptional, IsString} from 'class-validator';
+import {StoreConfigurationResponseDto} from './store.configuration.dto';
 
 export class CreateStorePptoMarcimexDto {
     @IsNotEmpty()

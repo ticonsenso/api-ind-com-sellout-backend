@@ -1,16 +1,12 @@
+import {IsArray, IsDateString, IsInt, IsNotEmpty, IsOptional, IsString, ValidateNested,} from 'class-validator';
+import {Exclude, Expose, Type} from 'class-transformer';
 import {
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-    ValidateNested,
-    IsArray,
-    IsDateString,
-    IsInt,
-} from 'class-validator';
-import { Exclude, Expose, Type } from 'class-transformer';
-import { CreateEmployForMonthDto, CreateEmployForMonthDtoIds, EmployForMonthResponseDtoList } from './advisor.configuration.dto';
-import { StoreSizeResponseDto } from './store.size.dto';
-import { CompanyResponseDto } from './companies.dto';
+    CreateEmployForMonthDto,
+    CreateEmployForMonthDtoIds,
+    EmployForMonthResponseDtoList
+} from './advisor.configuration.dto';
+import {StoreSizeResponseDto} from './store.size.dto';
+import {CompanyResponseDto} from './companies.dto';
 
 export class CreateStoreConfigurationDto {
     @IsNotEmpty({ message: 'La región es requerida' })

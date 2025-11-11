@@ -1,14 +1,14 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from "typeorm";
-import { Company } from "./companies.model";
-import { CompanyPosition } from "./company.positions.model";
+import {Company} from "./companies.model";
+import {CompanyPosition} from "./company.positions.model";
 
 @Entity("commission_configurations")
 export class CommissionConfiguration {

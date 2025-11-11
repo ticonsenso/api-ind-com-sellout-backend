@@ -1,11 +1,14 @@
-import { Router, RequestHandler } from 'express';
+import {RequestHandler, Router} from 'express';
 import AppDataSource from '../config/data-source';
-import { authenticateToken } from '../middleware/auth.middleware';
-import { validatorMiddleware } from '../middleware/validator.middleware';
-import { CreateSelloutConfigurationDto, UpdateSelloutConfigurationDto } from '../dtos/sellout.configuration.dto';
-import { SelloutConfigurationController } from '../controllers/sellout.configuration.controller';
-import { CreateSelloutConfigurationColumnConfigsDto, UpdateSelloutConfigurationColumnConfigsDto } from '../dtos/sellout.configuration.column.configs.dto';
-import { CreateExtractedDataSelloutDto, UpdateExtractedDataSelloutDto } from '../dtos/extrated.data.sellout.dto';
+import {authenticateToken} from '../middleware/auth.middleware';
+import {validatorMiddleware} from '../middleware/validator.middleware';
+import {CreateSelloutConfigurationDto, UpdateSelloutConfigurationDto} from '../dtos/sellout.configuration.dto';
+import {SelloutConfigurationController} from '../controllers/sellout.configuration.controller';
+import {
+    CreateSelloutConfigurationColumnConfigsDto,
+    UpdateSelloutConfigurationColumnConfigsDto
+} from '../dtos/sellout.configuration.column.configs.dto';
+import {CreateExtractedDataSelloutDto, UpdateExtractedDataSelloutDto} from '../dtos/extrated.data.sellout.dto';
 
 const router = Router();
 const selloutConfigurationController = new SelloutConfigurationController(AppDataSource);

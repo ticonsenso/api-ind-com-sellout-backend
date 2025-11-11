@@ -1,15 +1,15 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
     Column,
-    ManyToOne,
-    JoinColumn,
     CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
     UpdateDateColumn,
-  } from 'typeorm';
-  import { StoreConfiguration } from './store.configuration.model';
-  
-  /**
+} from 'typeorm';
+import {StoreConfiguration} from './store.configuration.model';
+
+/**
    * Representa el presupuesto mensual por tienda para Marcimex
    */
   @Entity('store_ppto_marcimex')

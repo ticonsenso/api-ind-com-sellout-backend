@@ -1,14 +1,8 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
-} from "typeorm";
-import { CommissionConfiguration } from "./commission.configurations.model";
-import { ConsolidatedCommissionCalculation } from "./consolidated.commission.calculation.model";
-import { Company } from "./companies.model";
-import { CompanyPosition } from "./company.positions.model";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from "typeorm";
+import {CommissionConfiguration} from "./commission.configurations.model";
+import {ConsolidatedCommissionCalculation} from "./consolidated.commission.calculation.model";
+import {Company} from "./companies.model";
+import {CompanyPosition} from "./company.positions.model";
 
 @Entity("commission_configurations_history")
 export class CommissionConfigurationsHistory {

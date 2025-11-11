@@ -1,7 +1,7 @@
-import { SearchExtractedDataDto } from '../dtos/extracted.data.dto';
-import { ExtractedData } from '../models/extracted.data.model';
-import { BaseRepository } from './base.respository';
-import { Raw, DataSource as TypeORMDataSource } from 'typeorm';
+import {SearchExtractedDataDto} from '../dtos/extracted.data.dto';
+import {ExtractedData} from '../models/extracted.data.model';
+import {BaseRepository} from './base.respository';
+import {DataSource as TypeORMDataSource, Raw} from 'typeorm';
 
 export class ExtractedDataRepository extends BaseRepository<ExtractedData> {
   constructor(dataSource: TypeORMDataSource) {

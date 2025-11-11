@@ -1,7 +1,7 @@
-import { CreateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
-import { SelloutProductMaster } from '../models/sellout.product.master.model';
-import { BaseRepository } from './base.respository';
-import { Brackets, DataSource, In } from 'typeorm';
+import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
+import {SelloutProductMaster} from '../models/sellout.product.master.model';
+import {BaseRepository} from './base.respository';
+import {Brackets, DataSource} from 'typeorm';
 
 interface ModelProductSic {
     codeProductSic: string;

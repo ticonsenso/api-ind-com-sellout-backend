@@ -1,13 +1,7 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Company } from "./companies.model";
-import { Employee } from "./employees.model";
-import { ParameterLine } from "./parameter.lines.model";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from "typeorm";
+import {Company} from "./companies.model";
+import {Employee} from "./employees.model";
+import {ParameterLine} from "./parameter.lines.model";
 
 @Entity({ name: "product_compliance" })
 export class ProductCompliance {

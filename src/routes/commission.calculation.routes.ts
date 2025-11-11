@@ -1,7 +1,7 @@
-import { Router } from "express";
+import {Router} from "express";
 import AppDataSource from "../config/data-source";
-import { CommissionCalculationController } from "../controllers/commission.calculation.controller";
-import { authenticateToken } from "../middleware/auth.middleware";
+import {CommissionCalculationController} from "../controllers/commission.calculation.controller";
+import {authenticateToken} from "../middleware/auth.middleware";
 
 const router = Router();
 const commissionCalculationController = new CommissionCalculationController(

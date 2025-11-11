@@ -1,17 +1,17 @@
-import { Expose } from "class-transformer";
+import {Expose} from "class-transformer";
 import {
-  IsBoolean,
-  IsDateString,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsObject,
-  IsOptional,
-  IsString,
-  MaxLength,
-  MinLength,
+    IsBoolean,
+    IsDateString,
+    IsEnum,
+    IsInt,
+    IsNotEmpty,
+    IsObject,
+    IsOptional,
+    IsString,
+    MaxLength,
+    MinLength,
 } from "class-validator";
-import { SourceType } from "../enums/source.type.enum";
+import {SourceType} from "../enums/source.type.enum";
 
 export class CreateDataSourceDto {
   @IsString({ message: "El nombre debe ser una cadena de texto" })

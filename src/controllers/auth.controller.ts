@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { DataSource } from "typeorm";
-import { idp, sp } from "../config/saml";
-import { CreateUserDto } from "../dtos/users.dto";
-import { UserConsenso } from "../interfaces/user.consenso";
-import { decodeToken, generateToken } from "../middleware/auth.middleware";
-import { AuthService } from "../services/auth.service";
-import { InitSessionLogsService } from "../services/init.session.logs.service";
-import { UserService } from "../services/users.service";
+import {Request, Response} from "express";
+import {StatusCodes} from "http-status-codes";
+import {DataSource} from "typeorm";
+import {idp, sp} from "../config/saml";
+import {CreateUserDto} from "../dtos/users.dto";
+import {UserConsenso} from "../interfaces/user.consenso";
+import {decodeToken, generateToken} from "../middleware/auth.middleware";
+import {AuthService} from "../services/auth.service";
+import {InitSessionLogsService} from "../services/init.session.logs.service";
+import {UserService} from "../services/users.service";
 
 export class AuthController {
   public userService: UserService;

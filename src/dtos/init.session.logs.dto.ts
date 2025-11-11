@@ -1,5 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUUID, IsDateString } from 'class-validator';
-import { Exclude, Expose, Type } from 'class-transformer';
+import {IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString} from 'class-validator';
 
 /**
  * DTO para crear un nuevo registro de sesión

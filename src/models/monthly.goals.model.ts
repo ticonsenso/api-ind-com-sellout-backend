@@ -1,14 +1,14 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
-import { CompanyPosition } from './company.positions.model';
-import { ProductLine } from './product.lines.model';
+import {CompanyPosition} from './company.positions.model';
+import {ProductLine} from './product.lines.model';
 
 @Entity('monthly_goals')
 export class MonthlyGoal {

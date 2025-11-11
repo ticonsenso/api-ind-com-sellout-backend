@@ -1,11 +1,6 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
-import { SourceType } from "../enums/source.type.enum";
+import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,} from "typeorm";
+import {SourceType} from "../enums/source.type.enum";
+
 /**
  * Entidad que representa las fuentes de datos en el sistema
  */

@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import path from "path";
-import { IdentityProvider, ServiceProvider } from "saml2-js";
+import {IdentityProvider, ServiceProvider} from "saml2-js";
 
 const certPath = path.join(__dirname, "../../cert/cert.pem");
 const keyPath = path.join(__dirname, "../../cert/key.pem");

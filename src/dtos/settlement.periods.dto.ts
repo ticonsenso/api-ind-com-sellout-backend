@@ -1,7 +1,7 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { CompanyResponseDto } from './companies.dto';
-import { SettlementPeriodStatus } from '../enums/settlement.period.status.enum';
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional} from 'class-validator';
+import {CompanyResponseDto} from './companies.dto';
+import {SettlementPeriodStatus} from '../enums/settlement.period.status.enum';
 
 export class CreateSettlementPeriodDto {
   @IsNotEmpty()

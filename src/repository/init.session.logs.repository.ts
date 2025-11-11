@@ -1,6 +1,6 @@
-import { InitSessionLogs } from '../models/init.session.logs.model';
-import { BaseRepository } from './base.respository';
-import { DataSource } from 'typeorm';
+import {InitSessionLogs} from '../models/init.session.logs.model';
+import {BaseRepository} from './base.respository';
+import {DataSource} from 'typeorm';
 
 export class InitSessionLogsRepository extends BaseRepository<InitSessionLogs> {
   constructor(dataSource: DataSource) {

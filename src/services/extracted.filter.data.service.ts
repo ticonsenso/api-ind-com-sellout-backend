@@ -1,6 +1,6 @@
-import { DataSource } from "typeorm";
-import { Employee } from "../models/employees.model";
-import { EmployeesRepository } from "../repository/employees.repository";
+import {DataSource} from "typeorm";
+import {Employee} from "../models/employees.model";
+import {EmployeesRepository} from "../repository/employees.repository";
 
 export class ExtractedFilterDataService {
   private employeeRepository: EmployeesRepository;

@@ -1,10 +1,10 @@
-import { plainToClass } from 'class-transformer';
-import { Role } from '../models/roles.model';
-import { RoleRepository } from '../repository/roles.repository';
-import { CreateRoleDto, UpdateRoleDto, RoleResponseDto, FilterRoleDto } from '../dtos/roles.dto';
-import { DataSource } from 'typeorm';
-import { RolePermissionRepository } from '../repository/roles.permissions.repository';
-import { PermissionResponseDto } from '../dtos/permissions.dto';
+import {plainToClass} from 'class-transformer';
+import {Role} from '../models/roles.model';
+import {RoleRepository} from '../repository/roles.repository';
+import {CreateRoleDto, FilterRoleDto, RoleResponseDto, UpdateRoleDto} from '../dtos/roles.dto';
+import {DataSource} from 'typeorm';
+import {RolePermissionRepository} from '../repository/roles.permissions.repository';
+import {PermissionResponseDto} from '../dtos/permissions.dto';
 
 export class RoleService {
   private roleRepository: RoleRepository;

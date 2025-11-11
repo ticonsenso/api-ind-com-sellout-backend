@@ -1,11 +1,4 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    Unique,
-    CreateDateColumn,
-    UpdateDateColumn,
-} from 'typeorm';
+import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn,} from 'typeorm';
 
 @Unique('uq_product_sic_jde_code', ['jdeCode'])
 @Entity('product_sic')

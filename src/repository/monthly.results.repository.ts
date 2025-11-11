@@ -1,6 +1,6 @@
-import { DataSource, Repository } from 'typeorm';
-import { MonthlyResult } from '../models/monthly.results.model';
-import { MonthlyResultSearchDto } from '../dtos/monthly.results.dto';
+import {DataSource, Repository} from 'typeorm';
+import {MonthlyResult} from '../models/monthly.results.model';
+import {MonthlyResultSearchDto} from '../dtos/monthly.results.dto';
 
 export class MonthlyResultsRepository {
   private repository: Repository<MonthlyResult>;

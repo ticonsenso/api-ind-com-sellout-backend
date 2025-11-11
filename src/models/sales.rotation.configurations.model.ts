@@ -1,13 +1,13 @@
 import {
-    Entity,
     Column,
-    PrimaryGeneratedColumn,
     CreateDateColumn,
-    UpdateDateColumn,
-    ManyToOne,
+    Entity,
     JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
-import { CommissionConfiguration } from './commission.configurations.model';
+import {CommissionConfiguration} from './commission.configurations.model';
 
 @Entity({ name: 'sales_rotation_configurations' })
 export class SalesRotationConfiguration {

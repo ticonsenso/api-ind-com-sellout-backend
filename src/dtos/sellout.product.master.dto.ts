@@ -1,6 +1,5 @@
-import { Expose } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString, MaxLength } from 'class-validator';
-import { SelloutStoreMasterDto } from './sellout.store.master.dto';
+import {Expose} from 'class-transformer';
+import {IsBoolean, IsOptional, IsString, MaxLength} from 'class-validator';
 
 export class CreateSelloutProductMasterDto {
     @IsOptional()

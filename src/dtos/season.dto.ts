@@ -1,5 +1,5 @@
-import { Exclude, Expose } from 'class-transformer';
-import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min } from 'class-validator';
+import {Exclude, Expose} from 'class-transformer';
+import {IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min} from 'class-validator';
 
 @Exclude()
 export class CreateSeasonDto {

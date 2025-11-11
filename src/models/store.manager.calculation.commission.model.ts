@@ -1,14 +1,14 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
     Column,
-    ManyToOne,
-    JoinColumn,
     CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { StoreConfiguration } from './store.configuration.model';
-import { Employee } from './employees.model';
+import {StoreConfiguration} from './store.configuration.model';
+import {Employee} from './employees.model';
 
 @Entity('store_manager_calculation_commission')
 export class StoreManagerCalculationCommission {

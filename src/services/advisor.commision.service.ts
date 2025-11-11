@@ -1,18 +1,18 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
 import {
-
     AdvisorCommissionListResponseSearchDto,
     AdvisorCommissionResponseDto,
     CreateAdvisorCommissionDto,
 } from "../dtos/advisor.commission.dto";
-import { EmployeesRepository } from "../repository/employees.repository";
-import { AdvisorCommissionRepository } from "../repository/advisor.commission.repository";
-import { CompaniesRepository } from "../repository/companies.repository";
-import { CompanyPositionsRepository } from "../repository/company.positions.repository";
+import {EmployeesRepository} from "../repository/employees.repository";
+import {AdvisorCommissionRepository} from "../repository/advisor.commission.repository";
+import {CompaniesRepository} from "../repository/companies.repository";
+import {CompanyPositionsRepository} from "../repository/company.positions.repository";
 
-import { AdvisorCommission } from "../models/advisor.commission.model";
-import { StoreSizeRepository } from "../repository/store.size.repository";
+import {AdvisorCommission} from "../models/advisor.commission.model";
+import {StoreSizeRepository} from "../repository/store.size.repository";
+
 export class AdvisorCommissionService {
     private advisorCommissionRepository: AdvisorCommissionRepository;
     private employeeRepository: EmployeesRepository;

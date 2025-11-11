@@ -1,13 +1,15 @@
-import { DataSource } from "typeorm";
-import { ClosingConfigurationRepository } from "../repository/closing.configuration.repository";
-import { chunkArray, formatDateToYYYYMMDD, parseDateFromISO, parseLocalDate } from "../utils/utils";
-import { ClosingConfigurationResponseDto, CreateClosingConfigurationDto, UpdateClosingConfigurationDto } from "../dtos/closing.cofiguration.dto";
+import {DataSource} from "typeorm";
+import {ClosingConfigurationRepository} from "../repository/closing.configuration.repository";
+import {parseLocalDate} from "../utils/utils";
+import {
+    ClosingConfigurationResponseDto,
+    CreateClosingConfigurationDto,
+    UpdateClosingConfigurationDto
+} from "../dtos/closing.cofiguration.dto";
 
 // Primer día del mes de cierreimport { plainToInstance } from "class-transformer";
-import { ClosingConfiguration } from "../models/closing.configuration.model";
-import { MatriculationLogsRepository } from "../repository/matriculation.logs.repostitory";
-import { plainToInstance } from "class-transformer";
-import { format } from "path";
+import {ClosingConfiguration} from "../models/closing.configuration.model";
+import {plainToInstance} from "class-transformer";
 
 export class ClosingConfigurationService {
     private closingConfigurationRepository: ClosingConfigurationRepository;

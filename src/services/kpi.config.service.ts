@@ -1,17 +1,17 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
 import {
-  CreateKpiConfigDto,
-  KpiConfigResponseDto,
-  ResponseKpiConfigDto,
-  SearchKpiConfigDto,
-  UpdateKpiConfigDto,
+    CreateKpiConfigDto,
+    KpiConfigResponseDto,
+    ResponseKpiConfigDto,
+    SearchKpiConfigDto,
+    UpdateKpiConfigDto,
 } from "../dtos/kpi.config.dto";
-import { KpiConfig } from "../models/kpi.config.model";
-import { CommissionConfigurationsRepository } from "../repository/commission.configurations.repository";
-import { CompaniesRepository } from "../repository/companies.repository";
-import { CompanyPositionsRepository } from "../repository/company.positions.repository";
-import { KpiConfigRepository } from "../repository/kpi.config.repository";
+import {KpiConfig} from "../models/kpi.config.model";
+import {CommissionConfigurationsRepository} from "../repository/commission.configurations.repository";
+import {CompaniesRepository} from "../repository/companies.repository";
+import {CompanyPositionsRepository} from "../repository/company.positions.repository";
+import {KpiConfigRepository} from "../repository/kpi.config.repository";
 
 export class KpiConfigService {
   private kpiConfigRepository: KpiConfigRepository;

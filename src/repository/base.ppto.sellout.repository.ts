@@ -1,6 +1,6 @@
-import { Brackets, createQueryBuilder, DataSource as TypeORMDataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { BasePptoSellout } from "../models/base.ppto.sellout.model";
+import {Brackets, DataSource as TypeORMDataSource} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {BasePptoSellout} from "../models/base.ppto.sellout.model";
 
 export class BasePptoSelloutRepository extends BaseRepository<BasePptoSellout> {
     constructor(dataSource: TypeORMDataSource) {

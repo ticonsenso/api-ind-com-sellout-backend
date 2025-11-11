@@ -1,6 +1,6 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { EmployeeResponseDto } from './employees.dto';
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsDate, IsNotEmpty, IsNumber, IsOptional, IsString} from 'class-validator';
+import {EmployeeResponseDto} from './employees.dto';
 
 export class CreateOvertimeRecordDto {
   @IsNotEmpty()

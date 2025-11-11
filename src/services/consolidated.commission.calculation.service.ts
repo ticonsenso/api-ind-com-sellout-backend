@@ -1,23 +1,25 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
-import { CalculationProductExtrategicResponseDto } from "../dtos/calculation.product.extrategic.dto";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
+import {CalculationProductExtrategicResponseDto} from "../dtos/calculation.product.extrategic.dto";
 import {
-  ConsolidateDataResponseDto,
-  ConsolidatedCommissionCalculationPaginationResponseDto,
-  ConsolidatedCommissionCalculationResponseDto,
+    ConsolidateDataResponseDto,
+    ConsolidatedCommissionCalculationPaginationResponseDto,
+    ConsolidatedCommissionCalculationResponseDto,
 } from "../dtos/consolidated.commission.calculation.dto";
 
-import { ProductComplianceResponseDto } from "../dtos/product.compliance.dto";
-import { ConsolidatedCommissionCalculation } from "../models/consolidated.commission.calculation.model";
-import { CalculationProductExtrategicRepository } from "../repository/calculation.product.extrategic.repository";
-import { ConsolidatedCommissionCalculationRepository } from "../repository/consolidated.commission.calculation.repository";
-import { ProductComplianceRepository } from "../repository/product.compliance.repository";
-import { ParameterLinesRepository } from "../repository/parameter.lines.repository";
-import { CompanyPositionSnapshotDto, EmployeeHistoryResponseDto } from "../dtos/employees.history.dto";
-import { EmployeesHistoryRepository } from "../repository/employees.history.repository";
-import { CompanyPositionSnapshot } from "../models/employees.history.model";
-import { EmployeesService } from "./employees.service";
-import { EmployeesRepository } from "../repository/employees.repository";
+import {ProductComplianceResponseDto} from "../dtos/product.compliance.dto";
+import {ConsolidatedCommissionCalculation} from "../models/consolidated.commission.calculation.model";
+import {CalculationProductExtrategicRepository} from "../repository/calculation.product.extrategic.repository";
+import {
+    ConsolidatedCommissionCalculationRepository
+} from "../repository/consolidated.commission.calculation.repository";
+import {ProductComplianceRepository} from "../repository/product.compliance.repository";
+import {ParameterLinesRepository} from "../repository/parameter.lines.repository";
+import {CompanyPositionSnapshotDto, EmployeeHistoryResponseDto} from "../dtos/employees.history.dto";
+import {EmployeesHistoryRepository} from "../repository/employees.history.repository";
+import {CompanyPositionSnapshot} from "../models/employees.history.model";
+import {EmployeesRepository} from "../repository/employees.repository";
+
 export class ConsolidatedCommissionCalculationService {
   private consolidatedCommissionCalculationRepository: ConsolidatedCommissionCalculationRepository;
   private productComplianceRepository: ProductComplianceRepository;

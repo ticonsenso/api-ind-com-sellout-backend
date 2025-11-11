@@ -1,7 +1,6 @@
-import { ExtractedDataSellout } from '../models/extracted.data.sellout.model';
-import { ExtractionLogsSellout } from '../models/extraction.logs.sellout.model';
-import { BaseRepository } from './base.respository';
-import { Raw, DataSource as TypeORMDataSource } from 'typeorm';
+import {ExtractedDataSellout} from '../models/extracted.data.sellout.model';
+import {BaseRepository} from './base.respository';
+import {DataSource as TypeORMDataSource, Raw} from 'typeorm';
 
 export class ExtractedDataSelloutRepository extends BaseRepository<ExtractedDataSellout> {
     constructor(dataSource: TypeORMDataSource) {

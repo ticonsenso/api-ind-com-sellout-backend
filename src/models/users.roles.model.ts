@@ -1,14 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { User } from './users.model';
-import { Role } from './roles.model';
+import {CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn,} from 'typeorm';
+import {User} from './users.model';
+import {Role} from './roles.model';
 
 /**
  * Entidad que representa la relación entre usuarios y roles en el sistema

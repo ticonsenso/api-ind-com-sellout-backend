@@ -1,12 +1,5 @@
-import { MatriculationLog } from "./matriculation.logs.model";
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-} from 'typeorm';
+import {MatriculationLog} from "./matriculation.logs.model";
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn,} from 'typeorm';
 
 @Entity('matriculation_templates')
 export class MatriculationTemplate {

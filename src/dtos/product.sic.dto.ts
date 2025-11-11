@@ -1,11 +1,5 @@
-import { Expose, Type } from "class-transformer";
-import {
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString,
-    IsBoolean,
-} from "class-validator";
+import {Expose, Type} from "class-transformer";
+import {IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString,} from "class-validator";
 
 export class CreateProductSicDto {
     @IsNotEmpty({ message: "El código de la tienda es requerido" })

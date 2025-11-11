@@ -1,7 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Company } from './companies.model';
-import { CompanyPosition } from './company.positions.model';
-import { CommissionConfiguration } from './commission.configurations.model';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Company} from './companies.model';
+import {CompanyPosition} from './company.positions.model';
+import {CommissionConfiguration} from './commission.configurations.model';
 
 @Entity({ name: 'kpi_config' })
 export class KpiConfig {

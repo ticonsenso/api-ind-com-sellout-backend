@@ -1,8 +1,8 @@
-import { Between, DataSource } from "typeorm";
-import { ConsolidatedCommissionCalculation } from "../models/consolidated.commission.calculation.model";
-import { BaseRepository } from "./base.respository";
-import { ResponseDataConsensoDto, SearchDataConsensoDto } from "../dtos/search.data.consenso";
-import { plainToInstance } from "class-transformer";
+import {Between, DataSource} from "typeorm";
+import {ConsolidatedCommissionCalculation} from "../models/consolidated.commission.calculation.model";
+import {BaseRepository} from "./base.respository";
+import {ResponseDataConsensoDto, SearchDataConsensoDto} from "../dtos/search.data.consenso";
+import {plainToInstance} from "class-transformer";
 
 export class ConsolidatedCommissionCalculationRepository extends BaseRepository<ConsolidatedCommissionCalculation> {
   constructor(dataSource: DataSource) {

@@ -1,5 +1,4 @@
-import { env } from "../config/env";
-import { generateMetadataXML, signMetadataXML } from "../utils/generateXML";
+import {generateMetadataXML, signMetadataXML} from "../utils/generateXML";
 
 export class AuthService {
   static async generateSAMLMetadata(baseURL: string) {

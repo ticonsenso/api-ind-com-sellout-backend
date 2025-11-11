@@ -1,12 +1,11 @@
-
-import { Router, RequestHandler } from 'express';
+import {RequestHandler, Router} from 'express';
 import AppDataSource from '../config/data-source';
-import { authenticateToken } from '../middleware/auth.middleware';
-import { validatorMiddleware } from '../middleware/validator.middleware';
-import { ConsolidatedDataStoresController } from '../controllers/consolidated.data.stores.controller';
-import { CreateConsolidatedDataStoresDto, UpdateConsolidatedDataStoresDto } from '../dtos/consolidated.data.stores.dto';
-import { ConsolidateInformationConsenso } from '../controllers/consolidate.information.consenso';
-import { SearchDataConsensoDto } from '../dtos/search.data.consenso';
+import {authenticateToken} from '../middleware/auth.middleware';
+import {validatorMiddleware} from '../middleware/validator.middleware';
+import {ConsolidatedDataStoresController} from '../controllers/consolidated.data.stores.controller';
+import {CreateConsolidatedDataStoresDto, UpdateConsolidatedDataStoresDto} from '../dtos/consolidated.data.stores.dto';
+import {ConsolidateInformationConsenso} from '../controllers/consolidate.information.consenso';
+import {SearchDataConsensoDto} from '../dtos/search.data.consenso';
 
 const router = Router();
 const consolidatedDataStoresController = new ConsolidatedDataStoresController(AppDataSource);

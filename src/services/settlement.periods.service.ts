@@ -1,15 +1,15 @@
-import { DataSource } from 'typeorm';
-import { SettlementPeriodsRepository } from '../repository/settlement.periods.repository';
+import {DataSource} from 'typeorm';
+import {SettlementPeriodsRepository} from '../repository/settlement.periods.repository';
 import {
-  CreateSettlementPeriodDto,
-  SettlementPeriodResponseDto,
-  SettlementPeriodSearchDto,
-  UpdateSettlementPeriodDto,
-  SettlementPeriodResponseSearchDto,
+    CreateSettlementPeriodDto,
+    SettlementPeriodResponseDto,
+    SettlementPeriodResponseSearchDto,
+    SettlementPeriodSearchDto,
+    UpdateSettlementPeriodDto,
 } from '../dtos/settlement.periods.dto';
-import { SettlementPeriod } from '../models/settlement.periods.model';
-import { plainToInstance } from 'class-transformer';
-import { CompaniesRepository } from '../repository/companies.repository';
+import {SettlementPeriod} from '../models/settlement.periods.model';
+import {plainToInstance} from 'class-transformer';
+import {CompaniesRepository} from '../repository/companies.repository';
 
 export class SettlementPeriodsService {
   private settlementPeriodRepository: SettlementPeriodsRepository;

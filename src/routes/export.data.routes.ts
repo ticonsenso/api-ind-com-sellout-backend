@@ -1,7 +1,7 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import AppDataSource from '../config/data-source';
-import { ExportDataController } from '../controllers/export.data.controller';
-import { authenticateToken } from '../middleware/auth.middleware';
+import {ExportDataController} from '../controllers/export.data.controller';
+import {authenticateToken} from '../middleware/auth.middleware';
 
 const router = Router();
 const exportDataController = new ExportDataController(AppDataSource);

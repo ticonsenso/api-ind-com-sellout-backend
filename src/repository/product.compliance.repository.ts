@@ -1,7 +1,6 @@
-import { Between, Brackets, DataSource, ILike } from "typeorm";
-import { ProductCompliance } from "../models/product.compliance.model";
-import { BaseRepository } from "./base.respository";
-import { Employee } from '../models/employees.model';
+import {Between, DataSource} from "typeorm";
+import {ProductCompliance} from "../models/product.compliance.model";
+import {BaseRepository} from "./base.respository";
 
 export class ProductComplianceRepository extends BaseRepository<ProductCompliance> {
   constructor(dataSource: DataSource) {

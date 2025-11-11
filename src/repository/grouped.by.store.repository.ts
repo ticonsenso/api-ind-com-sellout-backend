@@ -1,6 +1,6 @@
-import { DataSource as TypeORMDataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { GroupedByStore } from "../models/grouped.by.store.model";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {GroupedByStore} from "../models/grouped.by.store.model";
 
 export class GroupedByStoreRepository extends BaseRepository<GroupedByStore> {
     constructor(dataSource: TypeORMDataSource) {

@@ -1,28 +1,29 @@
-import { plainToClass } from "class-transformer";
-import { DataSource as TypeORMDataSource } from "typeorm";
-import { DataSourceResponseDto } from "../dtos/data.sources.dto";
+import {plainToClass} from "class-transformer";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {DataSourceResponseDto} from "../dtos/data.sources.dto";
 import {
-  CreateExtractedDataDto,
-  ExtractedDataListResponseDto,
-  ExtractedDataResponseDto,
-  SearchExtractedDataDto,
-  UpdateExtractedDataDto,
+    CreateExtractedDataDto,
+    ExtractedDataListResponseDto,
+    ExtractedDataResponseDto,
+    SearchExtractedDataDto,
+    UpdateExtractedDataDto,
 } from "../dtos/extracted.data.dto";
-import { ExtractionLogResponseDto } from "../dtos/extraction.logs.dto";
-import { UserResponseDto } from "../dtos/users.dto";
-import { UserConsenso } from "../interfaces/user.consenso";
-import { ExtractedData } from "../models/extracted.data.model";
-import { DataSourceRepository } from "../repository/data.sources.repository";
-import { ExtractedDataRepository } from "../repository/extracted.data.repository";
-import { ExtractionLogsRepository } from "../repository/extraction.logs.repository";
-import { UserRepository } from "../repository/users.repository";
-import { CalculationProductExtrategicService } from "./calculation.product.extrategic.service";
-import { EmployeesService } from "./employees.service";
-import { ProductComplianceService } from "./product.compliance.service";
-import { StoreConfigurationService } from "./store.configuration.service";
-import { UserService } from "./users.service";
-import { AdvisorCommissionService } from "./advisor.commision.service";
-import { StoreManagerCalculationCommissionService } from "./store.manager.calculation.commission.service";
+import {ExtractionLogResponseDto} from "../dtos/extraction.logs.dto";
+import {UserResponseDto} from "../dtos/users.dto";
+import {UserConsenso} from "../interfaces/user.consenso";
+import {ExtractedData} from "../models/extracted.data.model";
+import {DataSourceRepository} from "../repository/data.sources.repository";
+import {ExtractedDataRepository} from "../repository/extracted.data.repository";
+import {ExtractionLogsRepository} from "../repository/extraction.logs.repository";
+import {UserRepository} from "../repository/users.repository";
+import {CalculationProductExtrategicService} from "./calculation.product.extrategic.service";
+import {EmployeesService} from "./employees.service";
+import {ProductComplianceService} from "./product.compliance.service";
+import {StoreConfigurationService} from "./store.configuration.service";
+import {UserService} from "./users.service";
+import {AdvisorCommissionService} from "./advisor.commision.service";
+import {StoreManagerCalculationCommissionService} from "./store.manager.calculation.commission.service";
+
 export class ExtractedDataService {
   private extractedDataRepository: ExtractedDataRepository;
   private dataSourceRepository: DataSourceRepository;

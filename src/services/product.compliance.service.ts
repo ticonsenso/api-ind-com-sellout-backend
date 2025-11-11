@@ -1,22 +1,24 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
-import { CommissionConfigurationDataDto } from "../dtos/commission.configurations.dto";
-import { EmployeeResponseDto } from "../dtos/employees.dto";
-import { ParameterLineResponseDto } from "../dtos/parameter.lines.dto";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
+import {CommissionConfigurationDataDto} from "../dtos/commission.configurations.dto";
+import {EmployeeResponseDto} from "../dtos/employees.dto";
+import {ParameterLineResponseDto} from "../dtos/parameter.lines.dto";
 import {
-  CreateProductComplianceDto,
-  ProductComplianceResponseDto,
-  ProductComplianceResponseDtoPaginated,
-  UpdateProductComplianceDto,
+    CreateProductComplianceDto,
+    ProductComplianceResponseDto,
+    ProductComplianceResponseDtoPaginated,
+    UpdateProductComplianceDto,
 } from "../dtos/product.compliance.dto";
-import { ProductCompliance } from "../models/product.compliance.model";
-import { CalculationProductExtrategicRepository } from "../repository/calculation.product.extrategic.repository";
-import { CommissionConfigurationsRepository } from "../repository/commission.configurations.repository";
-import { ConsolidatedCommissionCalculationRepository } from "../repository/consolidated.commission.calculation.repository";
-import { EmployeesRepository } from "../repository/employees.repository";
-import { ParameterLinesRepository } from "../repository/parameter.lines.repository";
-import { ProductComplianceRepository } from "../repository/product.compliance.repository";
-import { Employee } from '../models/employees.model';
+import {ProductCompliance} from "../models/product.compliance.model";
+import {CalculationProductExtrategicRepository} from "../repository/calculation.product.extrategic.repository";
+import {CommissionConfigurationsRepository} from "../repository/commission.configurations.repository";
+import {
+    ConsolidatedCommissionCalculationRepository
+} from "../repository/consolidated.commission.calculation.repository";
+import {EmployeesRepository} from "../repository/employees.repository";
+import {ParameterLinesRepository} from "../repository/parameter.lines.repository";
+import {ProductComplianceRepository} from "../repository/product.compliance.repository";
+
 export class ProductComplianceService {
   private productComplianceRepository: ProductComplianceRepository;
   private employeeRepository: EmployeesRepository;

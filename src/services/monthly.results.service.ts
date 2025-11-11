@@ -1,15 +1,15 @@
-import { DataSource } from 'typeorm';
-import { MonthlyResultsRepository } from '../repository/monthly.results.repository';
+import {DataSource} from 'typeorm';
+import {MonthlyResultsRepository} from '../repository/monthly.results.repository';
 import {
-  CreateMonthlyResultDto,
-  UpdateMonthlyResultDto,
-  MonthlyResultSearchDto,
-  MonthlyResultResponseDto,
-  MonthlyResultResponseSearchDto,
+    CreateMonthlyResultDto,
+    MonthlyResultResponseDto,
+    MonthlyResultResponseSearchDto,
+    MonthlyResultSearchDto,
+    UpdateMonthlyResultDto,
 } from '../dtos/monthly.results.dto';
-import { MonthlyResult } from '../models/monthly.results.model';
-import { plainToInstance } from 'class-transformer';
-import { EmployeesRepository } from '../repository/employees.repository';
+import {MonthlyResult} from '../models/monthly.results.model';
+import {plainToInstance} from 'class-transformer';
+import {EmployeesRepository} from '../repository/employees.repository';
 
 export class MonthlyResultsService {
   private monthlyResultRepository: MonthlyResultsRepository;
