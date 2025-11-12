@@ -1,8 +1,12 @@
-import { DataSource } from "typeorm";
-import { AdvisorCommissionRepository } from '../repository/advisor.commission.repository';
-import { ConsolidatedCommissionCalculationRepository } from '../repository/consolidated.commission.calculation.repository';
-import { StoreManagerCalculationCommissionRepository } from "../repository/store.manager.calculation.commission.repository";
-import { ResponseDataConsensoDto, SearchDataConsensoDto } from "../dtos/search.data.consenso";
+import {DataSource} from "typeorm";
+import {AdvisorCommissionRepository} from '../repository/advisor.commission.repository';
+import {
+    ConsolidatedCommissionCalculationRepository
+} from '../repository/consolidated.commission.calculation.repository';
+import {
+    StoreManagerCalculationCommissionRepository
+} from "../repository/store.manager.calculation.commission.repository";
+import {ResponseDataConsensoDto, SearchDataConsensoDto} from "../dtos/search.data.consenso";
 
 export class ConsolidateInformationConsensoService {
     private advisorCommissionRepository: AdvisorCommissionRepository;

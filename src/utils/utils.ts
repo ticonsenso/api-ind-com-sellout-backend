@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { format, parse } from 'date-fns';
+import {format, parse} from 'date-fns';
 
 const saltRounds = 10;
 

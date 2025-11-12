@@ -1,6 +1,6 @@
-import { Role } from '../models/roles.model';
-import { BaseRepository } from './base.respository';
-import { DataSource } from 'typeorm';
+import {Role} from '../models/roles.model';
+import {BaseRepository} from './base.respository';
+import {DataSource} from 'typeorm';
 
 export class RoleRepository extends BaseRepository<Role> {
   constructor(dataSource: DataSource) {

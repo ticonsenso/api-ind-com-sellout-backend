@@ -1,9 +1,9 @@
-import { DataSource } from "typeorm";
-import { Request, Response } from "express";
-import { plainToClass } from "class-transformer";
-import { StatusCodes } from "http-status-codes";
-import { SearchDataConsensoDto } from "../dtos/search.data.consenso";
-import { ConsolidateInformationConsensoService } from "../services/consolidate.information.consenso.service";
+import {DataSource} from "typeorm";
+import {Request, Response} from "express";
+import {plainToClass} from "class-transformer";
+import {StatusCodes} from "http-status-codes";
+import {SearchDataConsensoDto} from "../dtos/search.data.consenso";
+import {ConsolidateInformationConsensoService} from "../services/consolidate.information.consenso.service";
 
 export class ConsolidateInformationConsenso {
     private consolidateInformationConsensoService: ConsolidateInformationConsensoService;

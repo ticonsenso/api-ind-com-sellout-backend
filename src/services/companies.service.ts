@@ -1,9 +1,10 @@
-import { DataSource } from 'typeorm';
-import { CompaniesRepository } from '../repository/companies.repository';
-import { CommissionConfigurationSearchDto, CompanyResponseDto, CompanyResponseSearchDto } from '../dtos/commission.configurations.dto';
-import { CompanySearchDto, CreateCompanyDto, UpdateCompanyDto } from '../dtos/companies.dto';
-import { Company } from '../models/companies.model';
-import { plainToClass } from 'class-transformer';
+import {DataSource} from 'typeorm';
+import {CompaniesRepository} from '../repository/companies.repository';
+import {CompanyResponseDto, CompanyResponseSearchDto} from '../dtos/commission.configurations.dto';
+import {CompanySearchDto, CreateCompanyDto, UpdateCompanyDto} from '../dtos/companies.dto';
+import {Company} from '../models/companies.model';
+import {plainToClass} from 'class-transformer';
+
 export class CompaniesService {
   private companyRepository: CompaniesRepository;
 

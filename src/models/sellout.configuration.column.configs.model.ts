@@ -1,12 +1,6 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
-} from 'typeorm';
-import { SelloutConfiguration } from './sellout.configuration.model';
-import { User } from './users.model';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {SelloutConfiguration} from './sellout.configuration.model';
+import {User} from './users.model';
 
 @Entity('sellout_configuration_column_configs')
 export class SelloutConfigurationColumnConfigs {

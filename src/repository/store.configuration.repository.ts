@@ -1,8 +1,7 @@
-import { StoreConfigurationSearchDto } from '../dtos/store.configuration.dto';
-import { StoreConfiguration } from '../models/store.configuration.model';
-import { BaseRepository } from './base.respository';
-import { Brackets, DataSource } from 'typeorm';
-import { AdvisorConfigurationRepository } from './advisor.configuration.repository';
+import {StoreConfiguration} from '../models/store.configuration.model';
+import {BaseRepository} from './base.respository';
+import {Brackets, DataSource} from 'typeorm';
+import {AdvisorConfigurationRepository} from './advisor.configuration.repository';
 
 export class StoreConfigurationRepository extends BaseRepository<StoreConfiguration> {
     private advisorConfigurationRepository: AdvisorConfigurationRepository;

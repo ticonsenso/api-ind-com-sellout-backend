@@ -1,10 +1,9 @@
-import { plainToClass, plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { DataSource } from "typeorm";
+import {Request, Response} from "express";
+import {StatusCodes} from "http-status-codes";
+import {DataSource} from "typeorm";
 
-import { AdvisorCommissionService } from "../services/advisor.commision.service";
+import {AdvisorCommissionService} from "../services/advisor.commision.service";
+
 export class AdvisorCommissionController {
 
     private advisorCommissionService: AdvisorCommissionService;

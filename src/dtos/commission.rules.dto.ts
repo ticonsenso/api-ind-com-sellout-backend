@@ -1,15 +1,7 @@
-import { Expose, Type } from "class-transformer";
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Max,
-  Min,
-} from "class-validator";
-import { CommissionConfigurationResponseDto } from "./commission.configurations.dto";
-import { ParameterLineResponseDto } from "./parameter.lines.dto";
-import { StoreSizeResponseDto } from "./store.size.dto";
+import {Expose, Type} from "class-transformer";
+import {IsNotEmpty, IsNumber, IsOptional, Max, Min,} from "class-validator";
+import {CommissionConfigurationResponseDto} from "./commission.configurations.dto";
+import {ParameterLineResponseDto} from "./parameter.lines.dto";
 
 // DTO for creating a new commission rule
 export class CreateCommissionRuleDto {

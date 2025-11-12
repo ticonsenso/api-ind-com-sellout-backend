@@ -1,14 +1,14 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from "typeorm";
-import { DataSource } from "./data.sources.model";
-import { User } from "./users.model";
+import {DataSource} from "./data.sources.model";
+import {User} from "./users.model";
 
 @Entity({ name: "extraction_logs" })
 export class ExtractionLog {

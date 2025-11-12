@@ -1,8 +1,8 @@
-import { Expose } from "class-transformer";
-import { IsInt, IsNotEmpty, IsNumber, IsPositive } from "class-validator";
-import { CompanyResponseDto } from "./companies.dto";
-import { EmployeeResponseDto } from "./employees.dto";
-import { ParameterLineResponseDto } from "./parameter.lines.dto";
+import {Expose} from "class-transformer";
+import {IsInt, IsNotEmpty, IsNumber, IsPositive} from "class-validator";
+import {CompanyResponseDto} from "./companies.dto";
+import {EmployeeResponseDto} from "./employees.dto";
+import {ParameterLineResponseDto} from "./parameter.lines.dto";
 
 export class CreateProductComplianceDto {
   @IsNotEmpty({ message: "El valor de venta es requerido" })

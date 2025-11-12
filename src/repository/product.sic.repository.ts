@@ -1,6 +1,6 @@
-import { Brackets, In, DataSource as TypeORMDataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { ProductSic } from "../models/product_sic.model";
+import {Brackets, DataSource as TypeORMDataSource, In} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {ProductSic} from "../models/product_sic.model";
 
 interface ModelProductSic {
     productSic: string;

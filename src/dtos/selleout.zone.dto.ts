@@ -1,11 +1,5 @@
-import { Expose, Type } from "class-transformer";
-import {
-    IsBoolean,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString,
-} from "class-validator";
+import {Expose, Type} from "class-transformer";
+import {IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString,} from "class-validator";
 
 export class CreateSelloutZoneDto {
     @IsNotEmpty({ message: "El nombre de la zona es requerido" })

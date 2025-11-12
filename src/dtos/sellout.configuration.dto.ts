@@ -1,6 +1,6 @@
-import { Exclude, Expose } from 'class-transformer';
-import { IsBoolean, IsDate, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
-import { MatriculationTemplateResponseDto } from './matriculation.templates.dto';
+import {Exclude, Expose} from 'class-transformer';
+import {IsNumber, IsOptional, IsString, MaxLength} from 'class-validator';
+import {MatriculationTemplateResponseDto} from './matriculation.templates.dto';
 
 export class CreateSelloutConfigurationDto {
 

@@ -1,13 +1,13 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
     Column,
-    ManyToOne,
-    JoinColumn,
     CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { Stores } from './stores.model';
+import {StoresSic} from './stores.sic.model';
 
 @Entity('sellout_zone')
 export class SelloutZone {
@@ -17,12 +17,12 @@ export class SelloutZone {
     @Column({ type: 'varchar', length: 255 })
     name!: string;
 
-    @ManyToOne(() => Stores, store => store.id, {
+    @ManyToOne(() => StoresSic, store => store.id, {
         onDelete: 'CASCADE',
     })
 
     @JoinColumn({ name: 'stores_id' })
-    stores!: Stores;
+    stores!: StoresSic;
 
     @Column({ name: 'group_name', type: 'varchar', length: 255 })
     groupName!: string;

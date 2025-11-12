@@ -1,15 +1,9 @@
-import { Expose, Type } from "class-transformer";
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from "class-validator";
-import { CompanyResponseDto } from "./companies.dto";
-import { CompanyPositionResponseDto } from "./company.positions.dto";
-import { EmployeeResponseDto } from "./employees.dto";
-import { KpiConfigResponseDto } from "./kpi.config.dto";
+import {Expose, Type} from "class-transformer";
+import {IsDate, IsNotEmpty, IsNumber, IsOptional, IsString,} from "class-validator";
+import {CompanyResponseDto} from "./companies.dto";
+import {CompanyPositionResponseDto} from "./company.positions.dto";
+import {EmployeeResponseDto} from "./employees.dto";
+import {KpiConfigResponseDto} from "./kpi.config.dto";
 
 export class CreateCalculationProductExtrategicDto {
   @IsNotEmpty({ message: "El código del empleado es requerido" })

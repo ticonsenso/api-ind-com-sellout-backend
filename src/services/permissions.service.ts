@@ -1,9 +1,8 @@
-import { plainToClass } from 'class-transformer';
-import { Permission } from '../models/permissions.model';
-import { PermissionRepository } from '../repository/permissions.repository';
-import { PermissionResponseDto, CreatePermissionDto, UpdatePermissionDto } from '../dtos/permissions.dto';
-import { DataSource } from 'typeorm';
-import e from 'express';
+import {plainToClass} from 'class-transformer';
+import {Permission} from '../models/permissions.model';
+import {PermissionRepository} from '../repository/permissions.repository';
+import {CreatePermissionDto, PermissionResponseDto, UpdatePermissionDto} from '../dtos/permissions.dto';
+import {DataSource} from 'typeorm';
 
 export class PermissionService {
   private permissionRepository: PermissionRepository;

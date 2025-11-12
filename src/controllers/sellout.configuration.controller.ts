@@ -1,19 +1,16 @@
-import { DataSource } from 'typeorm';
-import { UserService } from '../services/users.service';
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass } from 'class-transformer';
-import { CreateUserDto, UpdateUserDto, FilterUserDto } from '../dtos/users.dto';
-import { UsersRolesService } from '../services/users.roles.service';
-import { decodeToken } from '../middleware/auth.middleware';
-import { SelloutMastersService } from '../services/sellout.masters.service';
-import { CreateSelloutStoreMasterDto, SelloutStoreMasterFiltersDto, UpdateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
-import { CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
-import { SelloutConfigurationService } from '../services/sellout.configuration.service';
-import { CreateSelloutConfigurationDto, UpdateSelloutConfigurationDto } from '../dtos/sellout.configuration.dto';
-import { CreateSelloutConfigurationColumnConfigsDto, UpdateSelloutConfigurationColumnConfigsDto } from '../dtos/sellout.configuration.column.configs.dto';
-import { CreateExtractedDataSelloutDto, UpdateExtractedDataSelloutDto } from '../dtos/extrated.data.sellout.dto';
-import { ExtratedDataSelloutService } from '../services/extrated.data.sell.out.service';
+import {DataSource} from 'typeorm';
+import {Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass} from 'class-transformer';
+import {decodeToken} from '../middleware/auth.middleware';
+import {SelloutConfigurationService} from '../services/sellout.configuration.service';
+import {CreateSelloutConfigurationDto, UpdateSelloutConfigurationDto} from '../dtos/sellout.configuration.dto';
+import {
+    CreateSelloutConfigurationColumnConfigsDto,
+    UpdateSelloutConfigurationColumnConfigsDto
+} from '../dtos/sellout.configuration.column.configs.dto';
+import {CreateExtractedDataSelloutDto, UpdateExtractedDataSelloutDto} from '../dtos/extrated.data.sellout.dto';
+import {ExtratedDataSelloutService} from '../services/extrated.data.sell.out.service';
 
 export class SelloutConfigurationController {
     private selloutConfigurationService: SelloutConfigurationService;

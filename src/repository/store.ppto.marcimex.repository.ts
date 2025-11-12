@@ -1,7 +1,7 @@
-import { BaseRepository } from './base.respository';
-import { Brackets, DataSource } from 'typeorm';
-import { StorePptoMarcimex } from '../models/store.ppto.marcimex.model';
-import { StoreConfiguration } from '../models/store.configuration.model';
+import {BaseRepository} from './base.respository';
+import {Brackets, DataSource} from 'typeorm';
+import {StorePptoMarcimex} from '../models/store.ppto.marcimex.model';
+import {StoreConfiguration} from '../models/store.configuration.model';
 
 export class StorePptoMarcimexRepository extends BaseRepository<StorePptoMarcimex> {
 

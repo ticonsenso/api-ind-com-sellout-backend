@@ -1,16 +1,16 @@
-import { DataSource } from 'typeorm';
-import { UserRepository } from '../repository/users.repository';
-import { RoleRepository } from '../repository/roles.repository';
-import { UserRoleRepository } from '../repository/users.roles.repository';
-import { UserRole } from '../models/users.roles.model';
-import { RoleResponseDto } from '../dtos/roles.dto';
-import { Permission } from '../models/permissions.model';
-import { RolePermissionRepository } from '../repository/roles.permissions.repository';
-import { PermissionResponseDto } from '../dtos/permissions.dto';
-import { plainToClass } from 'class-transformer';
-import { UserResponseDto } from '../dtos/users.dto';
-import { CompaniesRepository } from '../repository/companies.repository';
-import { CompanyResponseDto } from '../dtos/companies.dto';
+import {DataSource} from 'typeorm';
+import {UserRepository} from '../repository/users.repository';
+import {RoleRepository} from '../repository/roles.repository';
+import {UserRoleRepository} from '../repository/users.roles.repository';
+import {UserRole} from '../models/users.roles.model';
+import {RoleResponseDto} from '../dtos/roles.dto';
+import {RolePermissionRepository} from '../repository/roles.permissions.repository';
+import {PermissionResponseDto} from '../dtos/permissions.dto';
+import {plainToClass} from 'class-transformer';
+import {UserResponseDto} from '../dtos/users.dto';
+import {CompaniesRepository} from '../repository/companies.repository';
+import {CompanyResponseDto} from '../dtos/companies.dto';
+
 export class UsersRolesService {
   private userRepository: UserRepository;
   private roleRepository: RoleRepository;

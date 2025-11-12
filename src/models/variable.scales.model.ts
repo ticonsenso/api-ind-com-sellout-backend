@@ -1,13 +1,7 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { CommissionConfiguration } from "./commission.configurations.model";
-import { Company } from "./companies.model";
-import { CompanyPosition } from "./company.positions.model";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from "typeorm";
+import {CommissionConfiguration} from "./commission.configurations.model";
+import {Company} from "./companies.model";
+import {CompanyPosition} from "./company.positions.model";
 
 @Entity({ name: "variable_scales" })
 export class VariableScale {

@@ -1,12 +1,5 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    ManyToOne,
-    JoinColumn,
-    CreateDateColumn,
-    UpdateDateColumn,
-} from 'typeorm';
-import { StoreConfiguration } from './store.configuration.model';
+import {CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn,} from 'typeorm';
+import {StoreConfiguration} from './store.configuration.model';
 
 @Entity('grouped_by_store')
 export class GroupedByStore {

@@ -1,13 +1,7 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Company } from "./companies.model";
-import { CompanyPosition } from "./company.positions.model";
-import { Employee } from "./employees.model";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from "typeorm";
+import {Company} from "./companies.model";
+import {CompanyPosition} from "./company.positions.model";
+import {Employee} from "./employees.model";
 
 @Entity({ name: "consolidated_commission_calculation" })
 export class ConsolidatedCommissionCalculation {

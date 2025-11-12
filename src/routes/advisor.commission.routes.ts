@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { AdvisorCommissionController } from "../controllers/advisor.commission.controller";
+import {Router} from "express";
+import {AdvisorCommissionController} from "../controllers/advisor.commission.controller";
 import AppDataSource from "../config/data-source";
-import { authenticateToken } from "../middleware/auth.middleware";
+import {authenticateToken} from "../middleware/auth.middleware";
 
 const router = Router();
 const advisorCommissionController = new AdvisorCommissionController(AppDataSource);

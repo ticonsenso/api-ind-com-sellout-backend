@@ -1,27 +1,23 @@
-import { DataSource } from "typeorm";
+import {DataSource} from "typeorm";
 import {
-  CreateStoreManagerCalculationCommissionDto,
-  StoreManagerCalculationCommissionPaginatedResponseDto,
-  StoreManagerCalculationCommissionResponseDto,
+    CreateStoreManagerCalculationCommissionDto,
+    StoreManagerCalculationCommissionPaginatedResponseDto,
+    StoreManagerCalculationCommissionResponseDto,
 } from "../dtos/store.manager.calculation.commission.dto";
-import { StoreManagerCalculationCommissionRepository } from "../repository/store.manager.calculation.commission.repository";
-import { EmployeesRepository } from "../repository/employees.repository";
-import { StoreConfigurationRepository } from "../repository/store.configuration.repository";
-import { plainToClass, plainToInstance } from "class-transformer";
-import { StoreManagerCalculationCommission } from "../models/store.manager.calculation.commission.model";
 import {
-  getCommissionPercent,
-  transformCommissionRules,
-} from "../utils/commissionRules";
-import { parseEuropeanNumber } from "../utils/utils";
-import { CommissionRulesRepository } from "../repository/commission.rules.repository";
-import { GroupedByStoreRepository } from "../repository/grouped.by.store.repository";
-import {
-  FilterReportCommissionDto,
-  TotalMonthlyExpensesAllDto,
-} from "../dtos/report.dto";
-import { AdvisorCommissionRepository } from "../repository/advisor.commission.repository";
-import { StoreSizeRepository } from "../repository/store.size.repository";
+    StoreManagerCalculationCommissionRepository
+} from "../repository/store.manager.calculation.commission.repository";
+import {EmployeesRepository} from "../repository/employees.repository";
+import {StoreConfigurationRepository} from "../repository/store.configuration.repository";
+import {plainToClass, plainToInstance} from "class-transformer";
+import {StoreManagerCalculationCommission} from "../models/store.manager.calculation.commission.model";
+import {getCommissionPercent, transformCommissionRules,} from "../utils/commissionRules";
+import {parseEuropeanNumber} from "../utils/utils";
+import {CommissionRulesRepository} from "../repository/commission.rules.repository";
+import {GroupedByStoreRepository} from "../repository/grouped.by.store.repository";
+import {FilterReportCommissionDto, TotalMonthlyExpensesAllDto,} from "../dtos/report.dto";
+import {AdvisorCommissionRepository} from "../repository/advisor.commission.repository";
+import {StoreSizeRepository} from "../repository/store.size.repository";
 
 export class StoreManagerCalculationCommissionService {
   private storeManagerCalculationCommissionRepository: StoreManagerCalculationCommissionRepository;

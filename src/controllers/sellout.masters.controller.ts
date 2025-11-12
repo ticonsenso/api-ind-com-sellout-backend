@@ -1,14 +1,10 @@
-import { DataSource } from 'typeorm';
-import { UserService } from '../services/users.service';
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { CreateUserDto, UpdateUserDto, FilterUserDto } from '../dtos/users.dto';
-import { UsersRolesService } from '../services/users.roles.service';
-import { decodeToken } from '../middleware/auth.middleware';
-import { SelloutMastersService } from '../services/sellout.masters.service';
-import { CreateSelloutStoreMasterDto, SelloutStoreMasterFiltersDto, UpdateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
-import { CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
+import {DataSource} from 'typeorm';
+import {Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {SelloutMastersService} from '../services/sellout.masters.service';
+import {CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
+import {CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
 
 export class SelloutMastersController {
     private selloutMastersService: SelloutMastersService;

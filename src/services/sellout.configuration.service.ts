@@ -1,17 +1,34 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
-import { SelloutConfigurationColumnConfigsRepository } from '../repository/sellout.configuration.column.configs.repository';
-import { ExtractionLogsSelloutRepository } from '../repository/extraction.logs.sellout.repositoy';
-import { SelloutConfigurationRepository } from '../repository/sellout.configuration.repository';
-import { CreateSelloutConfigurationDto, SelloutConfigurationDto, SelloutConfigurationFiltersResponseDto, UpdateSelloutConfigurationDto } from '../dtos/sellout.configuration.dto';
-import { SelloutConfiguration } from '../models/sellout.configuration.model';
-import { ExtractionLogsSellout } from '../models/extraction.logs.sellout.model';
-import { CreateExtractionLogsSelloutDto, ExtractionLogsSelloutDto, ExtractionLogsSelloutFiltersResponseDto, UpdateExtractionLogsSelloutDto } from '../dtos/extraction.logs.sellout.dto';
-import { User } from '../models/users.model';
-import { SelloutConfigurationColumnConfigs } from '../models/sellout.configuration.column.configs.model';
-import { CreateSelloutConfigurationColumnConfigsDto, SelloutConfigurationColumnConfigsFiltersResponseDto, SelloutConfigurationColumnConfigsResponseDto, UpdateSelloutConfigurationColumnConfigsDto } from '../dtos/sellout.configuration.column.configs.dto';
-import { UserRepository } from '../repository/users.repository';
-import { CompaniesRepository } from '../repository/companies.repository';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
+import {
+    SelloutConfigurationColumnConfigsRepository
+} from '../repository/sellout.configuration.column.configs.repository';
+import {ExtractionLogsSelloutRepository} from '../repository/extraction.logs.sellout.repositoy';
+import {SelloutConfigurationRepository} from '../repository/sellout.configuration.repository';
+import {
+    CreateSelloutConfigurationDto,
+    SelloutConfigurationDto,
+    SelloutConfigurationFiltersResponseDto,
+    UpdateSelloutConfigurationDto
+} from '../dtos/sellout.configuration.dto';
+import {SelloutConfiguration} from '../models/sellout.configuration.model';
+import {ExtractionLogsSellout} from '../models/extraction.logs.sellout.model';
+import {
+    CreateExtractionLogsSelloutDto,
+    ExtractionLogsSelloutDto,
+    ExtractionLogsSelloutFiltersResponseDto,
+    UpdateExtractionLogsSelloutDto
+} from '../dtos/extraction.logs.sellout.dto';
+import {User} from '../models/users.model';
+import {SelloutConfigurationColumnConfigs} from '../models/sellout.configuration.column.configs.model';
+import {
+    CreateSelloutConfigurationColumnConfigsDto,
+    SelloutConfigurationColumnConfigsFiltersResponseDto,
+    SelloutConfigurationColumnConfigsResponseDto,
+    UpdateSelloutConfigurationColumnConfigsDto
+} from '../dtos/sellout.configuration.column.configs.dto';
+import {UserRepository} from '../repository/users.repository';
+import {CompaniesRepository} from '../repository/companies.repository';
 
 export class SelloutConfigurationService {
     private selloutConfigurationRepository: SelloutConfigurationRepository;

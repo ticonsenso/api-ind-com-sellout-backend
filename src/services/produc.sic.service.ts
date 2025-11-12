@@ -1,10 +1,15 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
 
-import { ProductSicRepository } from '../repository/product.sic.repository';
-import { ProductSic } from '../models/product_sic.model';
-import { CreateProductSicDto, ProductSicPaginatedResponseDto, ProductSicResponseDto, UpdateProductSicDto } from '../dtos/product.sic.dto';
-import { chunkArray } from '../utils/utils';
+import {ProductSicRepository} from '../repository/product.sic.repository';
+import {ProductSic} from '../models/product_sic.model';
+import {
+    CreateProductSicDto,
+    ProductSicPaginatedResponseDto,
+    ProductSicResponseDto,
+    UpdateProductSicDto
+} from '../dtos/product.sic.dto';
+import {chunkArray} from '../utils/utils';
 
 export class ProductSicService {
     private productSicRepository: ProductSicRepository;

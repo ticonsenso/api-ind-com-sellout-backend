@@ -1,7 +1,7 @@
-import { MonthlyGoalSearchDto } from '../dtos/monthly.goals.dto';
-import { MonthlyGoal } from '../models/monthly.goals.model';
-import { DataSource as TypeORMDataSource } from 'typeorm';
-import { BaseRepository } from './base.respository';
+import {MonthlyGoalSearchDto} from '../dtos/monthly.goals.dto';
+import {MonthlyGoal} from '../models/monthly.goals.model';
+import {DataSource as TypeORMDataSource} from 'typeorm';
+import {BaseRepository} from './base.respository';
 
 export class MonthlyGoalsRepository extends BaseRepository<MonthlyGoal> {
   constructor(dataSource: TypeORMDataSource) {

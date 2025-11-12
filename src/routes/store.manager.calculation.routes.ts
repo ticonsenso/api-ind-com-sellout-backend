@@ -1,7 +1,7 @@
-import { Router } from "express";
+import {Router} from "express";
 import AppDataSource from "../config/data-source";
-import { authenticateToken } from "../middleware/auth.middleware";
-import { StoreManagerCalculationCommissionController } from "../controllers/store.manager.calculation.controller";
+import {authenticateToken} from "../middleware/auth.middleware";
+import {StoreManagerCalculationCommissionController} from "../controllers/store.manager.calculation.controller";
 
 const router = Router();
 const storeManagerCalculationCommissionController = new StoreManagerCalculationCommissionController(AppDataSource);

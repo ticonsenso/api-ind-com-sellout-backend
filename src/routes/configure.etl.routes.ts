@@ -1,33 +1,22 @@
-import { RequestHandler, Router } from "express";
+import {RequestHandler, Router} from "express";
 import AppDataSource from "../config/data-source";
-import { ConfigureEtlController } from "../controllers/configure.etl.controller";
+import {ConfigureEtlController} from "../controllers/configure.etl.controller";
 import {
-  CreateDataSourceColumnConfigDto,
-  SearchDataSourceColumnConfigDto,
-  UpdateDataSourceColumnConfigDto,
+    CreateDataSourceColumnConfigDto,
+    SearchDataSourceColumnConfigDto,
+    UpdateDataSourceColumnConfigDto,
 } from "../dtos/data.source.column.configs.dto";
+import {CreateDataSourceDto, SearchDataSourceDto, UpdateDataSourceDto,} from "../dtos/data.sources.dto";
 import {
-  CreateDataSourceDto,
-  SearchDataSourceDto,
-  UpdateDataSourceDto,
-} from "../dtos/data.sources.dto";
-import {
-  CreateDetailTablesConfigDto,
-  DetailTablesConfigSearchParamsDto,
-  UpdateDetailTablesConfigDto,
+    CreateDetailTablesConfigDto,
+    DetailTablesConfigSearchParamsDto,
+    UpdateDetailTablesConfigDto,
 } from "../dtos/detail.tables.config.dto";
-import {
-  CreateExtractedDataDto,
-  SearchExtractedDataDto,
-  UpdateExtractedDataDto,
-} from "../dtos/extracted.data.dto";
-import {
-  CreateExtractionLogDto,
-  SearchExtractionLogDto,
-  UpdateExtractionLogDto,
-} from "../dtos/extraction.logs.dto";
-import { authenticateToken } from "../middleware/auth.middleware";
-import { validatorMiddleware } from "../middleware/validator.middleware";
+import {CreateExtractedDataDto, SearchExtractedDataDto, UpdateExtractedDataDto,} from "../dtos/extracted.data.dto";
+import {CreateExtractionLogDto, SearchExtractionLogDto, UpdateExtractionLogDto,} from "../dtos/extraction.logs.dto";
+import {authenticateToken} from "../middleware/auth.middleware";
+import {validatorMiddleware} from "../middleware/validator.middleware";
+
 const router = Router();
 
 const configureEtlController = new ConfigureEtlController(AppDataSource);

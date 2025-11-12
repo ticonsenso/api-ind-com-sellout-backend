@@ -1,14 +1,14 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
 import {
-  CreateParameterLineDto,
-  CreateParameterLineSearchDto,
-  ParameterLineResponseDataDto,
-  ParameterLineResponseDto,
-  UpdateParameterLineDto,
+    CreateParameterLineDto,
+    CreateParameterLineSearchDto,
+    ParameterLineResponseDataDto,
+    ParameterLineResponseDto,
+    UpdateParameterLineDto,
 } from '../dtos/parameter.lines.dto';
-import { ParameterLine } from '../models/parameter.lines.model';
-import { ParameterLinesRepository } from '../repository/parameter.lines.repository';
+import {ParameterLine} from '../models/parameter.lines.model';
+import {ParameterLinesRepository} from '../repository/parameter.lines.repository';
 
 export class ParameterLinesService {
   private parameterLinesRepository: ParameterLinesRepository;

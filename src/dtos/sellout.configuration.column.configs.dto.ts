@@ -1,7 +1,6 @@
-import { Expose } from 'class-transformer';
-import { IsBoolean, IsDate, IsNumber, IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
-import { SelloutConfigurationDto } from './sellout.configuration.dto';
-import { ExtractionLogsSelloutDto } from './extraction.logs.sellout.dto';
+import {Expose} from 'class-transformer';
+import {IsBoolean, IsNumber, IsOptional, IsString} from 'class-validator';
+import {SelloutConfigurationDto} from './sellout.configuration.dto';
 
 export class CreateSelloutConfigurationColumnConfigsDto {
     @IsOptional()

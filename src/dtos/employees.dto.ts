@@ -1,7 +1,7 @@
-import { Expose, Type, Exclude } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsDate, IsBoolean, IsEmail, IsDateString } from 'class-validator';
-import { CompanyResponseDto } from './companies.dto';
-import { CompanyPositionResponseDto } from './company.positions.dto';
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsBoolean, IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString} from 'class-validator';
+import {CompanyResponseDto} from './companies.dto';
+import {CompanyPositionResponseDto} from './company.positions.dto';
 
 export class CreateEmployeeDto {
   @IsNumber()

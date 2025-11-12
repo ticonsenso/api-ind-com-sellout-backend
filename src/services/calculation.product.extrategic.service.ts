@@ -1,36 +1,39 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
 import {
-  CalculationProductExtrategicPaginationResponseDto,
-  CalculationProductExtrategicResponseDto,
-  CreateCalculationProductExtrategicDto,
+    CalculationProductExtrategicPaginationResponseDto,
+    CalculationProductExtrategicResponseDto,
+    CreateCalculationProductExtrategicDto,
 } from "../dtos/calculation.product.extrategic.dto";
-import { EmployeeResponseDto } from "../dtos/employees.dto";
-import { CalculationProductExtrategic } from "../models/calculation.product.extrategic.model";
-import { ConsolidatedCommissionCalculation } from "../models/consolidated.commission.calculation.model";
-import { Employee } from "../models/employees.model";
-import { CalculationProductExtrategicRepository } from "../repository/calculation.product.extrategic.repository";
-import { ConsolidatedCommissionCalculationRepository } from "../repository/consolidated.commission.calculation.repository";
-import { EmployeesRepository } from "../repository/employees.repository";
-import { KpiConfigRepository } from "../repository/kpi.config.repository";
-import { ProductComplianceRepository } from "../repository/product.compliance.repository";
-import { SeasonsRepository } from "../repository/seasons.repository";
-import { VariableScalesRepository } from "../repository/variable.scales.repository";
-import { EmployeesHistoryRepository } from "../repository/employees.history.repository";
-import { CommissionConfigurationsHistory } from "../models/commission.configurations.history.model";
-import { CommissionConfigurationsHistoryRepository } from "../repository/commision.configurations.history.repository";
-import { EmployeesHistory } from "../models/employees.history.model";
-import { CommissionConfiguration } from "../models/commission.configurations.model";
-import { CommissionConfigurationsRepository } from "../repository/commission.configurations.repository";
-import { ProductLinesRepository } from "../repository/product.lines.repository";
-import { SalesRotationConfigurationsRepository } from "../repository/sales.rotation.configurations.repository";
-import { CommissionRulesRepository } from "../repository/commission.rules.repository";
-import { Company } from "../models/companies.model";
-import { CompanyPosition } from "../models/company.positions.model";
-import { ExtractedDataRepository } from "../repository/extracted.data.repository";
-import { CommissionParametersRepository } from "../repository/commission.parameters.repository";
-import { getLastDayOfMonth } from "../utils/utils";
-import { CommissionParameter } from "../models/commission.parameters.model";
+import {EmployeeResponseDto} from "../dtos/employees.dto";
+import {CalculationProductExtrategic} from "../models/calculation.product.extrategic.model";
+import {ConsolidatedCommissionCalculation} from "../models/consolidated.commission.calculation.model";
+import {Employee} from "../models/employees.model";
+import {CalculationProductExtrategicRepository} from "../repository/calculation.product.extrategic.repository";
+import {
+    ConsolidatedCommissionCalculationRepository
+} from "../repository/consolidated.commission.calculation.repository";
+import {EmployeesRepository} from "../repository/employees.repository";
+import {KpiConfigRepository} from "../repository/kpi.config.repository";
+import {ProductComplianceRepository} from "../repository/product.compliance.repository";
+import {SeasonsRepository} from "../repository/seasons.repository";
+import {VariableScalesRepository} from "../repository/variable.scales.repository";
+import {EmployeesHistoryRepository} from "../repository/employees.history.repository";
+import {CommissionConfigurationsHistory} from "../models/commission.configurations.history.model";
+import {CommissionConfigurationsHistoryRepository} from "../repository/commision.configurations.history.repository";
+import {EmployeesHistory} from "../models/employees.history.model";
+import {CommissionConfiguration} from "../models/commission.configurations.model";
+import {CommissionConfigurationsRepository} from "../repository/commission.configurations.repository";
+import {ProductLinesRepository} from "../repository/product.lines.repository";
+import {SalesRotationConfigurationsRepository} from "../repository/sales.rotation.configurations.repository";
+import {CommissionRulesRepository} from "../repository/commission.rules.repository";
+import {Company} from "../models/companies.model";
+import {CompanyPosition} from "../models/company.positions.model";
+import {ExtractedDataRepository} from "../repository/extracted.data.repository";
+import {CommissionParametersRepository} from "../repository/commission.parameters.repository";
+import {getLastDayOfMonth} from "../utils/utils";
+import {CommissionParameter} from "../models/commission.parameters.model";
+
 export class CalculationProductExtrategicService {
   private calculationProductExtrategicRepository: CalculationProductExtrategicRepository;
   private employeeRepository: EmployeesRepository;

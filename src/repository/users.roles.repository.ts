@@ -1,6 +1,6 @@
-import { UserRole } from '../models/users.roles.model';
-import { BaseRepository } from './base.respository';
-import { DataSource } from 'typeorm';
+import {UserRole} from '../models/users.roles.model';
+import {BaseRepository} from './base.respository';
+import {DataSource} from 'typeorm';
 
 export class UserRoleRepository extends BaseRepository<UserRole> {
   constructor(dataSource: DataSource) {

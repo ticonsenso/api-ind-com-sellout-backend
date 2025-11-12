@@ -1,104 +1,72 @@
-import { plainToClass, plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { DataSource } from "typeorm";
+import {plainToClass, plainToInstance} from "class-transformer";
+import {validate} from "class-validator";
+import {Request, Response} from "express";
+import {StatusCodes} from "http-status-codes";
+import {DataSource} from "typeorm";
 import {
-  CommissionConfigurationSearchDto,
-  CreateCommissionConfigurationDto,
-  UpdateCommissionConfigurationDto,
+    CommissionConfigurationSearchDto,
+    CreateCommissionConfigurationDto,
+    UpdateCommissionConfigurationDto,
 } from "../dtos/commission.configurations.dto";
 import {
-  CommissionParameterSearchDto,
-  CreateCommissionParameterDto,
-  UpdateCommissionParameterDto,
+    CommissionParameterSearchDto,
+    CreateCommissionParameterDto,
+    UpdateCommissionParameterDto,
 } from "../dtos/commission.parameters.dto";
+import {CommissionRuleSearchDto, CreateCommissionRuleDto, UpdateCommissionRuleDto,} from "../dtos/commission.rules.dto";
+import {CompanySearchDto, CreateCompanyDto, UpdateCompanyDto} from "../dtos/companies.dto";
 import {
-  CommissionRuleSearchDto,
-  CreateCommissionRuleDto,
-  UpdateCommissionRuleDto,
-} from "../dtos/commission.rules.dto";
-import { CompanySearchDto, CreateCompanyDto, UpdateCompanyDto } from "../dtos/companies.dto";
-import {
-  CompanyPositionSearchDto,
-  CreateCompanyPositionDto,
-  UpdateCompanyPositionDto,
+    CompanyPositionSearchDto,
+    CreateCompanyPositionDto,
+    UpdateCompanyPositionDto,
 } from "../dtos/company.positions.dto";
+import {CreateEmployeeDto, EmployeeSearchDto, UpdateEmployeeDto,} from "../dtos/employees.dto";
+import {CreateKpiConfigDto, SearchKpiConfigDto, UpdateKpiConfigDto,} from "../dtos/kpi.config.dto";
+import {CreateMonthlyGoalDto, MonthlyGoalSearchDto, UpdateMonthlyGoalDto,} from "../dtos/monthly.goals.dto";
+import {CreateMonthlyResultDto, MonthlyResultSearchDto, UpdateMonthlyResultDto,} from "../dtos/monthly.results.dto";
 import {
-  CreateEmployeeDto,
-  EmployeeSearchDto,
-  UpdateEmployeeDto,
-} from "../dtos/employees.dto";
-import {
-  CreateKpiConfigDto,
-  SearchKpiConfigDto,
-  UpdateKpiConfigDto,
-} from "../dtos/kpi.config.dto";
-import {
-  CreateMonthlyGoalDto,
-  MonthlyGoalSearchDto,
-  UpdateMonthlyGoalDto,
-} from "../dtos/monthly.goals.dto";
-import {
-  CreateMonthlyResultDto,
-  MonthlyResultSearchDto,
-  UpdateMonthlyResultDto,
-} from "../dtos/monthly.results.dto";
-import {
-  CreateParameterCategoryDto,
-  ParameterCategorySearchDto,
-  UpdateParameterCategoryDto,
+    CreateParameterCategoryDto,
+    ParameterCategorySearchDto,
+    UpdateParameterCategoryDto,
 } from "../dtos/parameter.categories.dto";
 import {
-  CreateParameterLineDto,
-  CreateParameterLineSearchDto,
-  UpdateParameterLineDto,
+    CreateParameterLineDto,
+    CreateParameterLineSearchDto,
+    UpdateParameterLineDto,
 } from "../dtos/parameter.lines.dto";
+import {CreateProductLineDto, ProductLineSearchDto, UpdateProductLineDto,} from "../dtos/product.lines.dto";
+import {CreateSeasonDto, SearchSeasonDto, UpdateSeasonDto,} from "../dtos/season.dto";
 import {
-  CreateProductLineDto,
-  ProductLineSearchDto,
-  UpdateProductLineDto,
-} from "../dtos/product.lines.dto";
-import {
-  CreateSeasonDto,
-  SearchSeasonDto,
-  UpdateSeasonDto,
-} from "../dtos/season.dto";
-import {
-  CreateSettlementPeriodDto,
-  SettlementPeriodSearchDto,
-  UpdateSettlementPeriodDto,
+    CreateSettlementPeriodDto,
+    SettlementPeriodSearchDto,
+    UpdateSettlementPeriodDto,
 } from "../dtos/settlement.periods.dto";
+import {CreateStoreSizeDto, StoreSizeSearchDto, UpdateStoreSizeDto,} from "../dtos/store.size.dto";
+import {CreateVariableScaleDto, UpdateVariableScaleDto, VariableScaleSearchDto,} from "../dtos/variable.scales.dto";
+import {CommissionConfigurationsService} from "../services/commission.configurations.service";
+import {CommissionParametersService} from "../services/commission.parameters.service";
+import {CommissionRulesService} from "../services/commission.rules.service";
+import {CompaniesService} from "../services/companies.service";
+import {CompanyPositionsService} from "../services/company.positions.service";
+import {EmployeesService} from "../services/employees.service";
+import {KpiConfigService} from "../services/kpi.config.service";
+import {MonthlyGoalsService} from "../services/monthly.goals.service";
+import {MonthlyResultsService} from "../services/monthly.results.service";
+import {ParameterCategoriesService} from "../services/parameter.categories.service";
+import {ParameterLinesService} from "../services/parameter.lines.service";
+import {ProductLinesService} from "../services/product.lines.service";
+import {SeasonsService} from "../services/seasons.service";
+import {SettlementPeriodsService} from "../services/settlement.periods.service";
+import {StoreSizeService} from "../services/store.size.service";
+import {VariableScalesService} from "../services/variable.scales.service";
 import {
-  CreateStoreSizeDto,
-  StoreSizeSearchDto,
-  UpdateStoreSizeDto,
-} from "../dtos/store.size.dto";
-import {
-  CreateVariableScaleDto,
-  UpdateVariableScaleDto,
-  VariableScaleSearchDto,
-} from "../dtos/variable.scales.dto";
-import { CommissionConfigurationsService } from "../services/commission.configurations.service";
-import { CommissionParametersService } from "../services/commission.parameters.service";
-import { CommissionRulesService } from "../services/commission.rules.service";
-import { CompaniesService } from "../services/companies.service";
-import { CompanyPositionsService } from "../services/company.positions.service";
-import { EmployeesService } from "../services/employees.service";
-import { KpiConfigService } from "../services/kpi.config.service";
-import { MonthlyGoalsService } from "../services/monthly.goals.service";
-import { MonthlyResultsService } from "../services/monthly.results.service";
-import { ParameterCategoriesService } from "../services/parameter.categories.service";
-import { ParameterLinesService } from "../services/parameter.lines.service";
-import { ProductLinesService } from "../services/product.lines.service";
-import { SeasonsService } from "../services/seasons.service";
-import { SettlementPeriodsService } from "../services/settlement.periods.service";
-import { StoreSizeService } from "../services/store.size.service";
-import { VariableScalesService } from "../services/variable.scales.service";
-import { CreateSalesRotationConfigurationDto, SalesRotationConfigurationSearchDto, UpdateSalesRotationConfigurationDto } from "../dtos/sales.rotation.configurations.dto";
-import { SalesRotationConfigurationsService } from "../services/sales.rotation.configurations.service";
-import { AdvisorCommissionService } from "../services/advisor.commision.service";
-import { AdvisorCommissionSearchDto } from "../dtos/advisor.commission.dto";
+    CreateSalesRotationConfigurationDto,
+    SalesRotationConfigurationSearchDto,
+    UpdateSalesRotationConfigurationDto
+} from "../dtos/sales.rotation.configurations.dto";
+import {SalesRotationConfigurationsService} from "../services/sales.rotation.configurations.service";
+import {AdvisorCommissionService} from "../services/advisor.commision.service";
+
 export class ComissionsConfigController {
   private companiesService: CompaniesService;
   private companyPositionsService: CompanyPositionsService;

@@ -1,11 +1,5 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    JoinColumn,
-    ManyToOne,
-} from 'typeorm';
-import { MatriculationTemplate } from './matriculation.templates.model';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {MatriculationTemplate} from './matriculation.templates.model';
 
 @Entity({ name: 'consolidated_data_stores', schema: 'db-sellout' })
 export class ConsolidatedDataStores {

@@ -1,26 +1,37 @@
-import { plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import {plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
 
-import { StoreConfigurationRepository } from '../repository/store.configuration.repository';
-import { CreateStoreConfigurationDtoIds, CreateStoreConfigurationWithEmployeesDto, StoreConfigurationListResponseSearchDto, StoreConfigurationResponseDto, UpdateStoreConfigurationDto } from '../dtos/store.configuration.dto';
-import { StoreConfiguration } from '../models/store.configuration.model';
-import { AdvisorConfigurationRepository } from '../repository/advisor.configuration.repository';
-import { EmployForMonth } from '../models/advisor.configuration.model';
-import { CreateEmployForMonthDto, EmployForMonthResponseDto, EmployForMonthResponseDtoList, UpdateEmployForMonthDto } from '../dtos/advisor.configuration.dto';
-import { StoreSizeRepository } from '../repository/store.size.repository';
-import { StoreSize } from '../models/store.size.model';
-import { CompaniesRepository } from '../repository/companies.repository';
-import { StoreSizeResponseDto } from '../dtos/store.size.dto';
-import { CompanyResponseDto } from '../dtos/companies.dto';
-import { Company } from '../models/companies.model';
-import { StorePptoMarcimexPaginatedResponseDto, StorePptoMarcimexResponseDto } from '../dtos/store.ppto.marcimex.dto';
-import { StorePptoMarcimexRepository } from '../repository/store.ppto.marcimex.repository';
-import { CreateGroupedByStoreDto, GroupedByStoreResponseDto } from '../dtos/grouped.by.store.dto';
-import { GroupedByStore } from '../models/grouped.by.store.model';
-import { GroupedByStoreRepository } from '../repository/grouped.by.store.repository';
-import { GroupedByAdvisorRepository } from '../repository/grouped.by.advisor.repositoyr';
-import { CreateGroupedByAdvisorDto, GroupedByAdvisorResponseDto } from '../dtos/grouped.by.advisor.dto';
-import { GroupedByAdvisor } from '../models/grouped.by.advisor.model';
+import {StoreConfigurationRepository} from '../repository/store.configuration.repository';
+import {
+    CreateStoreConfigurationDtoIds,
+    CreateStoreConfigurationWithEmployeesDto,
+    StoreConfigurationListResponseSearchDto,
+    StoreConfigurationResponseDto,
+    UpdateStoreConfigurationDto
+} from '../dtos/store.configuration.dto';
+import {StoreConfiguration} from '../models/store.configuration.model';
+import {AdvisorConfigurationRepository} from '../repository/advisor.configuration.repository';
+import {EmployForMonth} from '../models/advisor.configuration.model';
+import {
+    CreateEmployForMonthDto,
+    EmployForMonthResponseDto,
+    EmployForMonthResponseDtoList,
+    UpdateEmployForMonthDto
+} from '../dtos/advisor.configuration.dto';
+import {StoreSizeRepository} from '../repository/store.size.repository';
+import {StoreSize} from '../models/store.size.model';
+import {CompaniesRepository} from '../repository/companies.repository';
+import {StoreSizeResponseDto} from '../dtos/store.size.dto';
+import {CompanyResponseDto} from '../dtos/companies.dto';
+import {Company} from '../models/companies.model';
+import {StorePptoMarcimexPaginatedResponseDto, StorePptoMarcimexResponseDto} from '../dtos/store.ppto.marcimex.dto';
+import {StorePptoMarcimexRepository} from '../repository/store.ppto.marcimex.repository';
+import {CreateGroupedByStoreDto, GroupedByStoreResponseDto} from '../dtos/grouped.by.store.dto';
+import {GroupedByStore} from '../models/grouped.by.store.model';
+import {GroupedByStoreRepository} from '../repository/grouped.by.store.repository';
+import {GroupedByAdvisorRepository} from '../repository/grouped.by.advisor.repositoyr';
+import {CreateGroupedByAdvisorDto, GroupedByAdvisorResponseDto} from '../dtos/grouped.by.advisor.dto';
+import {GroupedByAdvisor} from '../models/grouped.by.advisor.model';
 
 export class StoreConfigurationService {
     private storeConfigurationRepository: StoreConfigurationRepository;

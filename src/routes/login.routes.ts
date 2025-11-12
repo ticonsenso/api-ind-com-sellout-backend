@@ -1,6 +1,6 @@
-import { RequestHandler, Router } from "express";
+import {RequestHandler, Router} from "express";
 import AppDataSource from "../config/data-source";
-import { AuthController } from "../controllers/auth.controller";
+import {AuthController} from "../controllers/auth.controller";
 
 const router = Router();
 

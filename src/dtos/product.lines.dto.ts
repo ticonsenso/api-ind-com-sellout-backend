@@ -1,7 +1,7 @@
-import { Expose, Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsOptional, Min } from "class-validator";
-import { CommissionConfigurationResponseDto } from "./commission.configurations.dto";
-import { ParameterLineResponseDto } from "./parameter.lines.dto";
+import {Expose, Type} from "class-transformer";
+import {IsNotEmpty, IsNumber, IsOptional, Min} from "class-validator";
+import {CommissionConfigurationResponseDto} from "./commission.configurations.dto";
+import {ParameterLineResponseDto} from "./parameter.lines.dto";
 
 export class CreateProductLineDto {
   @IsNotEmpty()

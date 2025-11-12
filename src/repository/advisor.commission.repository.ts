@@ -1,10 +1,9 @@
-import { AdvisorCommissionSearchDto } from "../dtos/advisor.commission.dto";
-import { FilterReportCommissionDto } from "../dtos/report.dto";
-import { AdvisorCommission } from "../models/advisor.commission.model";
-import { BaseRepository } from "./base.respository";
-import { Brackets, DataSource } from "typeorm";
-import { plainToInstance } from "class-transformer";
-import { ResponseDataConsensoDto, SearchDataConsensoDto } from "../dtos/search.data.consenso";
+import {FilterReportCommissionDto} from "../dtos/report.dto";
+import {AdvisorCommission} from "../models/advisor.commission.model";
+import {BaseRepository} from "./base.respository";
+import {Brackets, DataSource} from "typeorm";
+import {plainToInstance} from "class-transformer";
+import {ResponseDataConsensoDto, SearchDataConsensoDto} from "../dtos/search.data.consenso";
 
 export class AdvisorCommissionRepository extends BaseRepository<AdvisorCommission> {
   constructor(dataSource: DataSource) {

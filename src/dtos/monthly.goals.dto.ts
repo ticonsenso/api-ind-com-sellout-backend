@@ -1,7 +1,7 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
-import { CompanyPositionResponseDto } from './company.positions.dto';
-import { ProductLineResponseDto } from './product.lines.dto';
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsDate, IsNotEmpty, IsNumber, IsOptional} from 'class-validator';
+import {CompanyPositionResponseDto} from './company.positions.dto';
+import {ProductLineResponseDto} from './product.lines.dto';
 
 export class CreateMonthlyGoalDto {
   @IsNotEmpty()

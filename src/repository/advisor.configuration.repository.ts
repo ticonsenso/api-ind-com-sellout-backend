@@ -1,6 +1,6 @@
-import { EmployForMonth } from '../models/advisor.configuration.model';
-import { BaseRepository } from './base.respository';
-import { DataSource } from 'typeorm';
+import {EmployForMonth} from '../models/advisor.configuration.model';
+import {BaseRepository} from './base.respository';
+import {DataSource} from 'typeorm';
 
 export class AdvisorConfigurationRepository extends BaseRepository<EmployForMonth> {
   constructor(dataSource: DataSource) {

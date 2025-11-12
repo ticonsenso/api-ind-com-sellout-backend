@@ -1,7 +1,7 @@
-import { DataSource } from "typeorm";
-import { StoreSize } from "../models/store.size.model";
-import { BaseRepository } from "./base.respository";
-import { StoreSizeSearchDto } from "../dtos/store.size.dto";
+import {DataSource} from "typeorm";
+import {StoreSize} from "../models/store.size.model";
+import {BaseRepository} from "./base.respository";
+import {StoreSizeSearchDto} from "../dtos/store.size.dto";
 
 export class StoreSizeRepository extends BaseRepository<StoreSize> {
   constructor(dataSource: DataSource) {

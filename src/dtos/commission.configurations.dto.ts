@@ -1,12 +1,6 @@
-import { Expose, Type } from "class-transformer";
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from "class-validator";
-import { CompanyPositionResponseDto } from "./company.positions.dto";
+import {Expose, Type} from "class-transformer";
+import {IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString,} from "class-validator";
+import {CompanyPositionResponseDto} from "./company.positions.dto";
 
 export class CreateCommissionConfigurationDto {
   @IsNotEmpty()

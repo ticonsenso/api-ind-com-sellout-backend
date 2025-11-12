@@ -1,17 +1,17 @@
-import { plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import {plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
 import {
-  CommissionConfigurationResponseDto,
-  CommissionConfigurationResponseSearchDto,
-  CommissionConfigurationSearchDto,
-  CreateCommissionConfigurationDto,
-  UpdateCommissionConfigurationDto,
+    CommissionConfigurationResponseDto,
+    CommissionConfigurationResponseSearchDto,
+    CommissionConfigurationSearchDto,
+    CreateCommissionConfigurationDto,
+    UpdateCommissionConfigurationDto,
 } from '../dtos/commission.configurations.dto';
-import { CompanyPositionResponseDto } from '../dtos/company.positions.dto';
-import { CommissionConfiguration } from '../models/commission.configurations.model';
-import { CommissionConfigurationsRepository } from '../repository/commission.configurations.repository';
-import { CompaniesRepository } from '../repository/companies.repository';
-import { CompanyPositionsRepository } from '../repository/company.positions.repository';
+import {CompanyPositionResponseDto} from '../dtos/company.positions.dto';
+import {CommissionConfiguration} from '../models/commission.configurations.model';
+import {CommissionConfigurationsRepository} from '../repository/commission.configurations.repository';
+import {CompaniesRepository} from '../repository/companies.repository';
+import {CompanyPositionsRepository} from '../repository/company.positions.repository';
 
 export class CommissionConfigurationsService {
   private commissionConfigurationRepository: CommissionConfigurationsRepository;

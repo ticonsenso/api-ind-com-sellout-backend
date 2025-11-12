@@ -1,18 +1,19 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
-import { CommissionConfigurationResponseDto } from "../dtos/commission.configurations.dto";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
+import {CommissionConfigurationResponseDto} from "../dtos/commission.configurations.dto";
 import {
-  CommissionParameterResponseDto,
-  CommissionParameterResponseSearchDto,
-  CommissionParameterSearchDto,
-  CreateCommissionParameterDto,
-  UpdateCommissionParameterDto,
+    CommissionParameterResponseDto,
+    CommissionParameterResponseSearchDto,
+    CommissionParameterSearchDto,
+    CreateCommissionParameterDto,
+    UpdateCommissionParameterDto,
 } from "../dtos/commission.parameters.dto";
-import { ParameterCategoryResponseDto } from "../dtos/parameter.categories.dto";
-import { CommissionParameter } from "../models/commission.parameters.model";
-import { CommissionConfigurationsRepository } from "../repository/commission.configurations.repository";
-import { CommissionParametersRepository } from "../repository/commission.parameters.repository";
-import { ParameterCategoriesRepository } from "../repository/parameter.categories.repository";
+import {ParameterCategoryResponseDto} from "../dtos/parameter.categories.dto";
+import {CommissionParameter} from "../models/commission.parameters.model";
+import {CommissionConfigurationsRepository} from "../repository/commission.configurations.repository";
+import {CommissionParametersRepository} from "../repository/commission.parameters.repository";
+import {ParameterCategoriesRepository} from "../repository/parameter.categories.repository";
+
 export class CommissionParametersService {
   private commissionParametersRepository: CommissionParametersRepository;
   private parameterCategoriesRepository: ParameterCategoriesRepository;

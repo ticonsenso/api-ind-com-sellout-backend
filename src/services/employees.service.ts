@@ -1,16 +1,17 @@
-import { plainToClass, plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
+import {plainToClass, plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
 import {
-  CreateEmployeeDto,
-  EmployeeResponseDto,
-  EmployeeResponseSearchDto,
-  EmployeeSearchDto,
-  UpdateEmployeeDto,
+    CreateEmployeeDto,
+    EmployeeResponseDto,
+    EmployeeResponseSearchDto,
+    EmployeeSearchDto,
+    UpdateEmployeeDto,
 } from "../dtos/employees.dto";
-import { Employee } from '../models/employees.model';
-import { CompaniesRepository } from "../repository/companies.repository";
-import { CompanyPositionsRepository } from "../repository/company.positions.repository";
-import { EmployeesRepository } from "../repository/employees.repository";
+import {Employee} from '../models/employees.model';
+import {CompaniesRepository} from "../repository/companies.repository";
+import {CompanyPositionsRepository} from "../repository/company.positions.repository";
+import {EmployeesRepository} from "../repository/employees.repository";
+
 export class EmployeesService {
   private employeeRepository: EmployeesRepository;
   private companyRepository: CompaniesRepository;

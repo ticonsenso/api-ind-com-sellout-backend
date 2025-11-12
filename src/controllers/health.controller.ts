@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
-import { statusConeccion } from "../config/data-source";
-import { env } from "../config/env";
+import {Request, Response} from "express";
+import {statusConeccion} from "../config/data-source";
+import {env} from "../config/env";
+
 export class HealthController {
   async healthCheck(req: Request, res: Response) {
     try {

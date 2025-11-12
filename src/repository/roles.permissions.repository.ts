@@ -1,6 +1,6 @@
-import { RolePermission } from '../models/roles.permissions.model';
-import { BaseRepository } from './base.respository';
-import { DataSource } from 'typeorm';
+import {RolePermission} from '../models/roles.permissions.model';
+import {BaseRepository} from './base.respository';
+import {DataSource} from 'typeorm';
 
 export class RolePermissionRepository extends BaseRepository<RolePermission> {
   constructor(dataSource: DataSource) {

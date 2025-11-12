@@ -1,24 +1,29 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
-import { ExtractedDataSelloutRepository } from '../repository/extrated.data.sellout.repository';
-import { SelloutConfiguration } from '../models/sellout.configuration.model';
-import { ExtractionLogsSellout } from '../models/extraction.logs.sellout.model';
-import { CreateExtractedDataSelloutDto, ExtractedDataSelloutDto, ExtractedDataSelloutFiltersResponseDto, UpdateExtractedDataSelloutDto } from '../dtos/extrated.data.sellout.dto';
-import { ExtractedDataSellout } from '../models/extracted.data.sellout.model';
-import { User } from '../models/users.model';
-import { UserConsenso } from '../interfaces/user.consenso';
-import { UserRepository } from '../repository/users.repository';
-import { ConsolidatedDataStoresService } from './consolidated.data.stores.service';
-import { SelloutConfigurationRepository } from '../repository/sellout.configuration.repository';
-import { ExtractionLogsSelloutRepository } from '../repository/extraction.logs.sellout.repositoy';
-import { MatriculationTemplatesRepository } from '../repository/matriculation.templates.repository';
-import { MatriculationLogsRepository } from '../repository/matriculation.logs.repostitory';
-import { MatriculationService } from './matriculation.service';
-import { parseDateFromISO } from '../utils/utils';
-import { ConsolidatedDataStoresRepository } from '../repository/consolidated.data.stores.repository';
-import { MatriculationTemplate } from '../models/matriculation.templates.model';
-import { MatriculationLog } from '../models/matriculation.logs.model';
-import { CreateMatriculationLogDto } from '../dtos/matriculation.logs.dto';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
+import {ExtractedDataSelloutRepository} from '../repository/extrated.data.sellout.repository';
+import {SelloutConfiguration} from '../models/sellout.configuration.model';
+import {ExtractionLogsSellout} from '../models/extraction.logs.sellout.model';
+import {
+    CreateExtractedDataSelloutDto,
+    ExtractedDataSelloutDto,
+    ExtractedDataSelloutFiltersResponseDto,
+    UpdateExtractedDataSelloutDto
+} from '../dtos/extrated.data.sellout.dto';
+import {ExtractedDataSellout} from '../models/extracted.data.sellout.model';
+import {User} from '../models/users.model';
+import {UserConsenso} from '../interfaces/user.consenso';
+import {UserRepository} from '../repository/users.repository';
+import {ConsolidatedDataStoresService} from './consolidated.data.stores.service';
+import {SelloutConfigurationRepository} from '../repository/sellout.configuration.repository';
+import {ExtractionLogsSelloutRepository} from '../repository/extraction.logs.sellout.repositoy';
+import {MatriculationTemplatesRepository} from '../repository/matriculation.templates.repository';
+import {MatriculationLogsRepository} from '../repository/matriculation.logs.repostitory';
+import {MatriculationService} from './matriculation.service';
+import {parseDateFromISO} from '../utils/utils';
+import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.stores.repository';
+import {MatriculationTemplate} from '../models/matriculation.templates.model';
+import {MatriculationLog} from '../models/matriculation.logs.model';
+import {CreateMatriculationLogDto} from '../dtos/matriculation.logs.dto';
 
 type ExtractedDataSelloutResponse = {
     message: string;

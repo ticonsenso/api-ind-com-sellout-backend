@@ -1,5 +1,5 @@
-import { Expose, Exclude } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {Exclude, Expose} from 'class-transformer';
+import {IsNotEmpty, IsOptional, IsString} from 'class-validator';
 
 export class CreateParameterCategoryDto {
   @IsNotEmpty()

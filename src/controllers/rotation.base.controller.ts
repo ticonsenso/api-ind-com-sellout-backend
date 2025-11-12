@@ -1,10 +1,9 @@
-
-import { DataSource } from 'typeorm';
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass } from 'class-transformer';
-import { RotationBaseService } from '../services/rotation.base.service';
-import { CreateRotationBaseDto, UpdateRotationBaseDto } from '../dtos/rotation.base.dto';
+import {DataSource} from 'typeorm';
+import {Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass} from 'class-transformer';
+import {RotationBaseService} from '../services/rotation.base.service';
+import {CreateRotationBaseDto, UpdateRotationBaseDto} from '../dtos/rotation.base.dto';
 
 export class RotationBaseController {
     private rotationBaseService: RotationBaseService;

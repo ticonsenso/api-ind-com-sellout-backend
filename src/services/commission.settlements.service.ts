@@ -1,5 +1,6 @@
-import { DataSource } from 'typeorm';
-import { CommissionSettlementsRepository } from '../repository/commission.settlements.repository';
+import {DataSource} from 'typeorm';
+import {CommissionSettlementsRepository} from '../repository/commission.settlements.repository';
+
 export class CommissionSettlementsService {
   private commissionSettlementRepository: CommissionSettlementsRepository;
 

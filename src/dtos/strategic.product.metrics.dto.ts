@@ -1,6 +1,6 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { MonthlyResultResponseDto } from './monthly.results.dto';
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsNotEmpty, IsNumber, IsOptional, IsString} from 'class-validator';
+import {MonthlyResultResponseDto} from './monthly.results.dto';
 
 export class CreateStrategicProductMetricDto {
   @IsNotEmpty()

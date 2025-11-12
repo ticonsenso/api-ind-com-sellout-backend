@@ -1,36 +1,37 @@
-import { DataSource } from 'typeorm';
-import { exportToExcel } from '../helpers/export.to.excel.helper';
-import { Request, Response } from 'express';
-import { ProductSicRepository } from '../repository/product.sic.repository';
+import {DataSource} from 'typeorm';
+import {exportToExcel} from '../helpers/export.to.excel.helper';
+import {Request, Response} from 'express';
+import {ProductSicRepository} from '../repository/product.sic.repository';
 import {
     fieldsAdvisorCommission,
     fieldsBasePptoSellout,
     fieldsBaseValuesSellout,
+    fieldsCalculationComissionStoreManager,
     fieldsConsolidatedDataStores,
+    fieldsEmployee,
+    fieldsMatriculacion,
+    fieldsMatriculacionLogs,
     fieldsProductSic,
     fieldsSelloutProductMaster,
     fieldsSelloutStoreMaster,
-    fieldsStoresSic,
-    fieldsMatriculacion,
-    fieldsMatriculacionLogs,
     fieldsStoreConfiguration,
     fieldsStorePptoMarcimex,
-    fieldsEmployee,
-    fieldsCalculationComissionStoreManager,
+    fieldsStoresSic,
     filedsConsolidatedCommissionCalculation
 } from '../utils/fields';
-import { ConsolidatedDataStoresRepository } from '../repository/consolidated.data.stores.repository';
-import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
-import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
-import { StoresSicRepository } from '../repository/stores.repository';
-import { BaseValuesSelloutRepository } from '../repository/base.values.sellout.repository';
-import { BasePptoSelloutService } from '../services/base.ppto.sellout.service';
-import { AdvisorCommissionService } from '../services/advisor.commision.service';
-import { MatriculationService } from '../services/matriculation.service';
-import { StoreConfigurationService } from '../services/store.configuration.service';
-import { EmployeesService } from '../services/employees.service';
-import { StoreManagerCalculationCommissionService } from '../services/store.manager.calculation.commission.service';
-import { ConsolidatedCommissionCalculationService } from '../services/consolidated.commission.calculation.service';
+import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.stores.repository';
+import {SelloutProductMasterRepository} from '../repository/sellout.product.master.repository';
+import {SelloutStoreMasterRepository} from '../repository/sellout.store.master.repository';
+import {StoresSicRepository} from '../repository/stores.repository';
+import {BaseValuesSelloutRepository} from '../repository/base.values.sellout.repository';
+import {BasePptoSelloutService} from '../services/base.ppto.sellout.service';
+import {AdvisorCommissionService} from '../services/advisor.commision.service';
+import {MatriculationService} from '../services/matriculation.service';
+import {StoreConfigurationService} from '../services/store.configuration.service';
+import {EmployeesService} from '../services/employees.service';
+import {StoreManagerCalculationCommissionService} from '../services/store.manager.calculation.commission.service';
+import {ConsolidatedCommissionCalculationService} from '../services/consolidated.commission.calculation.service';
+
 export interface ExportField {
     key: string;
     header: string;

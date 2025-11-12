@@ -1,8 +1,8 @@
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { NullFieldFilters } from '../dtos/consolidated.data.stores.dto';
-import { ConsolidatedDataStores } from '../models/consolidated.data.stores.model';
-import { BaseRepository } from './base.respository';
-import { Brackets, SelectQueryBuilder, DataSource as TypeORMDataSource, UpdateResult } from 'typeorm';
+import {QueryDeepPartialEntity} from 'typeorm/query-builder/QueryPartialEntity';
+import {NullFieldFilters} from '../dtos/consolidated.data.stores.dto';
+import {ConsolidatedDataStores} from '../models/consolidated.data.stores.model';
+import {BaseRepository} from './base.respository';
+import {Brackets, DataSource as TypeORMDataSource, SelectQueryBuilder, UpdateResult} from 'typeorm';
 
 
 export class ConsolidatedDataStoresRepository extends BaseRepository<ConsolidatedDataStores> {

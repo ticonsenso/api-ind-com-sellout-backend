@@ -1,12 +1,14 @@
-import { plainToInstance } from "class-transformer";
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { DataSource } from "typeorm";
-import { UpdateProductComplianceDto } from "../dtos/product.compliance.dto";
-import { CalculationProductExtrategicService } from "../services/calculation.product.extrategic.service";
-import { ConsolidatedCommissionCalculationService } from "../services/consolidated.commission.calculation.service";
-import { ProductComplianceService } from "../services/product.compliance.service";
-import { ConsolidatedCommissionCalculationRepository } from "../repository/consolidated.commission.calculation.repository";
+import {plainToInstance} from "class-transformer";
+import {Request, Response} from "express";
+import {StatusCodes} from "http-status-codes";
+import {DataSource} from "typeorm";
+import {UpdateProductComplianceDto} from "../dtos/product.compliance.dto";
+import {CalculationProductExtrategicService} from "../services/calculation.product.extrategic.service";
+import {ConsolidatedCommissionCalculationService} from "../services/consolidated.commission.calculation.service";
+import {ProductComplianceService} from "../services/product.compliance.service";
+import {
+    ConsolidatedCommissionCalculationRepository
+} from "../repository/consolidated.commission.calculation.repository";
 
 export class CommissionCalculationController {
   public productComplianceService: ProductComplianceService;

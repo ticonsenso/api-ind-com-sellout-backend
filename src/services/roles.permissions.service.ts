@@ -1,8 +1,8 @@
-import { DataSource } from 'typeorm';
-import { RolePermissionRepository } from '../repository/roles.permissions.repository';
-import { RolePermission } from '../models/roles.permissions.model';
-import { RoleRepository } from '../repository/roles.repository';
-import { PermissionRepository } from '../repository/permissions.repository';
+import {DataSource} from 'typeorm';
+import {RolePermissionRepository} from '../repository/roles.permissions.repository';
+import {RolePermission} from '../models/roles.permissions.model';
+import {RoleRepository} from '../repository/roles.repository';
+import {PermissionRepository} from '../repository/permissions.repository';
 
 export class RolesPermissionsService {
   private rolePermissionRepository: RolePermissionRepository;

@@ -1,8 +1,8 @@
-import { DataSource as TypeORMDataSource } from "typeorm";
-import { EmployeeSearchDto } from "../dtos/employees.dto";
-import { Employee } from "../models/employees.model";
-import { BaseRepository } from "./base.respository";
-import { CompanyPositionsRepository } from "./company.positions.repository";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {EmployeeSearchDto} from "../dtos/employees.dto";
+import {Employee} from "../models/employees.model";
+import {BaseRepository} from "./base.respository";
+import {CompanyPositionsRepository} from "./company.positions.repository";
 
 export class EmployeesRepository extends BaseRepository<Employee> {
   private companyPositionRepository: CompanyPositionsRepository;

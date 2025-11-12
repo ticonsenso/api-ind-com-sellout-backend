@@ -1,14 +1,7 @@
-import { Expose, Type } from "class-transformer";
-import {
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from "class-validator";
-import { CommissionConfigurationResponseDto } from "./commission.configurations.dto";
-import { ParameterCategoryResponseDto } from "./parameter.categories.dto";
+import {Expose, Type} from "class-transformer";
+import {IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString,} from "class-validator";
+import {CommissionConfigurationResponseDto} from "./commission.configurations.dto";
+import {ParameterCategoryResponseDto} from "./parameter.categories.dto";
 
 export class CreateCommissionParameterDto {
   @IsNotEmpty()

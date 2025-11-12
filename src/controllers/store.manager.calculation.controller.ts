@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { DataSource } from "typeorm";
+import {Request, Response} from "express";
+import {StatusCodes} from "http-status-codes";
+import {DataSource} from "typeorm";
 
-import { StoreManagerCalculationCommissionService } from "../services/store.manager.calculation.commission.service";
+import {StoreManagerCalculationCommissionService} from "../services/store.manager.calculation.commission.service";
+
 export class StoreManagerCalculationCommissionController {
 
     private storeManagerCalculationCommissionService: StoreManagerCalculationCommissionService;

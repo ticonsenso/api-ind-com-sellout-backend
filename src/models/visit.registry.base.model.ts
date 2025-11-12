@@ -1,6 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
-import { Employee } from './employees.model';
-import { Stores } from './stores.model';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm';
+import {Employee} from './employees.model';
+import {StoresSic} from './stores.sic.model';
 
 @Entity('visit_registry_base')
 export class VisitRegistryBase {
@@ -33,9 +41,9 @@ export class VisitRegistryBase {
     @Column({ name: 'store_code', type: 'varchar', length: 255, nullable: false })
     storeCode!: string;
 
-    @ManyToOne(() => Stores, (store) => store.id)
+    @ManyToOne(() => StoresSic, (store) => store.id)
     @JoinColumn({ name: 'id_stores' })
-    store!: Stores;
+    store!: StoresSic;
 
     @Column({ name: 'planning_status', type: 'varchar', length: 255, nullable: false })
     planningStatus!: string;

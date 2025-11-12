@@ -1,4 +1,4 @@
-import { ExportField } from "../controllers/export.data.controller";
+import {ExportField} from "../controllers/export.data.controller";
 
 export const fieldsProductSic: ExportField[] = [
     { key: 'idProductSic', header: 'ID' },

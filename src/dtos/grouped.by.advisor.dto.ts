@@ -1,10 +1,6 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import {
-    IsArray,
-    IsInt,
-    IsOptional,
-} from 'class-validator';
-import { StoreConfigurationResponseDto } from './store.configuration.dto'; // Asegúrate de que este exista
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsArray, IsInt, IsOptional,} from 'class-validator';
+import {StoreConfigurationResponseDto} from './store.configuration.dto'; // Asegúrate de que este exista
 
 export class CreateGroupedByAdvisorDto {
     @IsOptional()

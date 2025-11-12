@@ -1,14 +1,14 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from "typeorm";
-import { CommissionConfiguration } from "./commission.configurations.model";
-import { ParameterLine } from "./parameter.lines.model";
+import {CommissionConfiguration} from "./commission.configurations.model";
+import {ParameterLine} from "./parameter.lines.model";
 
 @Entity("commission_rules")
 export class CommissionRule {

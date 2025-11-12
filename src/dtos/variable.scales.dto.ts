@@ -1,8 +1,8 @@
-import { Expose, Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from "class-validator";
-import { CommissionConfigurationResponseDto } from "./commission.configurations.dto";
-import { CompanyResponseDto } from "./companies.dto";
-import { CompanyPositionResponseDto } from "./company.positions.dto";
+import {Expose, Type} from "class-transformer";
+import {IsNotEmpty, IsNumber, IsOptional, Max, Min} from "class-validator";
+import {CommissionConfigurationResponseDto} from "./commission.configurations.dto";
+import {CompanyResponseDto} from "./companies.dto";
+import {CompanyPositionResponseDto} from "./company.positions.dto";
 
 export class CreateVariableScaleDto {
   @IsNotEmpty({ message: "El ID de la empresa es obligatorio." })

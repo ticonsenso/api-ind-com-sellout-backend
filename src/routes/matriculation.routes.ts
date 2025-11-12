@@ -1,12 +1,12 @@
-import { RequestHandler, Router } from "express";
+import {RequestHandler, Router} from "express";
 import AppDataSource from "../config/data-source";
-import { authenticateToken } from '../middleware/auth.middleware';
-import { MatriculationController } from "../controllers/matriculation.controller";
-import { CreateMatriculationTemplateDto, UpdateMatriculationTemplateDto } from "../dtos/matriculation.templates.dto";
-import { validatorMiddleware } from "../middleware/validator.middleware";
-import { CreateMatriculationLogDto, UpdateMatriculationLogDto } from "../dtos/matriculation.logs.dto";
-import { CreateClosingConfigurationDto, UpdateClosingConfigurationDto } from "../dtos/closing.cofiguration.dto";
-import { ClosingConfigurationController } from "../controllers/closing.configuration.controller";
+import {authenticateToken} from '../middleware/auth.middleware';
+import {MatriculationController} from "../controllers/matriculation.controller";
+import {CreateMatriculationTemplateDto, UpdateMatriculationTemplateDto} from "../dtos/matriculation.templates.dto";
+import {validatorMiddleware} from "../middleware/validator.middleware";
+import {CreateMatriculationLogDto, UpdateMatriculationLogDto} from "../dtos/matriculation.logs.dto";
+import {CreateClosingConfigurationDto, UpdateClosingConfigurationDto} from "../dtos/closing.cofiguration.dto";
+import {ClosingConfigurationController} from "../controllers/closing.configuration.controller";
 
 const router = Router();
 const matriculationController = new MatriculationController(AppDataSource);

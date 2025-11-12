@@ -1,7 +1,7 @@
-import { IsString, IsNotEmpty, IsEmail, IsBoolean, IsOptional, MinLength, MaxLength, IsNumber } from 'class-validator';
-import { Expose } from 'class-transformer';
-import { RoleResponseDto } from './roles.dto';
-import { CompanyResponseDto } from './companies.dto';
+import {IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength} from 'class-validator';
+import {Expose} from 'class-transformer';
+import {RoleResponseDto} from './roles.dto';
+import {CompanyResponseDto} from './companies.dto';
 
 export class CreateUserDto {
   @IsString()

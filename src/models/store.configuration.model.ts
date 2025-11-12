@@ -1,16 +1,16 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
-import { StoreSize } from './store.size.model';
-import { Company } from './companies.model';
-import { EmployForMonth } from './advisor.configuration.model';
+import {StoreSize} from './store.size.model';
+import {Company} from './companies.model';
+import {EmployForMonth} from './advisor.configuration.model';
 
 /**
  * Entidad que representa la configuración de una tienda

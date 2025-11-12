@@ -1,18 +1,24 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
 
-import { ConsolidatedDataStoresRepository } from '../repository/consolidated.data.stores.repository';
-import { ConsolidatedDataStoresDto, ConsolidatedDataStoresFiltersResponseDto, CreateConsolidatedDataStoresDto, NullFieldFilters, UpdateConsolidatedDataStoresDto, UpdateConsolidatedDto } from '../dtos/consolidated.data.stores.dto';
-import { ConsolidatedDataStores } from '../models/consolidated.data.stores.model';
-import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
-import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
-import { ProductSicRepository } from '../repository/product.sic.repository';
-import { StoresSicRepository } from '../repository/stores.repository';
-import { addErrorMessage, chunkArray, cleanString } from '../utils/utils';
-import { SelloutProductMaster } from '../models/sellout.product.master.model';
-import { CreateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
-import { CreateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.stores.repository';
+import {
+    ConsolidatedDataStoresDto,
+    ConsolidatedDataStoresFiltersResponseDto,
+    CreateConsolidatedDataStoresDto,
+    NullFieldFilters,
+    UpdateConsolidatedDataStoresDto,
+    UpdateConsolidatedDto
+} from '../dtos/consolidated.data.stores.dto';
+import {ConsolidatedDataStores} from '../models/consolidated.data.stores.model';
+import {SelloutProductMasterRepository} from '../repository/sellout.product.master.repository';
+import {SelloutStoreMasterRepository} from '../repository/sellout.store.master.repository';
+import {ProductSicRepository} from '../repository/product.sic.repository';
+import {StoresSicRepository} from '../repository/stores.repository';
+import {chunkArray, cleanString} from '../utils/utils';
+import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
+import {CreateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
+import {QueryDeepPartialEntity} from 'typeorm/query-builder/QueryPartialEntity';
 
 export class ConsolidatedDataStoresService {
     private consolidatedDataStoresRepository: ConsolidatedDataStoresRepository;

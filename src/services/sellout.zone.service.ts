@@ -1,9 +1,14 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
-import { StoresSicRepository } from '../repository/stores.repository';
-import { SelloutZoneRepository } from '../repository/sellout.zone.repository';
-import { SelloutZone } from '../models/sellout.zone.model';
-import { CreateSelloutZoneDto, SelloutZonePaginatedResponseDto, SelloutZoneResponseDto, UpdateSelloutZoneDto } from '../dtos/selleout.zone.dto';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
+import {StoresSicRepository} from '../repository/stores.repository';
+import {SelloutZoneRepository} from '../repository/sellout.zone.repository';
+import {SelloutZone} from '../models/sellout.zone.model';
+import {
+    CreateSelloutZoneDto,
+    SelloutZonePaginatedResponseDto,
+    SelloutZoneResponseDto,
+    UpdateSelloutZoneDto
+} from '../dtos/selleout.zone.dto';
 
 export class SelloutZoneService {
     private selloutZoneRepository: SelloutZoneRepository;

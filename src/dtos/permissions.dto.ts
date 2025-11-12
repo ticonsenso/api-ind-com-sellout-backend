@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsBoolean, IsOptional, MinLength, MaxLength } from 'class-validator';
-import { Expose } from 'class-transformer';
+import {IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength} from 'class-validator';
+import {Expose} from 'class-transformer';
 
 export class CreatePermissionDto {
   @IsString()

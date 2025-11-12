@@ -1,9 +1,8 @@
-import { Expose, Type, Exclude } from 'class-transformer';
-import { CompanyResponseDto } from './companies.dto';
-import { CompanyPositionResponseDto } from './company.positions.dto';
-import { EmployeeResponseDto } from './employees.dto';
-import { ConsolidatedCommissionCalculationResponseDto } from './consolidated.commission.calculation.dto';
-import { CompanyPositionSnapshot } from '../models/employees.history.model';
+import {Expose, Type} from 'class-transformer';
+import {CompanyResponseDto} from './companies.dto';
+import {EmployeeResponseDto} from './employees.dto';
+import {ConsolidatedCommissionCalculationResponseDto} from './consolidated.commission.calculation.dto';
+import {CompanyPositionSnapshot} from '../models/employees.history.model';
 
 export class EmployeeHistoryResponseDto {
     @Expose()

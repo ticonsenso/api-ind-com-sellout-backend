@@ -1,5 +1,5 @@
-import { Expose } from "class-transformer";
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
+import {Expose} from "class-transformer";
+import {IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min} from "class-validator";
 
 export class CreateSalesRotationConfigurationDto {
     @IsNotEmpty()

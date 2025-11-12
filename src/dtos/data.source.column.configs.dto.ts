@@ -1,18 +1,18 @@
-import { Expose, Type } from "class-transformer";
+import {Expose, Type} from "class-transformer";
 import {
-  IsBoolean,
-  IsDate,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  IsOptional,
-  IsPositive,
-  IsString,
-  MaxLength,
-  ValidateNested,
+    IsBoolean,
+    IsDate,
+    IsInt,
+    IsNotEmpty,
+    IsNumber,
+    IsObject,
+    IsOptional,
+    IsPositive,
+    IsString,
+    MaxLength,
+    ValidateNested,
 } from "class-validator";
-import { UserResponseDto } from "./users.dto";
+import {UserResponseDto} from "./users.dto";
 
 export class CreateDataSourceColumnConfigDto {
   @IsOptional()

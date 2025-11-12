@@ -1,7 +1,7 @@
-import { DataSource } from "typeorm";
-import { VariableScaleSearchDto } from "../dtos/variable.scales.dto";
-import { VariableScale } from "../models/variable.scales.model";
-import { BaseRepository } from "./base.respository";
+import {DataSource} from "typeorm";
+import {VariableScaleSearchDto} from "../dtos/variable.scales.dto";
+import {VariableScale} from "../models/variable.scales.model";
+import {BaseRepository} from "./base.respository";
 
 export class VariableScalesRepository extends BaseRepository<VariableScale> {
   constructor(dataSource: DataSource) {

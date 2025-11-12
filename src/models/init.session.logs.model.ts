@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import {Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity('init_session_logs')
 export class InitSessionLogs {

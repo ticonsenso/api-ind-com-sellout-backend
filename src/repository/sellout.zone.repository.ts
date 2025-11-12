@@ -1,6 +1,6 @@
-import { Brackets, DataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { SelloutZone } from "../models/sellout.zone.model";
+import {Brackets, DataSource} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {SelloutZone} from "../models/sellout.zone.model";
 
 export class SelloutZoneRepository extends BaseRepository<SelloutZone> {
     constructor(dataSource: DataSource) {

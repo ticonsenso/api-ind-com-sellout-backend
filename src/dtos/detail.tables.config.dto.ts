@@ -1,12 +1,6 @@
-import { Expose } from "class-transformer";
-import {
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from "class-validator";
-import { CompanyResponseDto } from "./companies.dto";
+import {Expose} from "class-transformer";
+import {IsInt, IsNotEmpty, IsOptional, IsString, MaxLength,} from "class-validator";
+import {CompanyResponseDto} from "./companies.dto";
 
 export class CreateDetailTablesConfigDto {
   @IsInt({ message: "El ID de la compañía debe ser un número entero" })

@@ -1,7 +1,7 @@
-import { CompanySearchDto } from '../dtos/companies.dto';
-import { Company } from '../models/companies.model';
-import { BaseRepository } from './base.respository';
-import { DataSource as TypeORMDataSource } from 'typeorm';
+import {CompanySearchDto} from '../dtos/companies.dto';
+import {Company} from '../models/companies.model';
+import {BaseRepository} from './base.respository';
+import {DataSource as TypeORMDataSource} from 'typeorm';
 
 export class CompaniesRepository extends BaseRepository<Company> {
   constructor(dataSource: TypeORMDataSource) {

@@ -1,5 +1,5 @@
-import { DataSource, DeepPartial, EntityTarget, InsertResult, ObjectLiteral, Repository } from 'typeorm';
-import { chunkArray } from '../utils/utils';
+import {DataSource, DeepPartial, EntityTarget, ObjectLiteral, Repository} from 'typeorm';
+import {chunkArray} from '../utils/utils';
 
 export class BaseRepository<T extends ObjectLiteral> {
   public repository: Repository<T>;

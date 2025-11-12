@@ -1,14 +1,15 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
 import {
-  CreateParameterCategoryDto,
-  ParameterCategoryResponseDto,
-  ParameterCategoryResponseSearchDto,
-  ParameterCategorySearchDto,
-  UpdateParameterCategoryDto,
+    CreateParameterCategoryDto,
+    ParameterCategoryResponseDto,
+    ParameterCategoryResponseSearchDto,
+    ParameterCategorySearchDto,
+    UpdateParameterCategoryDto,
 } from "../dtos/parameter.categories.dto";
-import { ParameterCategory } from "../models/parameter.categories.model";
-import { ParameterCategoriesRepository } from "../repository/parameter.categories.repository";
+import {ParameterCategory} from "../models/parameter.categories.model";
+import {ParameterCategoriesRepository} from "../repository/parameter.categories.repository";
+
 export class ParameterCategoriesService {
   private parameterCategoryRepository: ParameterCategoriesRepository;
 

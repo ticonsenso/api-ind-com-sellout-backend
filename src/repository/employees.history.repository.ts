@@ -1,6 +1,6 @@
-import { DataSource as TypeORMDataSource } from "typeorm";
-import { BaseRepository } from "./base.respository";
-import { EmployeesHistory } from "../models/employees.history.model";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {BaseRepository} from "./base.respository";
+import {EmployeesHistory} from "../models/employees.history.model";
 
 export class EmployeesHistoryRepository extends BaseRepository<EmployeesHistory> {
     constructor(dataSource: TypeORMDataSource) {

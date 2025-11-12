@@ -1,12 +1,12 @@
-import { Router, RequestHandler } from 'express';
+import {RequestHandler, Router} from 'express';
 import AppDataSource from '../config/data-source';
-import { BaseSelloutController } from '../controllers/base.sellout.controller';
-import { CreateBasePptoSelloutDto, UpdateBasePptoSelloutDto } from '../dtos/base.ppto.sellout.dto';
-import { authenticateToken } from '../middleware/auth.middleware';
-import { validatorMiddleware } from '../middleware/validator.middleware';
-import { CreateBaseValuesSelloutDto, UpdateBaseValuesSelloutDto } from '../dtos/base.values.sellout.dto';
-import { CreateRotationBaseDto } from '../dtos/rotation.base.dto';
-import { RotationBaseController } from '../controllers/rotation.base.controller';
+import {BaseSelloutController} from '../controllers/base.sellout.controller';
+import {CreateBasePptoSelloutDto, UpdateBasePptoSelloutDto} from '../dtos/base.ppto.sellout.dto';
+import {authenticateToken} from '../middleware/auth.middleware';
+import {validatorMiddleware} from '../middleware/validator.middleware';
+import {CreateBaseValuesSelloutDto, UpdateBaseValuesSelloutDto} from '../dtos/base.values.sellout.dto';
+import {CreateRotationBaseDto} from '../dtos/rotation.base.dto';
+import {RotationBaseController} from '../controllers/rotation.base.controller';
 
 const router = Router();
 const baseSelloutController = new BaseSelloutController(AppDataSource);

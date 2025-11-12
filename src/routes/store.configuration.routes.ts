@@ -1,12 +1,13 @@
-import { RequestHandler, Router } from "express";
-import { StoreConfigurationController } from "../controllers/store_configuration.controller";
+import {RequestHandler, Router} from "express";
+import {StoreConfigurationController} from "../controllers/store_configuration.controller";
 import AppDataSource from "../config/data-source";
-import { authenticateToken } from "../middleware/auth.middleware";
+import {authenticateToken} from "../middleware/auth.middleware";
 
-import { validatorMiddleware } from "../middleware/validator.middleware";
-import { CreateStoreConfigurationDtoIds, UpdateStoreConfigurationDto } from "../dtos/store.configuration.dto";
-import { CreateEmployForMonthDto, UpdateEmployForMonthDto } from "../dtos/advisor.configuration.dto";
-import { CreateGroupedByAdvisorDto } from "../dtos/grouped.by.advisor.dto";
+import {validatorMiddleware} from "../middleware/validator.middleware";
+import {CreateStoreConfigurationDtoIds, UpdateStoreConfigurationDto} from "../dtos/store.configuration.dto";
+import {CreateEmployForMonthDto, UpdateEmployForMonthDto} from "../dtos/advisor.configuration.dto";
+import {CreateGroupedByAdvisorDto} from "../dtos/grouped.by.advisor.dto";
+
 const router = Router();
 
 const storeConfigurationController = new StoreConfigurationController(

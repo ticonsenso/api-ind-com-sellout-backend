@@ -1,17 +1,17 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
 import {
-  CreateDetailTablesConfigDto,
-  DetailTablesConfigResponseDto,
-  DetailTablesConfigSearchParamsDto,
-  DetailTablesConfigWithTotalResponseDto,
-  UpdateDetailTablesConfigDto,
+    CreateDetailTablesConfigDto,
+    DetailTablesConfigResponseDto,
+    DetailTablesConfigSearchParamsDto,
+    DetailTablesConfigWithTotalResponseDto,
+    UpdateDetailTablesConfigDto,
 } from "../dtos/detail.tables.config.dto";
-import { DetailTablesConfig } from "../models/detail.tables.config.model";
+import {DetailTablesConfig} from "../models/detail.tables.config.model";
 
-import { CompanyResponseDto } from "../dtos/companies.dto";
-import { CompaniesRepository } from "../repository/companies.repository";
-import { DetailTablesConfigRepository } from "../repository/detail.tables.config.repository";
+import {CompanyResponseDto} from "../dtos/companies.dto";
+import {CompaniesRepository} from "../repository/companies.repository";
+import {DetailTablesConfigRepository} from "../repository/detail.tables.config.repository";
 
 export class DetailTablesConfigService {
   private detailTablesConfigRepository: DetailTablesConfigRepository;

@@ -1,7 +1,7 @@
-import { DataSource, ILike } from 'typeorm';
-import { CreateParameterLineSearchDto } from '../dtos/parameter.lines.dto';
-import { ParameterLine } from '../models/parameter.lines.model';
-import { BaseRepository } from './base.respository';
+import {DataSource, ILike} from 'typeorm';
+import {CreateParameterLineSearchDto} from '../dtos/parameter.lines.dto';
+import {ParameterLine} from '../models/parameter.lines.model';
+import {BaseRepository} from './base.respository';
 
 export class ParameterLinesRepository extends BaseRepository<ParameterLine> {
   constructor(dataSource: DataSource) {

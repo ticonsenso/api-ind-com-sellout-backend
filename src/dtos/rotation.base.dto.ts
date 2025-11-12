@@ -1,10 +1,8 @@
-import { Expose, Type } from 'class-transformer';
-import { StoreResponseDto } from './stores.dto';
-import { ProductSicResponseDto } from './product.sic.dto';
-import { EmployeeResponseDto } from './employees.dto';
-import {
-    IsString, IsDateString, IsOptional, IsInt, IsDecimal,
-} from 'class-validator';
+import {Expose, Type} from 'class-transformer';
+import {StoreResponseDto} from './stores.sic.dto';
+import {ProductSicResponseDto} from './product.sic.dto';
+import {EmployeeResponseDto} from './employees.dto';
+import {IsDateString, IsDecimal, IsInt, IsOptional, IsString,} from 'class-validator';
 
 export class CreateRotationBaseDto {
     @IsString()

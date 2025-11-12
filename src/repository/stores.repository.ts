@@ -1,15 +1,15 @@
-import { Brackets, In, DataSource as TypeORMDataSource } from "typeorm";
-import { Stores } from "../models/stores.model";
-import { BaseRepository } from "./base.respository";
-import { NullFieldFiltersSic } from "../dtos/stores.dto";
+import {Brackets, DataSource as TypeORMDataSource, In} from "typeorm";
+import {StoresSic} from "../models/stores.sic.model";
+import {BaseRepository} from "./base.respository";
+import {NullFieldFiltersSic} from "../dtos/stores.sic.dto";
 
 
-export class StoresSicRepository extends BaseRepository<Stores> {
+export class StoresSicRepository extends BaseRepository<StoresSic> {
     constructor(dataSource: TypeORMDataSource) {
-        super(Stores, dataSource);
+        super(StoresSic, dataSource);
     }
 
-    async getDistribuidorAndStoreNameByStoreSic(storeSic: number): Promise<Stores | null> {
+    async getDistribuidorAndStoreNameByStoreSic(storeSic: number): Promise<StoresSic | null> {
         const store = await this.repository.findOne({
             select: {
                 storeCode: true,
@@ -23,7 +23,7 @@ export class StoresSicRepository extends BaseRepository<Stores> {
         return store;
     }
 
-    async findByStoreCodeOnly(storeCode: number): Promise<Stores | null> {
+    async findByStoreCodeOnly(storeCode: number): Promise<StoresSic | null> {
         return this.repository.findOne({
             where: {
                 storeCode: storeCode,
@@ -31,7 +31,7 @@ export class StoresSicRepository extends BaseRepository<Stores> {
         });
     }
 
-    async findByStoreCode(storeCode: number[]): Promise<Stores[]> {
+    async findByStoreCode(storeCode: number[]): Promise<StoresSic[]> {
         return this.repository.find({
             where: {
                 storeCode: In(storeCode),
@@ -54,7 +54,7 @@ export class StoresSicRepository extends BaseRepository<Stores> {
         limit = 10,
         search?: string,
         nullFields?: NullFieldFiltersSic
-    ): Promise<{ items: Stores[]; total: number }> {
+    ): Promise<{ items: StoresSic[]; total: number }> {
         const qb = this.repository.createQueryBuilder('s').orderBy('s.id', 'ASC');
         if (search?.trim()) {
             qb.andWhere(this.buildSearchBrackets(search));

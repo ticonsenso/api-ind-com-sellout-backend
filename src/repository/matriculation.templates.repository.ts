@@ -1,6 +1,6 @@
-import { Brackets, DataSource, In } from 'typeorm';
-import { MatriculationTemplate } from '../models/matriculation.templates.model';
-import { BaseRepository } from './base.respository';
+import {Brackets, DataSource, In} from 'typeorm';
+import {MatriculationTemplate} from '../models/matriculation.templates.model';
+import {BaseRepository} from './base.respository';
 
 export class MatriculationTemplatesRepository extends BaseRepository<MatriculationTemplate> {
     constructor(dataSource: DataSource) {

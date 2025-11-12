@@ -1,7 +1,7 @@
-import { ParameterCategorySearchDto } from '../dtos/parameter.categories.dto';
-import { ParameterCategory } from '../models/parameter.categories.model';
-import { BaseRepository } from './base.respository';
-import { DataSource as TypeORMDataSource } from 'typeorm';
+import {ParameterCategorySearchDto} from '../dtos/parameter.categories.dto';
+import {ParameterCategory} from '../models/parameter.categories.model';
+import {BaseRepository} from './base.respository';
+import {DataSource as TypeORMDataSource} from 'typeorm';
 
 export class ParameterCategoriesRepository extends BaseRepository<ParameterCategory> {
   constructor(dataSource: TypeORMDataSource) {

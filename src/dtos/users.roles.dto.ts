@@ -1,7 +1,7 @@
-import { IsNumber, IsNotEmpty, IsOptional } from 'class-validator';
-import { Expose, Type } from 'class-transformer';
-import { UserResponseDto } from './users.dto';
-import { RoleResponseDto } from './roles.dto';
+import {IsNotEmpty, IsNumber, IsOptional} from 'class-validator';
+import {Expose, Type} from 'class-transformer';
+import {UserResponseDto} from './users.dto';
+import {RoleResponseDto} from './roles.dto';
 
 export class CreateUserRoleDto {
   @IsNumber({}, { message: 'El ID del usuario debe ser un número' })

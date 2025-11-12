@@ -1,19 +1,19 @@
-import { Expose, Type } from "class-transformer";
+import {Expose, Type} from "class-transformer";
 import {
-  IsBoolean,
-  IsDate,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  IsOptional,
-  IsPositive,
-  IsString,
-  ValidateNested,
+    IsBoolean,
+    IsDate,
+    IsInt,
+    IsNotEmpty,
+    IsNumber,
+    IsObject,
+    IsOptional,
+    IsPositive,
+    IsString,
+    ValidateNested,
 } from "class-validator";
-import { DataSourceResponseDto } from "./data.sources.dto";
-import { ExtractionLogResponseDto } from "./extraction.logs.dto";
-import { UserResponseDto } from "./users.dto";
+import {DataSourceResponseDto} from "./data.sources.dto";
+import {ExtractionLogResponseDto} from "./extraction.logs.dto";
+import {UserResponseDto} from "./users.dto";
 
 export class CreateExtractedDataDto {
   @IsNotEmpty({ message: "La fecha de extracción es requerida" })

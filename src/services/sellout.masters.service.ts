@@ -1,19 +1,29 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource, In } from 'typeorm';
-import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
-import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
-import { SelloutStoreMaster } from '../models/sellout.store.master.model';
-import { CreateSelloutProductMasterDto, SelloutProductMasterDto, SelloutProductMasterFiltersResponseDto, UpdateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
-import { CreateSelloutStoreMasterDto, SelloutStoreMasterDto, SelloutStoreMasterFiltersResponseDto, UpdateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
-import { SelloutProductMaster } from '../models/sellout.product.master.model';
-import { chunkArray, cleanString } from '../utils/utils';
-import { ProductSicRepository } from '../repository/product.sic.repository';
-import { StoresSicRepository } from '../repository/stores.repository';
-import { Stores } from '../models/stores.model';
-import { ConsolidatedDataStoresRepository } from '../repository/consolidated.data.stores.repository';
-import { ConsolidatedDataStoresService } from './consolidated.data.stores.service';
-import { ConsolidatedDataStores } from '../models/consolidated.data.stores.model';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import {plainToClass, plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
+import {SelloutStoreMasterRepository} from '../repository/sellout.store.master.repository';
+import {SelloutProductMasterRepository} from '../repository/sellout.product.master.repository';
+import {SelloutStoreMaster} from '../models/sellout.store.master.model';
+import {
+    CreateSelloutProductMasterDto,
+    SelloutProductMasterDto,
+    SelloutProductMasterFiltersResponseDto,
+    UpdateSelloutProductMasterDto
+} from '../dtos/sellout.product.master.dto';
+import {
+    CreateSelloutStoreMasterDto,
+    SelloutStoreMasterDto,
+    SelloutStoreMasterFiltersResponseDto,
+    UpdateSelloutStoreMasterDto
+} from '../dtos/sellout.store.master.dto';
+import {SelloutProductMaster} from '../models/sellout.product.master.model';
+import {chunkArray, cleanString} from '../utils/utils';
+import {ProductSicRepository} from '../repository/product.sic.repository';
+import {StoresSicRepository} from '../repository/stores.repository';
+import {StoresSic} from '../models/stores.sic.model';
+import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.stores.repository';
+import {ConsolidatedDataStoresService} from './consolidated.data.stores.service';
+import {ConsolidatedDataStores} from '../models/consolidated.data.stores.model';
+import {QueryDeepPartialEntity} from 'typeorm/query-builder/QueryPartialEntity';
 
 interface ModelProductSic {
     productSic: string;
@@ -278,7 +288,7 @@ export class SelloutMastersService {
         }
     }
 
-    async getDistribuidorAndStoreNameByStoreSic(storeSic: number): Promise<Stores | null> {
+    async getDistribuidorAndStoreNameByStoreSic(storeSic: number): Promise<StoresSic | null> {
         return await this.selloutStoreRepository.getDistribuidorAndStoreNameByStoreSic(storeSic);
     }
 

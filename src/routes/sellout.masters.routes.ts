@@ -1,10 +1,10 @@
-import { Router, RequestHandler } from 'express';
+import {RequestHandler, Router} from 'express';
 import AppDataSource from '../config/data-source';
-import { authenticateToken } from '../middleware/auth.middleware';
-import { validatorMiddleware } from '../middleware/validator.middleware';
-import { SelloutMastersController } from '../controllers/sellout.masters.controller';
-import { CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
-import { CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
+import {authenticateToken} from '../middleware/auth.middleware';
+import {validatorMiddleware} from '../middleware/validator.middleware';
+import {SelloutMastersController} from '../controllers/sellout.masters.controller';
+import {CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
+import {CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
 
 const router = Router();
 const selloutMastersController = new SelloutMastersController(AppDataSource);

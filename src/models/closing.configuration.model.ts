@@ -1,11 +1,5 @@
-import { Expose } from 'class-transformer';
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-    UpdateDateColumn,
-} from 'typeorm';
+import {Expose} from 'class-transformer';
+import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,} from 'typeorm';
 
 @Entity('closing_configuration')
 export class ClosingConfiguration {

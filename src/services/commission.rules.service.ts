@@ -1,20 +1,20 @@
-import { plainToInstance } from "class-transformer";
-import { DataSource } from "typeorm";
-import { CommissionConfigurationResponseDto } from "../dtos/commission.configurations.dto";
+import {plainToInstance} from "class-transformer";
+import {DataSource} from "typeorm";
+import {CommissionConfigurationResponseDto} from "../dtos/commission.configurations.dto";
 import {
-  CommissionRuleResponseDto,
-  CommissionRuleResponseSearchDto,
-  CommissionRuleSearchDto,
-  CreateCommissionRuleDto,
-  UpdateCommissionRuleDto,
+    CommissionRuleResponseDto,
+    CommissionRuleResponseSearchDto,
+    CommissionRuleSearchDto,
+    CreateCommissionRuleDto,
+    UpdateCommissionRuleDto,
 } from "../dtos/commission.rules.dto";
-import { ParameterLineResponseDto } from "../dtos/parameter.lines.dto";
-import { StoreSizeResponseDto } from "../dtos/store.size.dto";
-import { CommissionRule } from "../models/commission.rules.model";
-import { CommissionConfigurationsRepository } from "../repository/commission.configurations.repository";
-import { CommissionRulesRepository } from "../repository/commission.rules.repository";
-import { ParameterLinesRepository } from "../repository/parameter.lines.repository";
-import { StoreSizeRepository } from "../repository/store.size.repository";
+import {ParameterLineResponseDto} from "../dtos/parameter.lines.dto";
+import {CommissionRule} from "../models/commission.rules.model";
+import {CommissionConfigurationsRepository} from "../repository/commission.configurations.repository";
+import {CommissionRulesRepository} from "../repository/commission.rules.repository";
+import {ParameterLinesRepository} from "../repository/parameter.lines.repository";
+import {StoreSizeRepository} from "../repository/store.size.repository";
+
 export class CommissionRulesService {
   private commissionRuleRepository: CommissionRulesRepository;
   private storeSizesRepository: StoreSizeRepository;

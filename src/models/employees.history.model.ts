@@ -1,14 +1,8 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
-} from 'typeorm';
-import { Company } from './companies.model';
-import { CompanyPosition } from './company.positions.model';
-import { Employee } from './employees.model';
-import { ConsolidatedCommissionCalculation } from './consolidated.commission.calculation.model';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {Company} from './companies.model';
+import {CompanyPosition} from './company.positions.model';
+import {Employee} from './employees.model';
+import {ConsolidatedCommissionCalculation} from './consolidated.commission.calculation.model';
 
 export type CompanyPositionSnapshot = {
     id: number;

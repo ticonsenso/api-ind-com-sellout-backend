@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { StatisticsController } from "../controllers/statistics.controller";
+import {Router} from "express";
+import {StatisticsController} from "../controllers/statistics.controller";
 import AppDataSource from "../config/data-source";
-import { authenticateToken } from '../middleware/auth.middleware';
+import {authenticateToken} from '../middleware/auth.middleware';
 
 const router = Router();
 const statisticsController = new StatisticsController(AppDataSource);

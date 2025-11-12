@@ -1,7 +1,7 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { StoreConfigurationResponseDto } from './store.configuration.dto';
-import { EmployeeResponseDto } from './employees.dto';
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsNumber, IsOptional, IsString} from 'class-validator';
+import {StoreConfigurationResponseDto} from './store.configuration.dto';
+import {EmployeeResponseDto} from './employees.dto';
 
 export class CreateStoreManagerCalculationCommissionDto {
     @IsOptional()

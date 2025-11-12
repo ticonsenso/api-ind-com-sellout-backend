@@ -1,11 +1,11 @@
-import { DataSource } from 'typeorm';
-import { UserService } from '../services/users.service';
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { plainToClass } from 'class-transformer';
-import { CreateUserDto, UpdateUserDto, FilterUserDto } from '../dtos/users.dto';
-import { UsersRolesService } from '../services/users.roles.service';
-import { decodeToken } from '../middleware/auth.middleware';
+import {DataSource} from 'typeorm';
+import {UserService} from '../services/users.service';
+import {Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
+import {plainToClass} from 'class-transformer';
+import {CreateUserDto, FilterUserDto, UpdateUserDto} from '../dtos/users.dto';
+import {UsersRolesService} from '../services/users.roles.service';
+import {decodeToken} from '../middleware/auth.middleware';
 
 export class UserController {
   private userService: UserService;

@@ -1,16 +1,10 @@
-import {
-    IsNotEmpty,
-    IsNumber,
-    IsDateString,
-    IsOptional,
-    IsString,
-} from 'class-validator';
-import { Expose, Type } from 'class-transformer';
+import {IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString,} from 'class-validator';
+import {Expose, Type} from 'class-transformer';
 
-import { CompanyResponseDto } from './companies.dto';
-import { CompanyPositionResponseDto } from './company.positions.dto';
-import { EmployeeResponseDto } from './employees.dto';
-import { StoreSizeResponseDto } from './store.size.dto';
+import {CompanyResponseDto} from './companies.dto';
+import {CompanyPositionResponseDto} from './company.positions.dto';
+import {EmployeeResponseDto} from './employees.dto';
+import {StoreSizeResponseDto} from './store.size.dto';
 
 export class CreateAdvisorCommissionDto {
     @IsNotEmpty({ message: 'El ID de la empresa es requerido' })

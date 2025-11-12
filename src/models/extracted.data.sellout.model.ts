@@ -1,13 +1,7 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
-} from 'typeorm';
-import { SelloutConfiguration } from './sellout.configuration.model';
-import { User } from './users.model';
-import { ExtractionLogsSellout } from './extraction.logs.sellout.model';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {SelloutConfiguration} from './sellout.configuration.model';
+import {User} from './users.model';
+import {ExtractionLogsSellout} from './extraction.logs.sellout.model';
 
 @Entity('extracted_data_sellout')
 export class ExtractedDataSellout {

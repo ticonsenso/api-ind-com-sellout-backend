@@ -1,6 +1,6 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { MatriculationLogResponseDto } from './matriculation.logs.dto';
+import {Exclude, Expose, Type} from 'class-transformer';
+import {IsBoolean, IsOptional, IsString} from 'class-validator';
+import {MatriculationLogResponseDto} from './matriculation.logs.dto';
 
 export class CreateMatriculationTemplateDto {
 

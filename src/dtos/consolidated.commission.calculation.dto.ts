@@ -1,14 +1,8 @@
-import { Expose } from "class-transformer";
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-} from "class-validator";
-import { CalculationProductExtrategicResponseDto } from "./calculation.product.extrategic.dto";
-import { ProductComplianceResponseDto } from "./product.compliance.dto";
-import { EmployeeHistoryResponseDto } from "./employees.history.dto";
+import {Expose} from "class-transformer";
+import {IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString,} from "class-validator";
+import {CalculationProductExtrategicResponseDto} from "./calculation.product.extrategic.dto";
+import {ProductComplianceResponseDto} from "./product.compliance.dto";
+import {EmployeeHistoryResponseDto} from "./employees.history.dto";
 
 export class CreateConsolidatedCommissionCalculationDto {
   @IsNotEmpty({ message: "El ID de la empresa es requerido" })

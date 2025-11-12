@@ -1,10 +1,11 @@
-import { Router, RequestHandler } from 'express';
+import {RequestHandler, Router} from 'express';
 import AppDataSource from '../config/data-source';
-import { ManagementRolesPermisionController } from '../controllers/management.roles.permision.controller';
-import { authenticateToken } from '../middleware/auth.middleware';
-import { CreatePermissionDto, UpdatePermissionDto } from '../dtos/permissions.dto';
-import { validatorMiddleware } from '../middleware/validator.middleware';
-import { CreateRoleDto, UpdateRoleDto } from '../dtos/roles.dto';
+import {ManagementRolesPermisionController} from '../controllers/management.roles.permision.controller';
+import {authenticateToken} from '../middleware/auth.middleware';
+import {CreatePermissionDto, UpdatePermissionDto} from '../dtos/permissions.dto';
+import {validatorMiddleware} from '../middleware/validator.middleware';
+import {CreateRoleDto, UpdateRoleDto} from '../dtos/roles.dto';
+
 const dataSource = AppDataSource;
 
 const router = Router();

@@ -1,20 +1,21 @@
-import { plainToClass } from "class-transformer";
-import { DataSource as TypeORMDataSource } from "typeorm";
-import { DataSourceResponseDto } from "../dtos/data.sources.dto";
+import {plainToClass} from "class-transformer";
+import {DataSource as TypeORMDataSource} from "typeorm";
+import {DataSourceResponseDto} from "../dtos/data.sources.dto";
 import {
-  CreateExtractionLogDto,
-  ExtractionLogListResponseDto,
-  ExtractionLogLocalDto,
-  ExtractionLogResponseDto,
-  SearchExtractionLogDto,
-  UpdateExtractionLogDto,
+    CreateExtractionLogDto,
+    ExtractionLogListResponseDto,
+    ExtractionLogLocalDto,
+    ExtractionLogResponseDto,
+    SearchExtractionLogDto,
+    UpdateExtractionLogDto,
 } from "../dtos/extraction.logs.dto";
-import { UserResponseDto } from "../dtos/users.dto";
-import { UserConsenso } from "../interfaces/user.consenso";
-import { ExtractionLog } from "../models/extraction.logs.model";
-import { DataSourceRepository } from "../repository/data.sources.repository";
-import { ExtractionLogsRepository } from "../repository/extraction.logs.repository";
-import { UserRepository } from "../repository/users.repository";
+import {UserResponseDto} from "../dtos/users.dto";
+import {UserConsenso} from "../interfaces/user.consenso";
+import {ExtractionLog} from "../models/extraction.logs.model";
+import {DataSourceRepository} from "../repository/data.sources.repository";
+import {ExtractionLogsRepository} from "../repository/extraction.logs.repository";
+import {UserRepository} from "../repository/users.repository";
+
 export class ExtractionLogsService {
   private extractionLogsRepository: ExtractionLogsRepository;
   private userRepository: UserRepository;

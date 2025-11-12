@@ -1,14 +1,14 @@
-import { plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import {plainToInstance} from 'class-transformer';
+import {DataSource} from 'typeorm';
 import {
-  CreateSeasonDto,
-  ResponseSeasonDto,
-  SearchSeasonDto,
-  SeasonResponseDto,
-  UpdateSeasonDto,
+    CreateSeasonDto,
+    ResponseSeasonDto,
+    SearchSeasonDto,
+    SeasonResponseDto,
+    UpdateSeasonDto,
 } from '../dtos/season.dto';
-import { Season } from '../models/seasons.model';
-import { SeasonsRepository } from '../repository/seasons.repository';
+import {Season} from '../models/seasons.model';
+import {SeasonsRepository} from '../repository/seasons.repository';
 
 export class SeasonsService {
   private seasonsRepository: SeasonsRepository;
