@@ -23,6 +23,7 @@ import baseSelloutRoutes from "./routes/base.sellout.routes";
 import matriculationRoutes from "./routes/matriculation.routes";
 import exportDataRoutes from "./routes/export.data.routes";
 import storeManagerCalculationCommissionRoutes from "./routes/store.manager.calculation.routes";
+import columnConfigRoutes from "./routes/column.config.routes";
 import morgan from "morgan";
 
 const app: Application = express();
@@ -65,6 +66,8 @@ app.use(`${basePath}/api/stores`, storesRoutes);
 app.use(`${basePath}/api/base/sellout`, baseSelloutRoutes);
 app.use(`${basePath}/api/matriculation`, matriculationRoutes);
 app.use(`${basePath}/api/export/data`, exportDataRoutes);
+app.use(`${basePath}/api/column-config`, columnConfigRoutes);
+
 // Health check endpoint
 app.use(`${basePath}`, healthRoutes);
 

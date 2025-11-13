@@ -330,9 +330,9 @@ CREATE TABLE IF NOT EXISTS sales_rotation_configurations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_configuration
-      FOREIGN KEY (commission_configurations_id)
-      REFERENCES commission_configurations(id)
-      ON DELETE CASCADE
+    FOREIGN KEY (commission_configurations_id)
+    REFERENCES commission_configurations(id)
+    ON DELETE CASCADE
 );
 
 -- Insert default seasons configuration
@@ -1210,3 +1210,19 @@ CREATE TABLE IF NOT EXISTS store_manager_calculation_commission (
 -- ALTER TABLE store_manager_calculation_commission ADD COLUMN range_compliance_apl NUMERIC(15,2) default 0.00;
 -- ALTER TABLE store_manager_calculation_commission ADD COLUMN profit_compliance_apl NUMERIC(15,2) default 0.00;
 -- ALTER TABLE store_manager_calculation_commission ADD COLUMN direct_profit_calculate NUMERIC(15,2) default 0.00;
+
+CREATE TABLE IF NOT EXISTS column_category (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS column_keyword (
+    id SERIAL PRIMARY KEY,
+    category_id INT NOT NULL REFERENCES column_category(id) ON DELETE CASCADE,
+    keyword VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+
