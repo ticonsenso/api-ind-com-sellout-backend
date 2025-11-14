@@ -37,4 +37,9 @@ export class ColumnKeywordSearchDto {
   @IsString()
   @Expose()
   keyword?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Expose()
+  categoryId?: number;
 }
