@@ -95,7 +95,8 @@ export class ColumnConfigService {
 
   async findKeywords(search?: ColumnKeywordSearchDto): Promise<ColumnKeywordResponseSearchDto> {
     const where: any = {};
-    if (search?.keyword) where.keyword = ILike(`%${search.keyword}%`);
+    if (search?.keyword) where.keyword = ILike(`%${search.keyword}%`) ;
+    if (search?.categoryId) where.category = { id: search.categoryId };
 
     const [items, total] = await this.columnKeywordRepository.findAndCount({
       where,
@@ -109,4 +110,6 @@ export class ColumnConfigService {
       { excludeExtraneousValues: true }
     );
   }
+
+
 }

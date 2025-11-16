@@ -10,8 +10,7 @@ import {
 } from "../dtos/column.category.dto";
 import {
   CreateColumnKeywordDto,
-  UpdateColumnKeywordDto,
-  ColumnKeywordSearchDto,
+  UpdateColumnKeywordDto
 } from "../dtos/column.keyword.dto";
 
 const router = Router();
@@ -307,6 +306,10 @@ router.delete(
  *                 type: string
  *                 example: "producto"
  *                 description: Palabra clave a buscar
+ *               categoryId: 
+ *                 type: integer
+ *                 example: 2
+ *                 description: ID de la categoría para filtrar
  *     responses:
  *       200:
  *         description: Palabras clave encontradas correctamente

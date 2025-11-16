@@ -17,7 +17,9 @@ import {
     fieldsStoreConfiguration,
     fieldsStorePptoMarcimex,
     fieldsStoresSic,
-    filedsConsolidatedCommissionCalculation
+    filedsConsolidatedCommissionCalculation,
+    filedsNoHomologadosProducts,
+    filedsNoHomologadosStores
 } from '../utils/fields';
 import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.stores.repository';
 import {SelloutProductMasterRepository} from '../repository/sellout.product.master.repository';
@@ -31,6 +33,9 @@ import {StoreConfigurationService} from '../services/store.configuration.service
 import {EmployeesService} from '../services/employees.service';
 import {StoreManagerCalculationCommissionService} from '../services/store.manager.calculation.commission.service';
 import {ConsolidatedCommissionCalculationService} from '../services/consolidated.commission.calculation.service';
+import { ConsolidatedDataStoresService } from '../services/consolidated.data.stores.service';
+import { NullFieldFilters } from '../dtos/consolidated.data.stores.dto';
+import { ExcelImportService } from '../services/excel.processing.service';
 
 export interface ExportField {
     key: string;
@@ -88,6 +93,9 @@ export class ExportDataController {
     private employeeService: EmployeesService;
     private storeManagerCalculationCommissionService: StoreManagerCalculationCommissionService;
     private consolidatedCommissionCalculationService: ConsolidatedCommissionCalculationService;
+    private consolidatedDataStoresService: ConsolidatedDataStoresService
+    private excelService: ExcelImportService;
+
     constructor(dataSource: DataSource) {
         this.productSicRepository = new ProductSicRepository(dataSource);
         this.storesSicRepository = new StoresSicRepository(dataSource);
@@ -104,6 +112,9 @@ export class ExportDataController {
         this.consolidatedCommissionCalculationService = new ConsolidatedCommissionCalculationService(dataSource);
         this.exportGenericHandler = this.exportGenericHandler.bind(this);
         this.exportDataHandler = this.exportDataHandler.bind(this);
+        this.consolidatedDataStoresService = new ConsolidatedDataStoresService(dataSource);
+        this.excelService = new ExcelImportService(dataSource);
+        this.importDataHandler = this.importDataHandler.bind(this);
     }
 
     async exportGenericHandler(
@@ -257,6 +268,34 @@ export class ExportDataController {
                     pctNomina: item.pctNomina ? Number(item.pctNomina) : 0,
                 }));
                 break;
+             case 'noHomologadosStores':
+                if (!calculateDate) return res.status(400).json({ message: 'Fecha de cálculo requerida' });
+                const nullFieldFiltersStore:NullFieldFilters = {
+                    codeStore: true,
+                }
+                rawData = (await this.consolidatedDataStoresService.getConsolidatedDataStoresValuesNullUnique(
+                    nullFieldFiltersStore,
+                    new Date(calculateDate)
+                )).items;
+                rawData = rawData.map(item => ({
+                    ...item,
+                    codeStore: 'NO SE VISITA',
+                }));
+                break;
+             case 'noHomologadosProducts':
+                const nullFieldFiltersProduct:NullFieldFilters = {
+                    codeProduct: true,
+                }
+                if (!calculateDate) return res.status(400).json({ message: 'Fecha de cálculo requerida' });
+                rawData = (await this.consolidatedDataStoresService.getConsolidatedDataStoresValuesNullUnique(
+                    nullFieldFiltersProduct,
+                    new Date(calculateDate)
+                )).items;
+                rawData = rawData.map(item => ({
+                    ...item,
+                    codeProduct: 'OTROS',
+                }));
+                break;
             default:
                 return res.status(400).json({ message: 'Nombre de archivo no válido' });
         }
@@ -298,7 +337,9 @@ export class ExportDataController {
                 'store_ppto_marcimex': fieldsStorePptoMarcimex,
                 'employees': fieldsEmployee,
                 'calc_comm_mgr': fieldsCalculationComissionStoreManager,
-                'consolidated_commission_calculation': filedsConsolidatedCommissionCalculation
+                'consolidated_commission_calculation': filedsConsolidatedCommissionCalculation,
+                'noHomologadosStores': filedsNoHomologadosStores,
+                'noHomologadosProducts': filedsNoHomologadosProducts,
             };
 
             const fields = fieldMap[excel_name];
@@ -313,4 +354,40 @@ export class ExportDataController {
         }
     }
 
+    async importDataHandler(req: Request, res: Response): Promise<void> {
+        try {
+        const { type } = req.body;
+        const file = req.file;
+
+        if (!file) {
+            res.status(400).json({ message: "Debe enviar un archivo Excel." });
+            return;
+        }
+
+        if (!type) {
+            res.status(400).json({ message: "Debe enviar el tipo de importación." });
+            return;
+        }
+
+        // Procesamiento genérico
+        const result = await this.excelService.processExcel(type, file);
+
+        if (result.errorFileBuffer) {
+            res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            res.setHeader("Content-Disposition", `attachment; filename=errores_${type}.xlsx`);
+            res.send(result.errorFileBuffer);
+            return;
+        }
+
+        res.status(200).json({
+            message: "Datos importados correctamente",
+            total_registros: result.total,
+            registros_ok: result.ok,
+            registros_error: result.errors.length,
+        });
+        } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error procesando el archivo." });
+        }
+    }
 }
