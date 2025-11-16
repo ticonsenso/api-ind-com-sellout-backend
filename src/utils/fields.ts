@@ -275,3 +275,16 @@ export const filedsConsolidatedCommissionCalculation: ExportField[] = [
     { key: 'calculateDate', header: 'FECHA CALCULO' },
     { key: 'employee.employeeType', header: 'TIPO DE EMPLEADO' },
 ];
+
+export const filedsNoHomologadosStores: ExportField[] = [
+    { key: 'distributor', header: 'DISTRIBUIDOR' },
+    { key: 'codeStoreDistributor', header: 'ALMACEN DISTRIBUIDOR' },
+    { key: 'codeStore', header: 'COD. ALMACEN SIC' },
+];
+
+export const filedsNoHomologadosProducts: ExportField[] = [
+    { key: 'distributor', header: 'DISTRIBUIDOR' },
+    { key: 'codeProductDistributor', header: 'PRODUCTO ALMACEN' },
+    { key: 'descriptionDistributor', header: 'DESCRIPCIÓN PRODUCTO ALMACEN' },
+    { key: 'codeProduct', header: 'COD. PRODUCTO SIC' },
+];

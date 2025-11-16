@@ -2,12 +2,10 @@ import {Expose} from 'class-transformer';
 import {IsBoolean, IsNumber, IsOptional, IsString, MaxLength} from 'class-validator';
 
 export class CreateSelloutStoreMasterDto {
-    @IsOptional()
     @IsString()
     @MaxLength(255)
     distributor?: string;
 
-    @IsOptional()
     @IsString()
     @MaxLength(255)
     storeDistributor?: string;
@@ -17,7 +15,6 @@ export class CreateSelloutStoreMasterDto {
     @MaxLength(255)
     searchStore?: string;
 
-    @IsOptional()
     @IsString()
     @MaxLength(255)
     codeStoreSic?: string;

@@ -86,6 +86,25 @@ export class SelloutMastersService {
         return saved;
     }
 
+    async createSelloutStoreMasterExcel(selloutStoreMaster: CreateSelloutStoreMasterDto): Promise<SelloutStoreMaster| undefined> {
+        try {
+            if (!selloutStoreMaster.searchStore) {
+                selloutStoreMaster.searchStore = cleanString(selloutStoreMaster.distributor ?? '') + cleanString(selloutStoreMaster.storeDistributor ?? '');
+            }
+            const existing = await this.selloutStoreMasterRepository.findByCodeStoreSic(selloutStoreMaster.searchStore);
+            if (existing) {
+                const updated = await this.updateSelloutStoreMaster(existing.id, selloutStoreMaster);
+                return updated;
+            }else{
+                const saved = await this.selloutStoreMasterRepository.create(selloutStoreMaster);
+                return saved;
+            }
+        } catch (error: any) {
+           console.log(error);
+           return undefined;
+        }
+    }
+
     async createSelloutStoreMastersBatch(configs: CreateSelloutStoreMasterDto[]): Promise<void> {
         const uniqueMap = new Map<string, CreateSelloutStoreMasterDto>();
         for (const config of configs) {
@@ -384,6 +403,25 @@ export class SelloutMastersService {
 
             await this.syncMasterProducts();
 
+        }
+    }
+
+    async createSelloutProductMasterExcel(selloutProductMaster: CreateSelloutProductMasterDto): Promise<SelloutProductMaster| undefined> {
+        try {
+            if (!selloutProductMaster.searchProductStore) {
+                selloutProductMaster.searchProductStore = cleanString(selloutProductMaster.distributor ?? '') + cleanString(selloutProductMaster.productDistributor ?? '') + cleanString(selloutProductMaster.productStore ?? '');
+            }
+            const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(selloutProductMaster.searchProductStore);
+            if (existing) {
+                const updated = await this.updateSelloutProductMaster(existing.id, selloutProductMaster);
+                return updated;
+            }else{
+                const saved = await this.selloutProductMasterRepository.create(selloutProductMaster);
+                return saved;
+            }
+        } catch (error: any) {
+           console.log(error);
+           return undefined;
         }
     }
 
