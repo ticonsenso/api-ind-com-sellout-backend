@@ -63,9 +63,15 @@ router.get('/:excel_name', authenticateToken, exportDataController.exportDataHan
  *           schema:
  *             type: object
  *             required:
+*                - date
  *               - type
  *               - file
  *             properties:
+ *                date: 
+ *                  type: string
+ *                 format: date
+ *                 description: Fecha de cálculo asociada a los datos importados
+ *                  example: 2025-06-01
  *               type:
  *                 type: string
  *                 description: Tipo de datos a importar
