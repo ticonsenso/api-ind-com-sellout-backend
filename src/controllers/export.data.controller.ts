@@ -356,7 +356,7 @@ export class ExportDataController {
 
     async importDataHandler(req: Request, res: Response): Promise<void> {
         try {
-        const { type } = req.body;
+        const { type,date } = req.body;
         const file = req.file;
 
         if (!file) {
@@ -370,7 +370,7 @@ export class ExportDataController {
         }
 
         // Procesamiento genérico
-        const result = await this.excelService.processExcel(type, file);
+        const result = await this.excelService.processExcel(date,type, file);
 
         if (result.errorFileBuffer) {
             res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
