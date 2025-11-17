@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import { SelloutMastersService } from "./sellout.masters.service";
 import { CreateSelloutStoreMasterDto } from "../dtos/sellout.store.master.dto";
 import { CreateSelloutProductMasterDto } from "../dtos/sellout.product.master.dto";
+import { SelloutStoreMaster } from "../models/sellout.store.master.model";
 
 const HEADERS_MAP: Record<string, Record<string, string>> = {
   noHomologadosStore: {
@@ -126,7 +127,7 @@ async saveValidRows(type: string, rows: any[]): Promise<void> {
         ),
       );
     },
-
+    
     [ExcelImportService.NOHOMOLOGADOSPRODUCTS]: async () => {
       const configs: CreateSelloutProductMasterDto[] = rows
         .map((row) => ({
@@ -159,4 +160,10 @@ async saveValidRows(type: string, rows: any[]): Promise<void> {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Errores");
     return XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
   }
+
+
+  async updateData(fecha: string,selloutStoreMasters: SelloutStoreMaster[] ): Promise<void> {
+    
+  }
+
 }
