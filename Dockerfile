@@ -1,16 +1,17 @@
 # Usamos la imagen oficial de Node.js basada en Alpine para mayor ligereza.
-FROM node:18-alpine
+FROM node:20-alpine
+
+# Instalar dependencias de compilación necesarias
+RUN apk add --no-cache python3 make g++
 
 # Establecemos el directorio de trabajo dentro del contenedor
 WORKDIR /usr/src/app
-
-RUN rm -rf node_modules package-lock.json
 
 # Copiamos los archivos de definición de dependencias
 COPY package*.json ./
 
 # Instalamos las dependencias definidas en el package.json
-RUN npm install
+RUN npm ci
 
 # Copiamos el resto de los archivos de la aplicación
 COPY . .
@@ -32,4 +33,5 @@ ENV NODE_ENV=production \
 EXPOSE 3008
 
 # Comando por defecto para iniciar la aplicación en modo de producción
-CMD ["sh", "-c", "npm install && npm run start:prod"]
+
+CMD ["sh", "-c", "npm run build:prod && npm run start:prod"]
