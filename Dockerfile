@@ -20,7 +20,7 @@ COPY . .
 ENV NODE_ENV=production \
   PORT=3008 \
   BASE_URL=https://cmi.consensocorp.com \
-  DB_USER=comisiones \
+  DB_USER=sellout \
   DB_HOST=cpdbep.consensocorp.com \
   DB_NAME=sellout \
   DB_PASSWORD=S3ll0ut. \
