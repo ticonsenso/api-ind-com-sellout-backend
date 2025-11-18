@@ -81,10 +81,10 @@ export class ExtratedDataSelloutService {
                 template.id!,
                 dto.calculateDate!,
                 firstRecord.distributor ?? '',
-                firstRecord.storeName ?? ''
+                firstRecord.codeStoreDistributor ?? ''
             );
             if (existing) {
-                throw new Error(`El archivo que intenta subir ya fue procesado.`);
+                throw new Error(`El archivo que intenta subir ya fue procesado anteriormente.`);
             }
             // Paso 3:
             const logsToUse = [{
