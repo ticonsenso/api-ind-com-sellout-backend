@@ -67,93 +67,45 @@ export class ExtratedDataSelloutService {
         dto: CreateExtractedDataSelloutDto,
         userConsenso: UserConsenso
     ): Promise<ExtractedDataSelloutResponse | string | { distributor: string; storeName: string; status: boolean }> {
-        const start = new Date();
-
-        // Paso 1: Obtener los datos consolidado y logs
-        const entityExtractedData = await this.prepareExtractedEntity(dto, userConsenso);
-        const dataConsolidado = this.parseDataContent(dto); // { consolidated_data_stores, dataBlockName }
-        const records = dataConsolidado[entityExtractedData.dataName!];
-        const logsFromDto = this.parseDataLogs(dto); // puede venir vacío
-        const firstRecord = records[0];
-
-        // Paso 2: Ver si existe la matriculación. Si no, matricular.
-        // const template = await this.getOrCreateMatriculationTemplate(
-        //     dto.templateName!,
-        //     dto.matriculationId!,
-        //     logsFromDto.length > 1 ? logsFromDto[0].distributor ?? '' : firstRecord.distributor ?? '',
-        //     logsFromDto.length > 1 ? 'VARIOS' : firstRecord.codeStoreDistributor ?? '');
-        let template = await this.matriculationTemplateRepository.findById(dto.matriculationId!);
-        if (!template) {
-            throw new Error(`Matriculación con ID ${dto.matriculationId} no encontrada`);
-        } else {
-            await this.matriculationService.updateMatriculationTemplate(
-                dto.matriculationId!,
-                {
-                    distributor: logsFromDto.length > 1 ? logsFromDto[0].distributor ?? '' :
-                        firstRecord.distributor ?? '',
-                    storeName: logsFromDto.length > 1 ? '' :
-                        firstRecord.codeStoreDistributor ?? ''
-                });
-            template = await this.matriculationTemplateRepository.findById(dto.matriculationId!);
+        try {
+            const start = new Date();
+            const entityExtractedData = await this.prepareExtractedEntity(dto, userConsenso);
+            const dataConsolidado = this.parseDataContent(dto); // { consolidated_data_stores, dataBlockName }
+            const records = dataConsolidado[entityExtractedData.dataName!];
+            const firstRecord = records[0];
+            const template = await this.matriculationTemplateRepository.findById(dto.matriculationId!);
             if (!template) {
-                throw new Error(`Matriculación con ID ${dto.matriculationId} no encontrada después de la actualización`);
+                throw new Error(`No se encontró la plantilla de matriculación con ID ${dto.matriculationId}`);
             }
-        }
-
-        let logsToUse: Array<{
-            distributor: string | undefined;
-            storeName: string | undefined;
-            rowsCount: number;
-            productCount: number;
-        }> = [];
-
-        if (!logsFromDto || logsFromDto.length === 0) {
-            logsToUse = [{
+            const existing = await this.matriculationLogsRepository.findByMatriculationIdAndCalculateDate(
+                template.id!,
+                dto.calculateDate!,
+                firstRecord.distributor ?? '',
+                firstRecord.storeName ?? ''
+            );
+            if (existing) {
+                throw new Error(`El archivo que intenta subir ya fue procesado.`);
+            }
+            // Paso 3:
+            const logsToUse = [{
                 distributor: firstRecord.distributor,
                 storeName: firstRecord.codeStoreDistributor,
                 rowsCount: dto.recordCount ?? 0,
                 productCount: dto.productCount ?? 0,
             }];
-        } else {
-            logsToUse = logsFromDto!.map((log: any) => ({
-                distributor: log.distributor,
-                storeName: log.storeName,
-                rowsCount: log.rowsCount ?? 0,
-                productCount: log.productCount ?? 0
-            }));
-        }
-
-        // Paso 3: Eliminar logs solo si no hay logs en data logs
-        if (dto.uploadCount === 1 && (dto.matriculationLogs && dto.matriculationLogs.length > 0)) {
-            await this.matriculationLogsRepository.deleteAllByMatriculationId(dto.matriculationId!, new Date(dto.calculateDate!));
-            await this.deleteLogAndAllConsolidatedDataStores(dto.matriculationId!, dto.calculateDate!);
-        } else if (dto.uploadCount && dto.uploadCount === 1) {
-            const existingLog = await this.matriculationLogsRepository.findByCalculateDateOne(
-                dto.calculateDate!,
-                dto.matriculationId!
+             // Paso 4: Procesar los datos consolidados
+            const selloutConfig = await this.selloutConfigurationRepository.findById(dataConsolidado.selloutConfigurationId);
+            const result = await this.consolidatedDataStoresService.processConsolidatedDataStores(
+                records,
+                template.id,
+                dto.calculateDate!
             );
-            if (existingLog) {
-                for (const log of existingLog) {
-                    await this.matriculationLogsRepository.delete(log.id!);
-                    await this.consolidatedDataStoresRepository.deleteAllByMatriculationId(dto.matriculationId!, new Date(dto.calculateDate!));
-                }
+
+            if (result.recordCountSaved > 0) {
+                await this.saveOrUpdateMatriculationLog(dto, template, logsToUse);
             }
-        }
 
-        // Paso 4: Procesar los datos consolidados
-        const selloutConfig = await this.selloutConfigurationRepository.findById(dataConsolidado.selloutConfigurationId);
-        const result = await this.consolidatedDataStoresService.processConsolidatedDataStores(
-            records,
-            template.id,
-            dto.calculateDate!
-        );
-
-        // Paso 5: Guardar o actualizar logs
-        if (result.recordCountSaved > 0) {
-            await this.saveOrUpdateMatriculationLog(dto, template, logsToUse);
-        }
-
-        return {
+            return {
             message: result.recordCountSaved > 0
                 ? 'Datos han sido extraídos correctamente'
                 : 'Hubo errores al procesar los datos',
@@ -176,6 +128,9 @@ export class ExtratedDataSelloutService {
                 dto.productCount!
             )
         };
+        }catch (error) {
+            throw error;
+        }
     }
 
     private async deleteLogAndAllConsolidatedDataStores(templateId: number, calculateDate: string): Promise<void> {
