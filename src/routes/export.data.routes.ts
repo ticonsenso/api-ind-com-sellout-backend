@@ -46,16 +46,19 @@ router.get('/:excel_name', authenticateToken, exportDataController.exportDataHan
  *       - Export Data
  *     summary: Importar datos desde un archivo Excel
  *     description: |
- *       Importa y valida datos desde un archivo Excel según el tipo especificado.
- *       El sistema procesa el archivo, valida cada fila según las reglas del tipo seleccionado,
- *       y devuelve un resumen de la importación. Si existen errores de validación,
- *       se genera y devuelve un archivo Excel con los registros erróneos para su corrección.
+ *       Permite cargar y validar información proveniente de un archivo Excel según el tipo de importación seleccionado.
+ *       
+ *       El sistema procesa el archivo fila por fila, validando cada registro según las reglas definidas para el tipo especificado.  
+ *       Si existen errores de validación, el servicio genera un archivo Excel que contiene únicamente los registros con errores
+ *       para su revisión y corrección.
  *       
  *       **Tipos de importación soportados:**
- *       - `noHomologadosStore`: Importación de tiendas no homologadas
- *       - `noHomologadosProducts`: Importación de productos no homologados
+ *       - `noHomologadosStore`: Importación de tiendas no homologadas.
+ *       - `noHomologadosProducts`: Importación de productos no homologados.
+ *       
  *     security:
  *       - bearerAuth: []
+ * 
  *     requestBody:
  *       required: true
  *       content:
@@ -63,23 +66,32 @@ router.get('/:excel_name', authenticateToken, exportDataController.exportDataHan
  *           schema:
  *             type: object
  *             required:
+ *               - date
  *               - type
  *               - file
  *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 description: Fecha de cálculo asociada a los datos importados.
+ *                 example: "2025-06-01"
+ * 
  *               type:
  *                 type: string
- *                 description: Tipo de datos a importar
+ *                 description: Tipo de datos que se desea importar.
  *                 enum:
  *                   - noHomologadosStore
  *                   - noHomologadosProducts
  *                 example: noHomologadosStore
+ * 
  *               file:
  *                 type: string
  *                 format: binary
- *                 description: Archivo Excel (.xlsx) con los datos a importar
+ *                 description: Archivo Excel (.xlsx) que contiene los datos a importar.
+ * 
  *     responses:
  *       200:
- *         description: Importación procesada exitosamente sin errores de validación
+ *         description: Importación realizada exitosamente.
  *         content:
  *           application/json:
  *             schema:
@@ -87,26 +99,30 @@ router.get('/:excel_name', authenticateToken, exportDataController.exportDataHan
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Datos importados correctamente
+ *                   example: Datos importados correctamente.
  *                 total_registros:
  *                   type: number
- *                   description: Total de registros procesados
+ *                   description: Total de registros procesados.
  *                   example: 100
  *                 registros_ok:
  *                   type: number
- *                   description: Registros validados correctamente
+ *                   description: Registros validados correctamente.
  *                   example: 95
  *                 registros_error:
  *                   type: number
- *                   description: Registros con errores de validación
+ *                   description: Registros que presentaron errores de validación.
  *                   example: 5
+ * 
  *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
  *             schema:
  *               type: string
  *               format: binary
- *               description: Archivo Excel con los registros que presentaron errores de validación (solo si existen errores)
+ *               description: |
+ *                 Archivo Excel generado automáticamente con los registros que contienen errores de validación.
+ *                 Este archivo solo se devuelve si existen errores.
+ * 
  *       400:
- *         description: Solicitud incorrecta - falta archivo o tipo de importación
+ *         description: Solicitud incorrecta, parámetros faltantes o inválidos.
  *         content:
  *           application/json:
  *             schema:
@@ -115,8 +131,9 @@ router.get('/:excel_name', authenticateToken, exportDataController.exportDataHan
  *                 message:
  *                   type: string
  *                   example: Debe enviar un archivo Excel.
+ * 
  *       500:
- *         description: Error interno del servidor al procesar el archivo
+ *         description: Error interno al procesar la importación.
  *         content:
  *           application/json:
  *             schema:
@@ -126,6 +143,7 @@ router.get('/:excel_name', authenticateToken, exportDataController.exportDataHan
  *                   type: string
  *                   example: Error procesando el archivo.
  */
+
 router.post(
   "/import",
   authenticateToken,

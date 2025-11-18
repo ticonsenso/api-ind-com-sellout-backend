@@ -3,6 +3,8 @@ import { DataSource } from "typeorm";
 import { SelloutMastersService } from "./sellout.masters.service";
 import { CreateSelloutStoreMasterDto } from "../dtos/sellout.store.master.dto";
 import { CreateSelloutProductMasterDto } from "../dtos/sellout.product.master.dto";
+import { SelloutStoreMaster } from "../models/sellout.store.master.model";
+import { ConsolidatedDataStoresRepository } from "../repository/consolidated.data.stores.repository";
 
 const HEADERS_MAP: Record<string, Record<string, string>> = {
   noHomologadosStore: {
@@ -24,11 +26,13 @@ export class ExcelImportService {
     static readonly NOHOMOLOGADOSPRODUCTS = "noHomologadosProducts";
     static readonly NOHOMOLOGADOSSTORE = "noHomologadosStore";
     private selloutMastersService:SelloutMastersService;
+    private consolidatedDataStoresRepository:ConsolidatedDataStoresRepository;
   constructor(dataSource: DataSource) {
     this.selloutMastersService = new SelloutMastersService(dataSource);
+    this.consolidatedDataStoresRepository = new ConsolidatedDataStoresRepository(dataSource);
   }
 
-  async processExcel(type: string, file: Express.Multer.File) {
+  async processExcel(date: string,type: string, file: Express.Multer.File) {
     const workbook = XLSX.read(file.buffer, { type: "buffer" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
@@ -48,7 +52,7 @@ export class ExcelImportService {
       }
     }
 
-    await this.saveValidRows(type, valid);
+    await this.saveValidRows(date, type, valid);
 
     if (errors.length > 0) {
       const errorFileBuffer = this.buildErrorExcel(errors);
@@ -108,7 +112,7 @@ export class ExcelImportService {
     }
   }
 
-async saveValidRows(type: string, rows: any[]): Promise<void> {
+async saveValidRows(date:string,type: string, rows: any[]): Promise<void> {
   const processors: Record<string, () => Promise<void>> = {
     [ExcelImportService.NOHOMOLOGADOSSTORE]: async () => {
       const configs: CreateSelloutStoreMasterDto[] = rows
@@ -125,8 +129,8 @@ async saveValidRows(type: string, rows: any[]): Promise<void> {
           this.selloutMastersService.createSelloutStoreMasterExcel(cfg),
         ),
       );
+      this.updateData(date, configs, undefined);
     },
-
     [ExcelImportService.NOHOMOLOGADOSPRODUCTS]: async () => {
       const configs: CreateSelloutProductMasterDto[] = rows
         .map((row) => ({
@@ -143,6 +147,7 @@ async saveValidRows(type: string, rows: any[]): Promise<void> {
           this.selloutMastersService.createSelloutProductMasterExcel(cfg),
         ),
       );
+      this.updateData(date, undefined, configs);
     }
   };
 
@@ -159,4 +164,45 @@ async saveValidRows(type: string, rows: any[]): Promise<void> {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Errores");
     return XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
   }
+
+
+async updateData(
+  fecha: string,
+  codeStrorage: CreateSelloutStoreMasterDto[] | undefined,
+  codeProd: CreateSelloutProductMasterDto[] | undefined
+): Promise<void> {
+
+  if (codeStrorage && codeStrorage.length > 0) {
+    for (const item of codeStrorage) {
+      const registros = await this.consolidatedDataStoresRepository
+        .findBySearchStoreWhichCalculeDate(item.searchStore!, fecha);
+      if (registros.length === 0) continue;
+      await Promise.all(
+        registros.map(reg =>
+          this.consolidatedDataStoresRepository.update(reg.id, {
+            ...reg,
+            codeStore: item.codeStoreSic!
+          })
+        )
+      );
+    }
+  }
+
+  if (codeProd && codeProd.length > 0) {
+    for (const item of codeProd) {
+      const registros = await this.consolidatedDataStoresRepository
+        .findBySearchProductWhichCalculeDate(item.searchProductStore!, fecha);
+      if (registros.length === 0) continue;
+      await Promise.all(
+        registros.map(reg =>
+          this.consolidatedDataStoresRepository.update(reg.id, {
+            ...reg,
+            codeProduct: item.codeProductSic!
+          })
+        )
+      );
+    }
+  }
+}
+
 }

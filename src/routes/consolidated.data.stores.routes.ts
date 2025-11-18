@@ -166,67 +166,110 @@ router.put(
  *   put:
  *     tags:
  *       - Datos consolidados
- *     summary: Actualizar una configuración de datos consolidados de tiendas
- *     description: Actualiza una configuración de datos consolidados de tiendas en el sistema
+ *     summary: Actualizar un registro consolidado de tienda
+ *     description: Actualiza cualquier campo del registro consolidado indicado por su ID. Todos los campos son opcionales.
  *     security:
  *       - bearerAuth: []
+ *
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID del registro que se desea actualizar.
  *         schema:
  *           type: integer
+ *           example: 15
+ *
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - distributor
- *               - codeStoreDistributor
- *               - codeProductDistributor
- *               - descriptionDistributor
- *               - unitsSoldDistributor
- *               - saleDate
- *               - codeProduct
- *               - codeStore
- *               - authorizedDistributor
- *               - storeName
- *               - productModel
- *               - calculateDate
  *             properties:
  *               distributor:
  *                 type: string
- *                 description: Distribuidor
+ *                 description: Nombre del distribuidor.
+ *                 example: "COBODEL"
+ *
  *               codeStoreDistributor:
  *                 type: string
- *                 description: Código de la tienda distribuidora
+ *                 description: Código de tienda asignado por el distribuidor.
+ *                 example: "T0012"
+ *
  *               codeProductDistributor:
  *                 type: string
- *                 description: Código de la tienda distribuidora
+ *                 description: Código del producto según el distribuidor.
+ *                 example: "PRD-998"
+ *
  *               descriptionDistributor:
  *                 type: string
- *                 description: Descripción del distribuidor
+ *                 description: Descripción del producto según distribuidor.
+ *                 example: "Refrigeradora 300L"
+ *
  *               unitsSoldDistributor:
  *                 type: number
- *                 description: Unidades vendidas por el distribuidor
+ *                 description: Cantidad de unidades vendidas.
+ *                 example: 10
+ *
  *               saleDate:
  *                 type: string
- *                 description: Fecha de venta
+ *                 format: date
+ *                 description: Fecha de venta (YYYY-MM-DD).
+ *                 example: "2025-01-10"
+ *
+ *               codeProduct:
+ *                 type: string
+ *                 description: Código del producto en el sistema interno.
+ *                 example: "IM-5544"
+ *
+ *               codeStore:
+ *                 type: string
+ *                 description: Código de la tienda interna.
+ *                 example: "ST-33"
+ *
+ *               authorizedDistributor:
+ *                 type: string
+ *                 description: Distribuidor autorizado (si aplica).
+ *                 example: "IMPORTADORA XYZ"
+ *
+ *               storeName:
+ *                 type: string
+ *                 description: Nombre de la tienda.
+ *                 example: "Tienda Central Loja"
+ *
+ *               productModel:
+ *                 type: string
+ *                 description: Modelo del producto.
+ *                 example: "MOD-300L-2025"
+ *
  *               calculateDate:
  *                 type: string
- *                 description: Fecha de cálculo
+ *                 format: date
+ *                 description: Fecha en que se realizó el cálculo.
+ *                 example: "2025-01-11"
+ *
+ *               matriculationTemplateId:
+ *                 type: number
+ *                 description: Plantilla de matriculación asociada.
+ *                 example: 4
+ *
+ *               status:
+ *                 type: boolean
+ *                 description: Estado activo/inactivo del registro.
+ *                 example: true
+ *
  *     responses:
  *       200:
- *         description: Datos consolidados de tiendas actualizados correctamente
+ *         description: Registro actualizado correctamente.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 id:
- *                   type: integer
+ *                   type: number
+ *                   example: 15
  *                 distributor:
  *                   type: string
  *                 codeStoreDistributor:
@@ -239,14 +282,34 @@ router.put(
  *                   type: number
  *                 saleDate:
  *                   type: string
+ *                 codeProduct:
+ *                   type: string
+ *                 codeStore:
+ *                   type: string
+ *                 authorizedDistributor:
+ *                   type: string
+ *                 storeName:
+ *                   type: string
+ *                 productModel:
+ *                   type: string
  *                 calculateDate:
  *                   type: string
+ *                 matriculationTemplateId:
+ *                   type: number
+ *                 status:
+ *                   type: boolean
+ *
  *       400:
- *         description: Datos de entrada inválidos.
+ *         description: Datos enviados no válidos.
+ *
  *       401:
- *         description: No autorizado.
+ *         description: Autenticación requerida.
+ *
+ *       404:
+ *         description: No se encontró el registro solicitado.
+ *
  *       500:
- *         description: Error del servidor.
+ *         description: Error interno del servidor.
  */
 router.put(
     "/store/:id",
