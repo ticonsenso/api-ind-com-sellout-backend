@@ -71,28 +71,26 @@ export class ExtratedDataSelloutService {
             const start = new Date();
             const entityExtractedData = await this.prepareExtractedEntity(dto, userConsenso);
             const dataConsolidado = this.parseDataContent(dto); // { consolidated_data_stores, dataBlockName }
+            const logMatriculationData:MatriculationLog[] = this.parseDataLogs(dto); // MatriculationLog[]
             const records = dataConsolidado[entityExtractedData.dataName!];
             const firstRecord = records[0];
             const template = await this.matriculationTemplateRepository.findById(dto.matriculationId!);
             if (!template) {
                 throw new Error(`No se encontró la plantilla de matriculación con ID ${dto.matriculationId}`);
             }
-            const existing = await this.matriculationLogsRepository.findByMatriculationIdAndCalculateDate(
-                template.id!,
-                dto.calculateDate!,
-                firstRecord.distributor ?? '',
-                firstRecord.codeStoreDistributor ?? ''
-            );
-            if (existing) {
-                throw new Error(`El archivo que intenta subir ya fue procesado anteriormente.`);
+            if(logMatriculationData && logMatriculationData.length > 0) {
+                logMatriculationData.map(async log => {
+                    const existing = await this.matriculationLogsRepository.findByMatriculationIdAndCalculateDate(
+                        template.id!,
+                        dto.calculateDate!,
+                        log.distributor ?? '',
+                        log.storeName ?? ''
+                    );
+                    if (existing) {
+                        throw new Error(`El archivo que intenta subir ya fue procesado anteriormente o contiene datos duplicados para el distribuidor '${log.distributor}' y la tienda '${log.storeName}' en la fecha '${dto.calculateDate}'`);
+                    }    
+                });
             }
-            // Paso 3:
-            const logsToUse = [{
-                distributor: firstRecord.distributor,
-                storeName: firstRecord.codeStoreDistributor,
-                rowsCount: dto.recordCount ?? 0,
-                productCount: dto.productCount ?? 0,
-            }];
              // Paso 4: Procesar los datos consolidados
             const selloutConfig = await this.selloutConfigurationRepository.findById(dataConsolidado.selloutConfigurationId);
             const result = await this.consolidatedDataStoresService.processConsolidatedDataStores(
@@ -102,7 +100,7 @@ export class ExtratedDataSelloutService {
             );
 
             if (result.recordCountSaved > 0) {
-                await this.saveOrUpdateMatriculationLog(dto, template, logsToUse);
+                await this.saveOrUpdateMatriculationLog(dto, template, logMatriculationData);
             }
 
             return {
@@ -170,11 +168,11 @@ export class ExtratedDataSelloutService {
     private async saveOrUpdateMatriculationLog(
         dto: CreateExtractedDataSelloutDto,
         template: MatriculationTemplate,
-        logs: Array<{ distributor: string | undefined; storeName: string | undefined; rowsCount: number; productCount: number; }>
+        logs: MatriculationLog[]
     ): Promise<void> {
         const isoDate = parseDateFromISO(dto.calculateDate!);
-
-        for (const log of logs) {
+        if (logs && logs.length === 0) {
+            for (const log of logs) {
             const logPayload: CreateMatriculationLogDto = {
                 calculateDate: isoDate.toISOString(),
                 matriculationId: template.id!,
@@ -199,6 +197,7 @@ export class ExtratedDataSelloutService {
             } else {
                 await this.matriculationService.updateMatriculationLog(existing.id!, logPayload);
             }
+        }
         }
     }
 
