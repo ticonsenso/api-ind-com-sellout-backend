@@ -67,14 +67,17 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     calculeDate: string
   ): Promise<ConsolidatedDataStores[]> {
     return this.repository
-    .createQueryBuilder('c')
-    .where(`
+      .createQueryBuilder("c")
+      .where(
+        `
       REPLACE(c.distributor, ' ', '') || 
       REPLACE(c.codeProductDistributor, ' ', '') || 
       REPLACE(c.descriptionDistributor, ' ', '') = :searchStore
-    `, { searchStore })
-    .andWhere(`c.calculeDate = :calculeDate`, { calculeDate })
-    .getMany();
+    `,
+        { searchStore }
+      )
+      .andWhere(`c.calculeDate = :calculeDate`, { calculeDate })
+      .getMany();
   }
 
   async findMonthlyStoresFields(monthDate: string) {
@@ -648,5 +651,86 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       ...countNullsInUniqueData,
       ...countNullsInAllData,
     };
+  }
+  //**
+  // Vamos a generar tres metodos para obtener los totales de registros
+  // findByCalculateDateDataSinAgrupacion,
+  //**
+
+  async findByCalculateDateDataSinAgrupacion(
+    calculateDate: Date
+  ): Promise<ConsolidatedDataStores[]> {
+    const qb = this.repository.createQueryBuilder("cds");
+
+    const date = calculateDate.toISOString().split("T")[0];
+    const [year, month] = date.split("-");
+
+    return await qb
+      .where("EXTRACT(YEAR FROM cds.calculate_date) = :year", { year })
+      .andWhere("EXTRACT(MONTH FROM cds.calculate_date) = :month", { month })
+      .orderBy("cds.id", "ASC")
+      .getMany();
+  }
+
+  async findByCalculateDateDataAgraupacionParcial(
+    calculateDate: Date
+  ): Promise<any[]> {
+    const date = calculateDate.toISOString().split("T")[0];
+    const [year, month] = date.split("-");
+
+    return await this.repository
+      .createQueryBuilder("s")
+      .select("s.distributor", "distributor")
+      .addSelect("s.code_store_distributor", "codeStoreDistributor")
+      .addSelect("s.code_product_distributor", "codeProductDistributor")
+      .addSelect("s.description_distributor", "descriptionDistributor")
+      .addSelect("SUM(s.units_sold_distributor)", "unitsSoldDistributor")
+      .where("EXTRACT(YEAR FROM s.calculate_date) = :year", { year })
+      .andWhere("EXTRACT(MONTH FROM s.calculate_date) = :month", { month })
+      .groupBy("s.distributor")
+      .addGroupBy("s.code_store_distributor")
+      .addGroupBy("s.code_product_distributor")
+      .addGroupBy("s.description_distributor")
+      .orderBy("s.distributor", "ASC")
+      .addOrderBy("s.code_store_distributor", "ASC")
+      .addOrderBy("s.code_product_distributor", "ASC")
+      .addOrderBy("s.description_distributor", "ASC")
+      .getRawMany();
+  }
+
+  async findByCalculateDateDataAgrupacion(calculateDate: Date): Promise<any[]> {
+    const date = calculateDate.toISOString().split("T")[0];
+    const [year, month] = date.split("-");
+
+    return await this.repository
+      .createQueryBuilder("s")
+      .select("s.distributor", "distributor")
+      .addSelect("s.code_store_distributor", "codeStoreDistributor")
+      .addSelect("s.code_product_distributor", "codeProductDistributor")
+      .addSelect("s.description_distributor", "descriptionDistributor")
+      .addSelect("SUM(s.units_sold_distributor)", "unitsSoldDistributor")
+      .addSelect("s.code_product", "codeProduct")
+      .addSelect("s.code_store", "codeStore")
+      .addSelect("s.store_name", "storeName")
+      .addSelect("s.product_model", "productModel")
+      .addSelect("s.calculate_date", "calculateDate")
+      .where("EXTRACT(YEAR FROM s.calculate_date) = :year", { year })
+      .andWhere("EXTRACT(MONTH FROM s.calculate_date) = :month", { month })
+      .groupBy("s.distributor")
+      .addGroupBy("s.code_store_distributor")
+      .addGroupBy("s.code_product_distributor")
+      .addGroupBy("s.description_distributor")
+      .addGroupBy("s.code_product")
+      .addGroupBy("s.code_store")
+      .addGroupBy("s.store_name")
+      .addGroupBy("s.product_model")
+      .addGroupBy("s.calculate_date")
+      .orderBy("s.distributor", "ASC")
+      .addOrderBy("s.code_store_distributor", "ASC")
+      .addOrderBy("s.code_product_distributor", "ASC")
+      .addOrderBy("s.description_distributor", "ASC")
+      .addOrderBy("s.code_product", "ASC")
+      .addOrderBy("s.code_store", "ASC")
+      .getRawMany();
   }
 }
