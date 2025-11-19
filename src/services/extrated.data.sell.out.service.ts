@@ -24,6 +24,7 @@ import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.
 import {MatriculationTemplate} from '../models/matriculation.templates.model';
 import {MatriculationLog} from '../models/matriculation.logs.model';
 import {CreateMatriculationLogDto} from '../dtos/matriculation.logs.dto';
+import { log } from 'console';
 
 type ExtractedDataSelloutResponse = {
     message: string;
@@ -171,7 +172,7 @@ export class ExtratedDataSelloutService {
         logs: MatriculationLog[]
     ): Promise<void> {
         const isoDate = parseDateFromISO(dto.calculateDate!);
-        if (logs && logs.length === 0) {
+        if (logs && logs.length > 0) {        
             for (const log of logs) {
             const logPayload: CreateMatriculationLogDto = {
                 calculateDate: isoDate.toISOString(),
@@ -183,20 +184,7 @@ export class ExtratedDataSelloutService {
                 distributor: log.distributor,
                 storeName: log.storeName
             };
-
-            // Buscar si ya existe un log con la misma combinación
-            const existing = await this.matriculationLogsRepository.findByMatriculationIdAndCalculateDate(
-                template.id!,
-                dto.calculateDate!,
-                log.distributor ?? '',
-                log.storeName ?? ''
-            );
-
-            if (!existing) {
-                await this.matriculationService.createMatriculationLog(logPayload);
-            } else {
-                await this.matriculationService.updateMatriculationLog(existing.id!, logPayload);
-            }
+            await this.matriculationService.createMatriculationLog(logPayload);
         }
         }
     }

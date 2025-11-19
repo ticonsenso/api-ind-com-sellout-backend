@@ -231,20 +231,8 @@ export class MatriculationService {
         if (!existingTemplate) {
             throw new Error("Matriculación de plantilla no encontrada");
         }
-
-        const existingLog = await this.matriculationLogsRepository.findByMatriculationIdAndCalculateDate(
-            existingTemplate.id!,
-            matriculationLog.calculateDate!,
-            matriculationLog.distributor ?? '',
-            matriculationLog.storeName ?? ''
-        );
-        if (existingLog) {
-            throw new Error("Ya existe un registro con ese excel y fecha de cálculo");
-        }
-
         const matriculationLogEntity = plainToInstance(MatriculationLog, matriculationLog, {});
         matriculationLogEntity.matriculation = existingTemplate;
-
         const matriculationLogSaved =
             await this.matriculationLogsRepository.create(matriculationLogEntity);
         return plainToInstance(MatriculationLogResponseDto, matriculationLogSaved, {
