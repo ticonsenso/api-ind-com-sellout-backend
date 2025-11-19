@@ -83,17 +83,10 @@ export const fieldsConsolidatedDataStores: ExportField[] = [
     { key: 'codeProductDistributor', header: 'COD. PROD DISTRIBUIDOR' },
     { key: 'descriptionDistributor', header: 'DESCRIPCION DISTRIBUIDOR' },
     { key: 'unitsSoldDistributor', header: 'UNIDADES VENTA DISTRIBUIDOR' },
-    { key: 'saleDate', header: 'FECHA ULTIMO DIA DEL MES' },
     { key: 'codeProduct', header: 'COD. PRODUCTO' },
     { key: 'codeStore', header: 'COD. ALMACEN' },
-    { key: 'authorizedDistributor', header: 'DISTRIBUIDOR' },
     { key: 'storeName', header: 'NOMBRE ALMACEN' },
     { key: 'productModel', header: 'MODELO DEL PRODUCTO' },
-    {
-        key: 'status', header: 'ESTADO',
-
-        transform: (value) => value === true ? 'ACTIVO' : 'INACTIVO',
-    },
     { key: 'calculateDate', header: 'FECHA CALCULO' },
 ];
 

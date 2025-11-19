@@ -144,7 +144,7 @@ export class ExportDataController {
 
             case 'consolidated_data_stores':
                 if (!calculateDate) return res.status(400).json({ message: 'Fecha de cálculo requerida' });
-                rawData = await this.consolidatedDataStoresRepository.findByCalculateDateData(new Date(calculateDate));
+                rawData = await this.consolidatedDataStoresRepository.findByCalculateDateDataAgrupacion(new Date(calculateDate));
                 break;
 
             case 'valores':
