@@ -156,6 +156,20 @@ export class MatriculationService {
         await this.matriculationTemplateRepository.delete(id);
     }
 
+    async deleteMatriculationTemplateAll(ids: number[]): Promise<String[] | string> {
+        const deletedIds: string[] = [];
+        for (const id of ids) {
+            const existingTemplate = await this.matriculationTemplateRepository.findById(id);
+            if (!existingTemplate) {
+                deletedIds.push("No se pudo eliminar: " + id);
+                continue;
+            }
+            await this.matriculationTemplateRepository.delete(id);
+        }
+        return deletedIds.length > 0 ? deletedIds : "Todas las plantillas fueron eliminadas correctamente";
+    }
+
+
     async getMatriculationTemplatesWithFilters(calculateDate?: string): Promise<MatriculationTemplateResponseWithLogsDto[]> {
         const templatesWithLogs = await this.matriculationTemplateRepository.findAllWithLogs(calculateDate);
 
