@@ -271,10 +271,66 @@ router.delete(
 
 /**
  * @swagger
+ * /api/matriculation/templates/delete-all:
+ *   post:
+ *     tags:
+ *       - Matriculación - Plantillas
+ *     summary: Eliminar varias plantillas de matriculación
+ *     description: |
+ *       Permite eliminar varias plantillas de matriculación enviando un arreglo de IDs.
+ *       El sistema valida que cada plantilla exista; si alguna no existe, se detiene el proceso y devuelve un error.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - ids
+ *             properties:
+ *               ids:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 example: [1, 2, 3]
+ *                 description: Lista de IDs de las plantillas a eliminar.
+ *     responses:
+ *       200:
+ *         description: IDs procesados correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example:
+ *                     - "No se pudo eliminar: 1"
+ *                     - "No se pudo eliminar: 2"
+ *       400:
+ *         description: Solicitud inválida.
+ *       401:
+ *         description: Token no autorizado o inválido.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.post(
+    "/templates/delete-all",
+    authenticateToken,
+    matriculationController.deleteMatriculationTemplateAll
+);
+
+
+/**
+ * @swagger
  * /api/matriculation/templates/filters:
  *   get:
  *     tags:
- *       - Matriculación Plantillas
+ *       - Matriculación - Plantillas
  *     summary: Obtener todas las plantillas de matriculación con filtros
  *     description: Obtiene todas las plantillas de matriculación con sus logs por fecha de calculo
  *     security:

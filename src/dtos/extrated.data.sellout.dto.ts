@@ -49,8 +49,6 @@ export class CreateExtractedDataSelloutDto {
     @IsOptional()
     calculateDate?: string;
 
-
-
     @IsOptional()
     @IsNumber()
     createdBy?: number;

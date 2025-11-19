@@ -156,6 +156,20 @@ export class MatriculationService {
         await this.matriculationTemplateRepository.delete(id);
     }
 
+    async deleteMatriculationTemplateAll(ids: number[]): Promise<String[] | string> {
+        const deletedIds: string[] = [];
+        for (const id of ids) {
+            const existingTemplate = await this.matriculationTemplateRepository.findById(id);
+            if (!existingTemplate) {
+                deletedIds.push("No se pudo eliminar: " + id);
+                continue;
+            }
+            await this.matriculationTemplateRepository.delete(id);
+        }
+        return deletedIds.length > 0 ? deletedIds : "Todas las plantillas fueron eliminadas correctamente";
+    }
+
+
     async getMatriculationTemplatesWithFilters(calculateDate?: string): Promise<MatriculationTemplateResponseWithLogsDto[]> {
         const templatesWithLogs = await this.matriculationTemplateRepository.findAllWithLogs(calculateDate);
 
@@ -217,20 +231,8 @@ export class MatriculationService {
         if (!existingTemplate) {
             throw new Error("Matriculación de plantilla no encontrada");
         }
-
-        const existingLog = await this.matriculationLogsRepository.findByMatriculationIdAndCalculateDate(
-            existingTemplate.id!,
-            matriculationLog.calculateDate!,
-            matriculationLog.distributor ?? '',
-            matriculationLog.storeName ?? ''
-        );
-        if (existingLog) {
-            throw new Error("Ya existe un registro con ese excel y fecha de cálculo");
-        }
-
         const matriculationLogEntity = plainToInstance(MatriculationLog, matriculationLog, {});
         matriculationLogEntity.matriculation = existingTemplate;
-
         const matriculationLogSaved =
             await this.matriculationLogsRepository.create(matriculationLogEntity);
         return plainToInstance(MatriculationLogResponseDto, matriculationLogSaved, {

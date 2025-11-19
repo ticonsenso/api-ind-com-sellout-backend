@@ -30,6 +30,7 @@ export class MatriculationController {
         this.deleteMatriculationLog = this.deleteMatriculationLog.bind(this);
         this.getMatriculationLogs = this.getMatriculationLogs.bind(this);
         this.isAlreadyUploaded = this.isAlreadyUploaded.bind(this);
+        this.deleteMatriculationTemplateAll = this.deleteMatriculationTemplateAll.bind(this);
     }
 
     async createMatriculationTemplate(req: Request, res: Response) {
@@ -92,6 +93,18 @@ export class MatriculationController {
             const { id } = req.params;
             await this.matriculationService.deleteMatriculationTemplate(Number(id));
             res.status(StatusCodes.OK).json({ message: 'Matriculación de plantillas eliminada correctamente' });
+        } catch (error) {
+            res
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .json({ message: error instanceof Error ? error.message : 'Error desconocido' });
+        }
+    }
+
+     async deleteMatriculationTemplateAll(req: Request, res: Response) {
+        try {
+            const { ids } = req.body;
+            const result = await this.matriculationService.deleteMatriculationTemplateAll(ids);
+            res.status(StatusCodes.OK).json({ message: result });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
