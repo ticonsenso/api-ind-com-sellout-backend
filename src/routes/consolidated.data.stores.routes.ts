@@ -573,6 +573,115 @@ router.post(
     authenticateToken,
     consolidatedDataStoresController.getFilteredConsolidatedDataStores
 );
+/**
+ * @swagger
+ * /api/sellout/consolidated/store/filters-mod:
+ *   post:
+ *     tags:
+ *       - Datos consolidados
+ *     summary: Obtener datos consolidados agrupados y filtrados
+ *     description: |
+ *       Endpoint para consultar datos consolidados aplicando filtros por distribuidor,
+ *       códigos y descripción, junto con paginación y filtrado por año y mes.
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         description: Número de página para la paginación.
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         description: Cantidad de registros por página.
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *       - in: query
+ *         name: calculateDate
+ *         description: Fecha utilizada para filtrar por año y mes (YYYY-MM-DD).
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: 2025-05-01
+ *
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             description: Filtros opcionales enviados en el cuerpo.
+ *             properties:
+ *               distributor:
+ *                 type: string
+ *                 example: IMPORTADORA CASTRO
+ *               codeStoreDistributor:
+ *                 type: string
+ *                 example: AVQUITO
+ *               codeProductDistributor:
+ *                 type: string
+ *                 example: AV-TVBL005
+ *               descriptionDistributor:
+ *                 type: string
+ *                 example: TELEVISOR UHD SMART 65
+ *
+ *     responses:
+ *       200:
+ *         description: Datos consolidados obtenidos correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 items:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       distributor:
+ *                         type: string
+ *                       codeStoreDistributor:
+ *                         type: string
+ *                       codeProductDistributor:
+ *                         type: string
+ *                       descriptionDistributor:
+ *                         type: string
+ *                       unitsSoldDistributor:
+ *                         type: number
+ *                       codeProduct:
+ *                         type: string
+ *                       codeStore:
+ *                         type: string
+ *                       storeName:
+ *                         type: string
+ *                       productModel:
+ *                         type: string
+ *                       calculateDate:
+ *                         type: string
+ *                         format: date
+ *                 total:
+ *                   type: integer
+ *                 totalAll:
+ *                   type: integer
+ *
+ *       400:
+ *         description: Datos de entrada inválidos.
+ *       401:
+ *         description: No autorizado.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.post(
+    "/store/filters-mod",
+    authenticateToken,
+    consolidatedDataStoresController.getFilteredConsolidatedDataStoresMod
+);
 
 /**
  * @swagger

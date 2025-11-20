@@ -1,5 +1,5 @@
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
-import { NullFieldFilters } from "../dtos/consolidated.data.stores.dto";
+import { ConsolidatedDataStoresDto, NullFieldFilters } from "../dtos/consolidated.data.stores.dto";
 import { ConsolidatedDataStores } from "../models/consolidated.data.stores.model";
 import { BaseRepository } from "./base.respository";
 import {
@@ -465,6 +465,113 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     const totalAll = await this.repository.count();
 
     return { items, total, totalAll };
+  }
+
+  async findByFiltersMod(
+    page: number = 1,
+    limit: number = 10,
+    filters?: {
+      distributor?: string;
+      codeStoreDistributor?: string;
+      codeProductDistributor?: string;
+      descriptionDistributor?: string;
+    },
+    calculateDate?: Date
+  ): Promise<{
+    items: ConsolidatedDataStoresDto[];
+    total: number;
+    totalAll: number;
+  }> {
+    const qb = this.repository
+      .createQueryBuilder("s")
+      .select([
+        "s.distributor",
+        "s.codeStoreDistributor",
+        "s.codeProductDistributor",
+        "s.descriptionDistributor",
+        "SUM(s.unitsSoldDistributor) as unitsSoldDistributor",
+        "s.codeProduct",
+        "s.codeStore",
+        "s.storeName",
+        "s.productModel",
+        "s.calculateDate",
+      ])
+      .groupBy("s.distributor")
+      .addGroupBy("s.codeStoreDistributor")
+      .addGroupBy("s.codeProductDistributor")
+      .addGroupBy("s.descriptionDistributor")
+      .addGroupBy("s.codeProduct")
+      .addGroupBy("s.codeStore")
+      .addGroupBy("s.storeName")
+      .addGroupBy("s.productModel")
+      .addGroupBy("s.calculateDate")
+      .orderBy("s.distributor", "ASC")
+      .addOrderBy("s.codeStoreDistributor", "ASC")
+      .addOrderBy("s.codeProductDistributor", "ASC")
+      .addOrderBy("s.descriptionDistributor", "ASC")
+      .addOrderBy("s.codeProduct", "ASC")
+      .addOrderBy("s.codeStore", "ASC");
+
+    // === Filtros dinámicos individualizados ===
+    if (filters?.distributor) {
+      qb.andWhere("s.distributor ILIKE :d", { d: `%${filters.distributor}%` });
+    }
+    if (filters?.codeStoreDistributor) {
+      qb.andWhere("s.codeStoreDistributor ILIKE :csd", {
+        csd: `%${filters.codeStoreDistributor}%`,
+      });
+    }
+    if (filters?.codeProductDistributor) {
+      qb.andWhere("s.codeProductDistributor ILIKE :cpd", {
+        cpd: `%${filters.codeProductDistributor}%`,
+      });
+    }
+    if (filters?.descriptionDistributor) {
+      qb.andWhere("s.descriptionDistributor ILIKE :desc", {
+        desc: `%${filters.descriptionDistributor}%`,
+      });
+    }
+
+    // === Filtro por año y mes ===
+    if (calculateDate) {
+      const date = calculateDate.toISOString().split("T")[0];
+      const [year, month] = date.split("-");
+
+      qb.andWhere("EXTRACT(YEAR FROM s.calculateDate) = :year", { year });
+      qb.andWhere("EXTRACT(MONTH FROM s.calculateDate) = :month", { month });
+    }
+
+    // === Total sin paginar ===
+    const totalAll = await qb.getCount();
+
+    // === Paginación ===
+    const items = await qb
+      .offset((page - 1) * limit)
+      .limit(limit)
+      .getRawMany();
+    console.log(items);
+    const itemsMapped: any = items.map((item: any) => ({
+      id: item.id,
+      distributor: item.s_distributor,
+      codeStoreDistributor: item.s_code_store_distributor,
+      codeProductDistributor: item.s_code_product_distributor,
+      descriptionDistributor: item.s_description_distributor,
+      unitsSoldDistributor: item.unitssolddistributor ? Number(item.unitssolddistributor) : null,
+      saleDate: item.s_sale_date,
+      codeProduct: item.s_code_product,
+      codeStore: item.s_code_store,
+      authorizedDistributor: item.s_authorized_distributor,
+      storeName: item.s_store_name,
+      productModel: item.s_product_model,
+      calculateDate: item.s_calculate_date,
+      matriculationTemplate: item.matriculationTemplate,
+      status: item.status,
+    }));
+
+    // === Total paginado ===
+    const total = itemsMapped.length;
+
+    return { items: itemsMapped, total, totalAll };
   }
 
   async findByCalculateDateData(

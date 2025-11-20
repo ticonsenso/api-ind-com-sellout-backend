@@ -128,7 +128,7 @@ export class ExtratedDataSelloutService {
             )
         };
         }catch (error) {
-            throw error;
+            throw new Error(`Error al procesar los datos extraídos: ${(error as Error).message}`);
         }
     }
 

@@ -550,6 +550,25 @@ export class ConsolidatedDataStoresService {
         };
     }
 
+    async getConsolidatedDataStoresValuesNullMod(
+        page: number,
+        limit: number,
+        search?: {
+            distributor?: string;
+            codeStoreDistributor?: string;
+            codeProductDistributor?: string;
+            descriptionDistributor?: string;
+        },
+        calculateDate?: Date
+    ): Promise<ConsolidatedDataStoresFiltersResponseDto> {
+        const { items, totalAll } = await this.consolidatedDataStoresRepository.findByFiltersMod(page, limit, search, calculateDate);
+        return {
+            items: items,
+            total: totalAll,
+        };
+    }
+
+
     async getConsolidatedDataStoresDetailNullFields(calculateDate?: Date): Promise<any> {
         return this.consolidatedDataStoresRepository.findDetailNullFields(calculateDate);
     }

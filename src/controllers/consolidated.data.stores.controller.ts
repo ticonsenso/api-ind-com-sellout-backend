@@ -25,6 +25,7 @@ export class ConsolidatedDataStoresController {
         this.getConsolidatedDataStoresValuesNullUnique = this.getConsolidatedDataStoresValuesNullUnique.bind(this);
         this.updateManyConsolidatedDataStores = this.updateManyConsolidatedDataStores.bind(this);
         this.updateJustStatus = this.updateJustStatus.bind(this);
+        this.getFilteredConsolidatedDataStoresMod = this.getFilteredConsolidatedDataStoresMod.bind(this);
     }
 
     async createConsolidatedDataStores(req: Request, res: Response) {
@@ -113,6 +114,22 @@ export class ConsolidatedDataStoresController {
             const calculateDate = req.query.calculateDate ? new Date(req.query.calculateDate as string) : undefined;
 
             const filteredConsolidatedDataStores = await this.consolidatedDataStoresService.getConsolidatedDataStoresValuesNull(page!, limit!, search, nullFields, calculateDate);
+            res.status(StatusCodes.OK).json(filteredConsolidatedDataStores);
+        } catch (error) {
+            res
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .json({ message: error instanceof Error ? error.message : 'Error desconocido' });
+        }
+    }
+
+    async getFilteredConsolidatedDataStoresMod(req: Request, res: Response) {
+        try {
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 10;
+            const search = plainToClass(Object, req.body);
+            const calculateDate = req.query.calculateDate ? new Date(req.query.calculateDate as string) : undefined;
+
+            const filteredConsolidatedDataStores = await this.consolidatedDataStoresService.getConsolidatedDataStoresValuesNullMod(page!, limit!, search, calculateDate);
             res.status(StatusCodes.OK).json(filteredConsolidatedDataStores);
         } catch (error) {
             res
