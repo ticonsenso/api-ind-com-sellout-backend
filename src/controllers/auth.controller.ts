@@ -13,9 +13,9 @@ export class AuthController {
   public userService: UserService;
   public initSessionLogsService: InitSessionLogsService;
   //private redirectUrl = 'http://82.165.47.88:5176';
-  //private redirectUrl = "http://localhost:5173";
-  private redirectUrl = "https://sellout.indurama.com";
-  
+  private redirectUrl = "http://localhost:5173";
+  //private redirectUrl = "https://sellout.indurama.com";
+
   constructor(dataSource: DataSource) {
     this.userService = new UserService(dataSource);
     this.initSessionLogsService = new InitSessionLogsService(dataSource);
