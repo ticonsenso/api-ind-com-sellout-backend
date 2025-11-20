@@ -28,7 +28,7 @@ ENV NODE_ENV=development \
   DB_NAME=consenso \
   DB_PASSWORD=holatuten123. \
   DB_PORT=5432 \
-  DB_DEFAULT_SCHEMA=db_sellout \
+  DB_DEFAULT_SCHEMA=db-sellout \
   DATABASE_URL=postgres://postgres:holatuten123.@localhost:5432/consenso?sslmode=disable \
   JWT_SECRET=sellout_2025$$
 
