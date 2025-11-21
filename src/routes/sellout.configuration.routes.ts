@@ -1,4 +1,4 @@
-import {RequestHandler, Router} from 'express';
+import express, {RequestHandler, Router} from 'express';
 import AppDataSource from '../config/data-source';
 import {authenticateToken} from '../middleware/auth.middleware';
 import {validatorMiddleware} from '../middleware/validator.middleware';
@@ -9,6 +9,8 @@ import {
     UpdateSelloutConfigurationColumnConfigsDto
 } from '../dtos/sellout.configuration.column.configs.dto';
 import {CreateExtractedDataSelloutDto, UpdateExtractedDataSelloutDto} from '../dtos/extrated.data.sellout.dto';
+import { gzipMiddleware } from "../middleware/gzipMiddleware";
+
 
 const router = Router();
 const selloutConfigurationController = new SelloutConfigurationController(AppDataSource);
@@ -783,9 +785,17 @@ router.get(
  * @swagger
  * /api/sellout/configuration/extracted/data:
  *   post:
- *     summary: Crear nuevos datos extraídos sellout
+ *     summary: Crear nuevos datos extraídos sellout (soporta JSON y JSON comprimido en gzip)
  *     tags: [Datos extraídos sellout]
- *     description: Crea un nuevo registro de datos extraídos sellout en el sistema
+ *     description: |
+ *       Este endpoint permite crear un nuevo registro de datos extraídos sellout.
+ *       
+ *       **Formatos de entrada soportados:**
+ *       - **application/json** → JSON normal
+ *       - **application/json** → JSON con el campo `gzipBase64` que contiene los datos comprimidos
+ *       - **application/gzip** → Cuerpo binario comprimido con gzip (pako.gzip)
+ *
+ *       El servidor descomprime automáticamente el contenido gzip antes de validar el DTO.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -793,83 +803,82 @@ router.get(
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - extractionDate
- *               - dataContent
- *               - selloutConfigurationId
- *             properties:
- *               extractionDate:
- *                 type: string
- *                 format: date-time
- *                 description: Fecha de extracción de los datos
- *                 example: "2023-05-15T10:30:00Z"
- *               dataContent:
- *                 type: object
- *                 description: Contenido de los datos extraídos
- *                 example: {"consolidated_data_stores": [{"distributor": "MAYOREO", "codeStoreDistributor": "3444", "codeProductDistributor": "9877", "descriptionDistributor": "TV INDURAMA", "unitsSoldDistributor": 1, "saleDate": "2023-05-15"}]}
- *               selloutConfigurationId:
- *                 type: integer
- *                 description: ID de la configuración de Sellout
- *                 example: 1
- *               recordCount:
- *                 type: integer
- *                 description: Número de registros extraídos
- *                 example: 1
- *               dataName:
- *                 type: string
- *                 description: Nombre del bloque de datos
- *                 example: "consolidated_data_stores"
- *               distributor:
- *                 type: string
- *                 description: Distribuidor
- *                 example: "Almacenes Alfa"
- *               storeName:
- *                 type: string
- *                 description: Nombre de la tienda
- *                 example: "Almacenes 1"
- *               calculateDate:
- *                 type: string
- *                 description: Fecha de cálculo
- *                 example: "2025-06-20"
- *               productCount:
- *                 type: integer
- *                 description: Total de productos procesados
- *                 example: 15  
- *               uploadTotal:
- *                 type: integer
- *                 description: Total de registros extraídos
- *                 example: 2
- *               uploadCount:
- *                 type: integer
- *                 description: Total de registros procesados
- *                 example: 1
- *               matriculationId:
- *                 type: integer
- *                 description: ID de la plantilla de matriculación
- *                 example: 1
- *               matriculationLogs:
- *                 type: array  
- *                 description: Log de matriculación
- *                 items:
- *                   type: object
- *                   properties:
- *                     distributor:
- *                       type: string
- *                       description: Distribuidor    
- *                       example: "Almacenes Alfa"
- *                     storeName:
- *                       type: string
- *                       description: Nombre de la tienda
- *                       example: "Almacenes 1"
- *                     rowsCount:
- *                       type: integer
- *                       description: Total de filas procesadas
- *                       example: 150
- *                     productCount:
- *                       type: integer    
- *                       description: Total de productos procesados
- *                       example: 15
+ *             oneOf:
+ *               - type: object
+ *                 description: JSON normal sin compresión
+ *                 required:
+ *                   - extractionDate
+ *                   - dataContent
+ *                   - selloutConfigurationId
+ *                 properties:
+ *                   extractionDate:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2023-05-15T10:30:00Z"
+ *                   dataContent:
+ *                     type: object
+ *                     example: {"consolidated_data_stores": [{"distributor": "MAYOREO", "codeStoreDistributor": "3444"}]}
+ *                   selloutConfigurationId:
+ *                     type: integer
+ *                     example: 1
+ *                   recordCount:
+ *                     type: integer
+ *                     example: 1
+ *                   dataName:
+ *                     type: string
+ *                     example: "consolidated_data_stores"
+ *                   distributor:
+ *                     type: string
+ *                     example: "Almacenes Alfa"
+ *                   storeName:
+ *                     type: string
+ *                     example: "Almacenes 1"
+ *                   calculateDate:
+ *                     type: string
+ *                     example: "2025-06-20"
+ *                   productCount:
+ *                     type: integer
+ *                     example: 15
+ *                   uploadTotal:
+ *                     type: integer
+ *                     example: 2
+ *                   uploadCount:
+ *                     type: integer
+ *                     example: 1
+ *                   matriculationId:
+ *                     type: integer
+ *                     example: 1
+ *                   matriculationLogs:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         distributor:
+ *                           type: string
+ *                           example: "Almacenes Alfa"
+ *                         storeName:
+ *                           type: string
+ *                           example: "Almacenes 1"
+ *                         rowsCount:
+ *                           type: integer
+ *                           example: 150
+ *                         productCount:
+ *                           type: integer
+ *                           example: 15
+ *               - type: object
+ *                 description: JSON con gzip en base64
+ *                 required:
+ *                   - gzipBase64
+ *                 properties:
+ *                   gzipBase64:
+ *                     type: string
+ *                     description: Cadena base64 que contiene datos comprimidos con gzip
+ *                     example: "H4sIAAAAAAAA/ytJLS4BAAx+f9gEAAAA"
+ *         application/gzip:
+ *           schema:
+ *             type: string
+ *             format: binary
+ *             description: Cuerpo binario comprimido con gzip
  *     responses:
  *       201:
  *         description: Datos extraídos creados correctamente
@@ -883,68 +892,8 @@ router.get(
  *                   example: "Los datos extraidos se han guardado correctamente"
  *                 extractedData:
  *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                       example: 1
- *                     extractionDate:
- *                       type: string
- *                       format: date-time
- *                       example: "2023-05-15T10:30:00Z"
- *                     dataContent:
- *                       type: object
- *                     recordCount:
- *                       type: integer
- *                       example: 150
- *                     dataName:
- *                       type: string
- *                       example: "consolidated_data_stores"
- *                     distributor:
- *                       type: string
- *                       example: "Almacenes Alfa"
- *                     storeName:
- *                       type: string
- *                       example: "Almacenes 1"
- *                     calculateDate:
- *                       type: string
- *                       example: "2025-06-20"
- *                     productCount:
- *                       type: integer
- *                       example: 15
- *                     uploadTotal:
- *                       type: integer
- *                       example: 2
- *                     uploadCount:
- *                       type: integer
- *                       example: 1
- *                     matriculationId:
- *                       type: integer
- *                       example: 1
- *                     matriculationLogs:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: integer
- *                             example: 1
- *                           matriculationId:
- *                             type: integer
- *                             example: 1
- *                           rowsCount:
- *                             type: integer
- *                             example: 150
- *                           distributor:
- *                             type: string
- *                             example: "Almacenes Alfa"
- *                           storeName:
- *                             type: string
- *                             example: "Almacenes 1"
- *                           productCount:
- *                             type: integer
- *                             example: 15
  *       400:
- *         description: Datos de entrada inválidos
+ *         description: Datos inválidos o gzip incorrecto
  *       401:
  *         description: No autorizado
  *       500:
@@ -952,6 +901,9 @@ router.get(
  */
 router.post(
     "/configuration/extracted/data",
+    express.raw({ type: "application/gzip", limit: "20mb" }), // necesario para recibir binario
+    express.json({ limit: "20mb" }), // necesario para json o base64
+    gzipMiddleware, // 👈 descomprime si aplica
     authenticateToken as RequestHandler,
     validatorMiddleware(CreateExtractedDataSelloutDto) as RequestHandler,
     selloutConfigurationController.createExtractedDataSellout
