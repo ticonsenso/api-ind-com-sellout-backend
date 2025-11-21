@@ -20,16 +20,16 @@ RUN npm ci
 COPY . .
 
 # Definimos las variables de entorno (puedes modificarlas según tus necesidades)
-ENV NODE_ENV=development \
+ENV NODE_ENV=production \
   PORT=3008 \
-  BASE_URL=http://localhost:3008 \
-  DB_USER=jpsolanoc \
-  DB_HOST=82.165.47.88 \
-  DB_NAME=consenso \
-  DB_PASSWORD=holatuten123. \
-  DB_PORT=5432 \
+  BASE_URL=https://cmi.consensocorp.com \
+  DB_USER=sellout \
+  DB_HOST=cpdbep.consensocorp.com \
+  DB_NAME=sellout \
+  DB_PASSWORD=S3ll0ut. \
+  DB_PORT=5435 \
   DB_DEFAULT_SCHEMA=db-sellout \
-  DATABASE_URL=postgres://postgres:holatuten123.@localhost:5432/consenso?sslmode=disable \
+  DATABASE_URL=postgres://postgres:cpdbep.consensocorp.com@localhost:5435/consenso?sslmode=disable \
   JWT_SECRET=sellout_2025$$
 
 # Exponemos el puerto que la aplicación usará dentro del contenedor
