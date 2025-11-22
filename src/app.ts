@@ -25,8 +25,10 @@ import exportDataRoutes from "./routes/export.data.routes";
 import storeManagerCalculationCommissionRoutes from "./routes/store.manager.calculation.routes";
 import columnConfigRoutes from "./routes/column.config.routes";
 import morgan from "morgan";
+import zlib from "zlib";
 
 const app: Application = express();
+app.use(express.raw({ type: "application/gzip", limit: "10mb" }));
 // Configurar CORS para permitir solicitudes específicas
 const basePath = env.BASE_PATH;
 
