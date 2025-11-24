@@ -74,6 +74,9 @@ export class MatriculationLogResponseDto {
     @Expose()
     templateId?: number;
 
+    @Expose()
+    user?: string;
+
   
 }
 

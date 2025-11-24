@@ -34,30 +34,5 @@ export class ExtractedDataSelloutRepository extends BaseRepository<ExtractedData
     return { items, total };
   }
 
-  async deleteDataByDistributorAndCodeStoreDistributor(
-    distributor: string,
-    codeStoreDistributor: string
-  ): Promise<any> {
-    return await this.repository
-      .createQueryBuilder()
-      .delete()
-      .from("extraction_logs_sellout")
-      .where("distributor = :distributor", { distributor })
-      .andWhere("code_store_distributor = :code", {
-        code: codeStoreDistributor,
-      })
-      .execute();
-  }
-
-    async deleteDataByDistributor(
-    distributor: string
-  ): Promise<any> {
-    return await this.repository
-      .createQueryBuilder()
-      .delete()
-      .from("extraction_logs_sellout")
-      .where("distributor = :distributor", { distributor })
-      .execute();
-  }
 
 }
