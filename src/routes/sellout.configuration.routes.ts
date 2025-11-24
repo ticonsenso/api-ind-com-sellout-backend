@@ -1147,4 +1147,67 @@ router.get(
     selloutConfigurationController.getFilteredExtractedDataSellout
 );
 
+/**
+ * @swagger
+ * /api/configuration/extracted/data/delete/distributor/store-name:
+ *   post:
+ *     summary: Elimina datos de sellout por distribuidor y opcionalmente por nombre de tienda
+ *     tags:
+ *       - Datos extraídos sellout
+ *     security:
+ *       - bearerAuth: []
+ *     description: |
+ *       Este servicio permite eliminar la información relacionada al sellout según el distribuidor.  
+ *       
+ *       Si se envía además *storeName*, la eliminación será únicamente para la tienda específica.  
+ *       Si no se envía *storeName*, la eliminación se ejecutará para **todo el distribuidor**.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - distribuidor
+ *             properties:
+ *               distribuidor:
+ *                 type: string
+ *                 description: Nombre del distribuidor del cual se desea eliminar información.
+ *                 example: "MAYOREO COSTA"
+ *               storeName:
+ *                 type: string
+ *                 description: Nombre de la tienda asociada al distribuidor. Si no se envía, la eliminación será total por distribuidor.
+ *                 example: "DECOHOGAR"
+ *     responses:
+ *       200:
+ *         description: Datos eliminados correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Datos eliminados correctamente para el distribuidor y el nombre de tienda.
+ *       400:
+ *         description: Error en los datos enviados.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Distribuidor es requerido
+ *       401:
+ *         description: No autorizado.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.post(
+    "/configuration/extracted/data/delete/distributor/store-name",
+    authenticateToken,
+    selloutConfigurationController.deleteDataSelloutDistribuidorAndStoreName
+);
+
 export default router;

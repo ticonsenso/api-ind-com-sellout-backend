@@ -226,4 +226,26 @@ export class SelloutConfigurationController {
                 .json({ message: error instanceof Error ? error.message : 'Error desconocido' });
         }
     }
+
+    async deleteDataSelloutDistribuidorAndStoreName(req: Request, res: Response) {  
+         const {distribuidor,storeName} = req.body;
+        try {
+            if (!distribuidor) {
+                res.status(StatusCodes.BAD_REQUEST).json({ message: "Distribuidor es requerido" });
+                return;
+            }
+            if (storeName) {
+                await this.extratedDataSelloutService.deleteDataSelloutDistribuidorAndStoreName(distribuidor,storeName);
+                return res.status(StatusCodes.OK).json({ message: 'Datos eliminados correctamente para el distribuidor y el nombre de tienda.' });
+            }else{
+               await this.extratedDataSelloutService.deleteDataSelloutDistribuidor(distribuidor);
+                return res.status(StatusCodes.OK).json({ message: 'Datos eliminados correctamente para el distribuidor.' });
+            }
+        } catch (error) {
+            res
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .json({ message: error instanceof Error ? error.message : 'Error desconocido' });
+        }
+    }
 }
+

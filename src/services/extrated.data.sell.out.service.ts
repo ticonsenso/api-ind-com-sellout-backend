@@ -393,4 +393,22 @@ export class ExtratedDataSelloutService {
       total,
     };
   }
+
+
+  async deleteDataSelloutDistribuidorAndStoreName(distributor:string,storeName:string):Promise<any>{
+    await this.extractedDataSelloutRepository.deleteDataByDistributorAndCodeStoreDistributor(distributor,storeName);
+    await this.matriculationLogsRepository.deleteDataByDistributorAndStoreName(distributor,storeName);
+    return {
+      mensaje: 'Datos eliminados correctamente.'
+    };
+  }
+
+  async deleteDataSelloutDistribuidor(distributor:string):Promise<any>{
+    await this.extractedDataSelloutRepository.deleteDataByDistributor(distributor);
+    await this.matriculationLogsRepository.deleteDataByDistributor(distributor);
+    return {
+      mensaje: 'Datos eliminados correctamente.'
+    };
+  }
+
 }
