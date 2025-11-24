@@ -69,14 +69,11 @@ export class MatriculationLogResponseDto {
     @Expose()
     uploadCount?: number;
 
-
-
     @Expose()
     templateId?: number;
 
     @Expose()
     user?: string;
-
   
 }
 
