@@ -6,6 +6,7 @@ import {MatriculationService} from '../services/matriculation.service';
 import {CreateMatriculationTemplateDto, UpdateMatriculationTemplateDto} from '../dtos/matriculation.templates.dto';
 import {CreateMatriculationLogDto, UpdateMatriculationLogDto} from '../dtos/matriculation.logs.dto';
 import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
+import { decodeToken } from '../middleware/auth.middleware';
 
 export class MatriculationController {
     private matriculationService: MatriculationService;
@@ -150,7 +151,13 @@ export class MatriculationController {
     async createMatriculationLog(req: Request, res: Response) {
         try {
             const createMatriculationLogDto: CreateMatriculationLogDto = plainToClass(CreateMatriculationLogDto, req.body);
-            const matriculationLog = await this.matriculationService.createMatriculationLog(createMatriculationLogDto);
+            const authHeader = req.header("Authorization");
+            const token = authHeader && authHeader.split(" ")[1];
+            if (!token) {
+                throw new Error("Token no proporcionado");
+            }
+            const userConsenso = decodeToken(token);
+            const matriculationLog = await this.matriculationService.createMatriculationLog(createMatriculationLogDto, userConsenso);
             res.status(StatusCodes.CREATED).json({ message: 'Revisión de matriculación creada correctamente', matriculationLog });
         } catch (error) {
             res

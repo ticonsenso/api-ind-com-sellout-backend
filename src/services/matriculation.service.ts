@@ -19,6 +19,7 @@ import {MatriculationLog} from "../models/matriculation.logs.model";
 import {chunkArray, parseLocalDate} from "../utils/utils";
 import {ClosingConfigurationRepository} from "../repository/closing.configuration.repository";
 import {ConsolidatedDataStoresRepository} from "../repository/consolidated.data.stores.repository";
+import { UserConsenso } from "../interfaces/user.consenso";
 
 export class MatriculationService {
     private matriculationLogsRepository: MatriculationLogsRepository;
@@ -225,13 +226,15 @@ export class MatriculationService {
     }
 
     async createMatriculationLog(
-        matriculationLog: CreateMatriculationLogDto
+        matriculationLog: CreateMatriculationLogDto,
+        userConsenso: UserConsenso
     ): Promise<MatriculationLogResponseDto> {
         const existingTemplate = await this.matriculationTemplateRepository.findById(matriculationLog.matriculationId!);
         if (!existingTemplate) {
             throw new Error("Matriculación de plantilla no encontrada");
         }
         const matriculationLogEntity = plainToInstance(MatriculationLog, matriculationLog, {});
+        matriculationLogEntity.user = userConsenso.email;
         matriculationLogEntity.matriculation = existingTemplate;
         const matriculationLogSaved =
             await this.matriculationLogsRepository.create(matriculationLogEntity);

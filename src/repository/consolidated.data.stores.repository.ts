@@ -840,4 +840,30 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addOrderBy("s.code_store", "ASC")
       .getRawMany();
   }
+
+    async deleteDataByDistributorAndCodeStoreDistributor(
+    distributor: string,
+    codeStoreDistributor: string
+  ): Promise<any> {
+    return await this.repository
+      .createQueryBuilder()
+      .delete()
+      .from("consolidated_data_stores")
+      .where("distributor = :distributor", { distributor })
+      .andWhere("code_store_distributor = :code", {
+        code: codeStoreDistributor,
+      })
+      .execute();
+  }
+
+    async deleteDataByDistributor(
+    distributor: string
+  ): Promise<any> {
+    return await this.repository
+      .createQueryBuilder()
+      .delete()
+      .from("consolidated_data_stores")
+      .where("distributor = :distributor", { distributor })
+      .execute();
+  }
 }

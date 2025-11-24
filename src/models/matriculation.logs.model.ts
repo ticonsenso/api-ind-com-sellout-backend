@@ -44,4 +44,7 @@ export class MatriculationLog {
 
     @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', onUpdate: 'CURRENT_TIMESTAMP', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt?: Date;
+
+    @Column({ name: 'user', type: 'varchar', length: 255, nullable: true })
+    user?: string;
 }

@@ -143,7 +143,8 @@ export class ExtratedDataSelloutService {
         await this.saveOrUpdateMatriculationLog(
           dto,
           template,
-          logMatriculationData
+          logMatriculationData,
+          userConsenso
         );
       }
 
@@ -235,7 +236,8 @@ export class ExtratedDataSelloutService {
   private async saveOrUpdateMatriculationLog(
     dto: CreateExtractedDataSelloutDto,
     template: MatriculationTemplate,
-    logs: MatriculationLog[]
+    logs: MatriculationLog[],
+    userConsenso: UserConsenso
   ): Promise<void> {
     const isoDate = parseDateFromISO(dto.calculateDate!);
     if (logs && logs.length > 0) {
@@ -250,7 +252,7 @@ export class ExtratedDataSelloutService {
           distributor: log.distributor,
           storeName: log.storeName,
         };
-        await this.matriculationService.createMatriculationLog(logPayload);
+        await this.matriculationService.createMatriculationLog(logPayload, userConsenso);
       }
     }
   }
@@ -396,7 +398,7 @@ export class ExtratedDataSelloutService {
 
 
   async deleteDataSelloutDistribuidorAndStoreName(distributor:string,storeName:string):Promise<any>{
-    await this.extractedDataSelloutRepository.deleteDataByDistributorAndCodeStoreDistributor(distributor,storeName);
+    await this.consolidatedDataStoresRepository.deleteDataByDistributorAndCodeStoreDistributor(distributor,storeName);
     await this.matriculationLogsRepository.deleteDataByDistributorAndStoreName(distributor,storeName);
     return {
       mensaje: 'Datos eliminados correctamente.'
@@ -404,7 +406,7 @@ export class ExtratedDataSelloutService {
   }
 
   async deleteDataSelloutDistribuidor(distributor:string):Promise<any>{
-    await this.extractedDataSelloutRepository.deleteDataByDistributor(distributor);
+    await this.consolidatedDataStoresRepository.deleteDataByDistributor(distributor);
     await this.matriculationLogsRepository.deleteDataByDistributor(distributor);
     return {
       mensaje: 'Datos eliminados correctamente.'

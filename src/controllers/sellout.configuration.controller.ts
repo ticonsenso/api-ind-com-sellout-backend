@@ -34,6 +34,7 @@ export class SelloutConfigurationController {
         this.updateExtractedDataSellout = this.updateExtractedDataSellout.bind(this);
         this.deleteExtractedDataSellout = this.deleteExtractedDataSellout.bind(this);
         this.getFilteredExtractedDataSellout = this.getFilteredExtractedDataSellout.bind(this);
+        this.deleteDataSelloutDistribuidorAndStoreName = this.deleteDataSelloutDistribuidorAndStoreName.bind(this);
     }
 
     async createSelloutConfiguration(req: Request, res: Response) {

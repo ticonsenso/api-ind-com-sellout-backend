@@ -1149,7 +1149,7 @@ router.get(
 
 /**
  * @swagger
- * /api/configuration/extracted/data/delete/distributor/store-name:
+ * /api/sellout/configuration/extracted/data/deleteall:
  *   post:
  *     summary: Elimina datos de sellout por distribuidor y opcionalmente por nombre de tienda
  *     tags:
@@ -1205,7 +1205,7 @@ router.get(
  *         description: Error interno del servidor.
  */
 router.post(
-    "/configuration/extracted/data/delete/distributor/store-name",
+    "/configuration/extracted/data/deleteall",
     authenticateToken,
     selloutConfigurationController.deleteDataSelloutDistribuidorAndStoreName
 );
