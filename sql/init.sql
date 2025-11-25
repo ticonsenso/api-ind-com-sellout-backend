@@ -770,6 +770,8 @@ CREATE TABLE IF NOT EXISTS sellout_configuration (
     company_id INT REFERENCES companies(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    initial_sheet INT NULL,
+    end_sheet INT NULL,
     CONSTRAINT fk_company
         FOREIGN KEY (company_id)
         REFERENCES companies(id)
@@ -777,6 +779,8 @@ CREATE TABLE IF NOT EXISTS sellout_configuration (
 );
 
 -- ALTER TABLE sellout_configuration ADD COLUMN calculate_date DATE NOT NULL;
+--ALTER TABLE sellout_configuration ADD COLUMN initial_sheet INT NULL;
+--ALTER TABLE sellout_configuration ADD COLUMN end_sheet INT NULL;
 
 CREATE TABLE IF NOT EXISTS extraction_logs_sellout (
     id SERIAL PRIMARY KEY,

@@ -22,7 +22,7 @@ const selloutConfigurationController = new SelloutConfigurationController(AppDat
  *     tags:
  *       - Configuración de Sellout
  *     summary: Crear una nueva configuración de Sellout
- *     description: Crea una nueva configuración de Sellout en el sistema
+ *     description: Registra una nueva configuración de origen de datos Sellout en el sistema.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -40,37 +40,57 @@ const selloutConfigurationController = new SelloutConfigurationController(AppDat
  *               - codeStoreDistributor
  *               - companyId
  *               - calculateDate
+ *               - initialSheet
+ *               - endSheet
  *             properties:
  *               name:
  *                 type: string
- *                 description: Nombre de la configuración
+ *                 description: Nombre asignado a la configuración.
+ *                 example: "Configuración Sellout Mayoreo Costa"
  *               sourceType:
  *                 type: string
- *                 description: Tipo de fuente
+ *                 description: Tipo de origen del archivo o fuente de datos.
+ *                 example: "Excel"
  *               description:
  *                 type: string
- *                 description: Descripción de la configuración
+ *                 description: Descripción general de la configuración.
+ *                 example: "Configuración para extraer datos de tiendas Mayoreo Costa."
  *               distributorCompanyName:
  *                 type: string
- *                 description: Nombre de la empresa distribuidora
+ *                 description: Nombre de la empresa distribuidora.
+ *                 example: "MAYOREO COSTA"
  *               sheetName:
  *                 type: string
- *                 description: Nombre de la hoja del archivo
+ *                 description: Nombre de la hoja del archivo que contiene los datos.
+ *                 example: "Hoja1"
  *               codeStoreDistributor:
  *                 type: string
- *                 description: Código de la tienda
+ *                 description: Código de la tienda asociada al distribuidor.
+ *                 example: "DECOHOGAR"
  *               companyId:
  *                 type: integer
- *                 description: ID de la empresa
+ *                 description: ID de la empresa en el sistema.
+ *                 example: 3
  *               matriculationId:
  *                 type: integer
- *                 description: ID de la plantilla de matriculación
+ *                 description: ID de la plantilla de matriculación (opcional).
+ *                 example: 12
  *               calculateDate:
  *                 type: string
- *                 description: Fecha de cálculo
+ *                 format: date
+ *                 description: Fecha a partir de la cual se realizará el cálculo.
+ *                 example: "2024-11-20"
+ *               initialSheet:
+ *                 type: integer
+ *                 description: Número de la hoja inicial para procesar.
+ *                 example: 1
+ *               endSheet:
+ *                 type: integer
+ *                 description: Número de la hoja final para procesar.
+ *                 example: 3
  *     responses:
  *       200:
- *         description: Configuración de Sellout creada correctamente
+ *         description: Configuración creada correctamente.
  *         content:
  *           application/json:
  *             schema:
@@ -78,6 +98,7 @@ const selloutConfigurationController = new SelloutConfigurationController(AppDat
  *               properties:
  *                 id:
  *                   type: integer
+ *                   example: 15
  *                 name:
  *                   type: string
  *                 sourceType:
@@ -94,14 +115,20 @@ const selloutConfigurationController = new SelloutConfigurationController(AppDat
  *                   type: integer
  *                 matriculationId:
  *                   type: integer
+ *                   nullable: true
  *                 calculateDate:
  *                   type: string
+ *                   format: date
+ *                 initialSheet:
+ *                   type: integer
+ *                 endSheet:
+ *                   type: integer
  *       400:
- *         description: Datos de entrada inválidos.
+ *         description: Solicitud inválida. Verifique los datos enviados.
  *       401:
- *         description: No autorizado.
+ *         description: No autorizado. Requiere token válido.
  *       500:
- *         description: Error del servidor.
+ *         description: Error interno del servidor.
  */
 router.post(
     "/configuration",

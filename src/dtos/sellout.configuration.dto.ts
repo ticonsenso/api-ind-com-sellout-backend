@@ -47,6 +47,14 @@ export class CreateSelloutConfigurationDto {
     @MaxLength(255)
     codeStoreDistributor?: string;
 
+    @IsOptional()
+    @IsNumber()
+    initialSheet?: number;
+
+    @IsOptional()
+    @IsNumber()
+    endSheet?: number;
+
 }
 
 
@@ -95,6 +103,14 @@ export class UpdateSelloutConfigurationDto {
     @IsString()
     calculateDate?: string;
 
+    @IsOptional()
+    @IsNumber()
+    initialSheet?: number;
+
+    @IsOptional()
+    @IsNumber()
+    endSheet?: number;
+
 }
 
 export class SelloutConfigurationDto {
@@ -133,6 +149,12 @@ export class SelloutConfigurationDto {
 
     @Exclude()
     updatedAt?: Date;
+
+    @Exclude()
+    initialSheet?: number;
+
+    @Exclude()
+    endSheet?: number;
 
 }
 

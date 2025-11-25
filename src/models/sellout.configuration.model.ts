@@ -47,4 +47,10 @@ export class SelloutConfiguration {
     @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     updatedAt!: Date;
 
+    @Column({ name: 'initial_sheet', type: 'int' })
+    initialSheet?: number | null;
+
+    @Column({ name: 'end_sheet', type: 'int' })
+    endSheet?: number | null;
+
 }
