@@ -1117,6 +1117,7 @@ CREATE TABLE IF NOT EXISTS matriculation_templates (
 CREATE TABLE IF NOT EXISTS matriculation_logs (
     id SERIAL PRIMARY KEY,
     matriculation_id INTEGER NOT NULL REFERENCES matriculation_templates(id) ON DELETE CASCADE,
+    user VARCHAR(255) NULL,
     distributor VARCHAR(255) NULL,
     store_name VARCHAR(255) NULL,
     calculate_date DATE NOT NULL,
@@ -1129,6 +1130,7 @@ CREATE TABLE IF NOT EXISTS matriculation_logs (
 );
 -- ALTER TABLE matriculation_logs ADD COLUMN distributor VARCHAR(255) NULL;
 -- ALTER TABLE matriculation_logs ADD COLUMN store_name VARCHAR(255) NULL;
+-- ALTER TABLE matriculation_logs ADD COLUMN user VARCHAR(255) NULL;
 
 CREATE TABLE IF NOT EXISTS closing_configuration (
     id SERIAL PRIMARY KEY,
