@@ -150,10 +150,10 @@ export class SelloutConfigurationDto {
     @Exclude()
     updatedAt?: Date;
 
-    @Exclude()
+    @Expose()
     initialSheet?: number;
 
-    @Exclude()
+    @Expose()
     endSheet?: number;
 
 }
