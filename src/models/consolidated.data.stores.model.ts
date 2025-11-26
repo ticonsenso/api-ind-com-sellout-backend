@@ -13,7 +13,7 @@ export class ConsolidatedDataStores {
     @Column({ name: 'code_store_distributor', type: 'varchar', length: 255 })
     codeStoreDistributor?: string | null;
 
-    @Column({ name: 'code_product_distributor', type: 'varchar', length: 255 })
+    @Column({ name: 'code_product_distributor', type: 'text'})
     codeProductDistributor?: string | null;
 
     @Column({ name: 'description_distributor', type: 'text' })

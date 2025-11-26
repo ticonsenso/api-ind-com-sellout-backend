@@ -15,12 +15,10 @@ export class CreateConsolidatedDataStoresDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
     codeProductDistributor?: string;
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
     descriptionDistributor?: string;
 
     @IsOptional()
@@ -83,12 +81,10 @@ export class UpdateConsolidatedDataStoresDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
     codeStoreDistributor?: string;
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
     codeProductDistributor?: string;
 
     @IsOptional()
@@ -155,17 +151,14 @@ export class UpdateConsolidatedDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
     codeStoreDistributor?: string;
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
     codeProductDistributor?: string;
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
     descriptionDistributor?: string;
 
     @IsOptional()
