@@ -8,6 +8,7 @@ import {
   SelectQueryBuilder,
   UpdateResult,
 } from "typeorm";
+import { primerDiaDelMesString } from "../utils/utils";
 
 export class ConsolidatedDataStoresRepository extends BaseRepository<ConsolidatedDataStores> {
   constructor(dataSource: TypeORMDataSource) {
@@ -843,7 +844,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
     async deleteDataByDistributorAndCodeStoreDistributor(
     distributor: string,
-    codeStoreDistributor: string
+    codeStoreDistributor: string,
+    calculateDate: string
   ): Promise<any> {
     return await this.repository
       .createQueryBuilder()
@@ -853,17 +855,20 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .andWhere("code_store_distributor = :code", {
         code: codeStoreDistributor,
       })
+      .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
       .execute();
   }
 
     async deleteDataByDistributor(
-    distributor: string
+    distributor: string,
+    calculateDate: string
   ): Promise<any> {
     return await this.repository
       .createQueryBuilder()
       .delete()
       .from("consolidated_data_stores")
       .where("distributor = :distributor", { distributor })
+      .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
       .execute();
   }
 }

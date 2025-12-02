@@ -132,6 +132,18 @@ function normalizePercent(value: number): number {
   return value / 100;
 }
 
+function primerDiaDelMesString(fechaString: string): string {
+  const date = new Date(fechaString); // Convertimos el string a Date con el formato 2025-10-16
+  const primerDia = new Date(date.getFullYear(), date.getMonth(), 1);
+
+  // Formateamos de vuelta a YYYY-MM-DD
+  const year = primerDia.getFullYear();
+  const month = String(primerDia.getMonth() + 1).padStart(2, "0");
+  const day = String(primerDia.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
 export {
   hashPassword,
   verifyPassword,
@@ -144,4 +156,5 @@ export {
   cleanString,
   addErrorMessage,
   normalizePercent,
+  primerDiaDelMesString,
 };
