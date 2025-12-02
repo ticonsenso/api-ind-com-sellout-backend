@@ -1,6 +1,7 @@
 import { Between, DataSource } from "typeorm";
 import { MatriculationLog } from "../models/matriculation.logs.model";
 import { BaseRepository } from "./base.respository";
+import { primerDiaDelMesString } from "../utils/utils";
 
 export class MatriculationLogsRepository extends BaseRepository<MatriculationLog> {
   constructor(dataSource: DataSource) {
@@ -166,18 +167,21 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
 
   async deleteDataByDistributor(
     distributor: string,
+    calculateDate: string
   ): Promise<any> {
     return await this.repository
       .createQueryBuilder()
       .delete()
       .from("matriculation_logs")
       .where("distributor = :distributor", { distributor })
+      .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
       .execute();
   }
 
   async deleteDataByDistributorAndStoreName(
     distributor: string,
-    storeName: string
+    storeName: string,
+    calculateDate: string
   ): Promise<any> {
     return await this.repository
       .createQueryBuilder()
@@ -187,6 +191,7 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
       .andWhere("store_name = :code", {
         code: storeName,
       })
+      .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
       .execute();
   }
 }

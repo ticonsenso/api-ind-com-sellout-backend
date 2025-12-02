@@ -1178,16 +1178,21 @@ router.get(
  * @swagger
  * /api/sellout/configuration/extracted/data/deleteall:
  *   post:
- *     summary: Elimina datos de sellout por distribuidor y opcionalmente por nombre de tienda
+ *     summary: Elimina datos de sellout por distribuidor, tienda y fecha de cálculo
  *     tags:
  *       - Datos extraídos sellout
  *     security:
  *       - bearerAuth: []
  *     description: |
- *       Este servicio permite eliminar la información relacionada al sellout según el distribuidor.  
- *       
- *       Si se envía además *storeName*, la eliminación será únicamente para la tienda específica.  
- *       Si no se envía *storeName*, la eliminación se ejecutará para **todo el distribuidor**.
+ *       Este servicio elimina información de los datos extraídos de sellout en función del **distribuidor**,  
+ *       y de manera opcional según el **nombre de tienda** y la **fecha de cálculo (calculateDate)**.
+ *
+ *       Comportamiento:
+ *       1. Si se envía solo *distribuidor*, la eliminación será total para ese distribuidor.
+ *       2. Si se envía *distribuidor* + *storeName*, se eliminarán únicamente los registros asociados a esa tienda.
+ *       3. Si se envía *calculateDate*, la eliminación se aplicará únicamente a registros vinculados a esa fecha.
+ *
+ *       Todos los filtros pueden combinarse según la necesidad.
  *     requestBody:
  *       required: true
  *       content:
@@ -1203,8 +1208,13 @@ router.get(
  *                 example: "MAYOREO COSTA"
  *               storeName:
  *                 type: string
- *                 description: Nombre de la tienda asociada al distribuidor. Si no se envía, la eliminación será total por distribuidor.
+ *                 description: Nombre de la tienda asociada al distribuidor. Si no se envía, se elimina todo el distribuidor.
  *                 example: "DECOHOGAR"
+ *               calculateDate:
+ *                 type: string
+ *                 format: date
+ *                 description: Fecha de cálculo en formato AAAA-MM-DD para filtrar los datos a eliminar.
+ *                 example: "2025-06-01"
  *     responses:
  *       200:
  *         description: Datos eliminados correctamente.
@@ -1215,7 +1225,7 @@ router.get(
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Datos eliminados correctamente para el distribuidor y el nombre de tienda.
+ *                   example: Datos eliminados correctamente.
  *       400:
  *         description: Error en los datos enviados.
  *         content:
@@ -1225,7 +1235,7 @@ router.get(
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Distribuidor es requerido
+ *                   example: El campo distribuidor es requerido.
  *       401:
  *         description: No autorizado.
  *       500:

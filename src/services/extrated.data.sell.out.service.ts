@@ -397,17 +397,17 @@ export class ExtratedDataSelloutService {
   }
 
 
-  async deleteDataSelloutDistribuidorAndStoreName(distributor:string,storeName:string):Promise<any>{
-    await this.consolidatedDataStoresRepository.deleteDataByDistributorAndCodeStoreDistributor(distributor,storeName);
-    await this.matriculationLogsRepository.deleteDataByDistributorAndStoreName(distributor,storeName);
+  async deleteDataSelloutDistribuidorAndStoreName(distributor:string,storeName:string,calculateDate:string):Promise<any>{
+    await this.consolidatedDataStoresRepository.deleteDataByDistributorAndCodeStoreDistributor(distributor,storeName,calculateDate);
+    await this.matriculationLogsRepository.deleteDataByDistributorAndStoreName(distributor,storeName,calculateDate);
     return {
       mensaje: 'Datos eliminados correctamente.'
     };
   }
 
-  async deleteDataSelloutDistribuidor(distributor:string):Promise<any>{
-    await this.consolidatedDataStoresRepository.deleteDataByDistributor(distributor);
-    await this.matriculationLogsRepository.deleteDataByDistributor(distributor);
+  async deleteDataSelloutDistribuidor(distributor:string,calculateDate:string):Promise<any>{
+    await this.consolidatedDataStoresRepository.deleteDataByDistributor(distributor,calculateDate);
+    await this.matriculationLogsRepository.deleteDataByDistributor(distributor,calculateDate);
     return {
       mensaje: 'Datos eliminados correctamente.'
     };

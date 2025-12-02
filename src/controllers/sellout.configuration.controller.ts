@@ -229,17 +229,21 @@ export class SelloutConfigurationController {
     }
 
     async deleteDataSelloutDistribuidorAndStoreName(req: Request, res: Response) {  
-         const {distribuidor,storeName} = req.body;
+         const {distribuidor,storeName,calculateDate} = req.body;
         try {
+            if (!calculateDate) {
+                res.status(StatusCodes.BAD_REQUEST).json({ message: "calculateDate es requerido" });
+                return;
+            }
             if (!distribuidor) {
                 res.status(StatusCodes.BAD_REQUEST).json({ message: "Distribuidor es requerido" });
                 return;
             }
             if (storeName) {
-                await this.extratedDataSelloutService.deleteDataSelloutDistribuidorAndStoreName(distribuidor,storeName);
+                await this.extratedDataSelloutService.deleteDataSelloutDistribuidorAndStoreName(distribuidor,storeName,calculateDate);
                 return res.status(StatusCodes.OK).json({ message: 'Datos eliminados correctamente para el distribuidor y el nombre de tienda.' });
             }else{
-               await this.extratedDataSelloutService.deleteDataSelloutDistribuidor(distribuidor);
+               await this.extratedDataSelloutService.deleteDataSelloutDistribuidor(distribuidor,calculateDate);
                 return res.status(StatusCodes.OK).json({ message: 'Datos eliminados correctamente para el distribuidor.' });
             }
         } catch (error) {
