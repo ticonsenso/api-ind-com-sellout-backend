@@ -1,9 +1,9 @@
 import {DataSource} from 'typeorm';
 import {Request, Response} from 'express';
 import {StatusCodes} from 'http-status-codes';
-import {plainToClass} from 'class-transformer';
+import {plainToClass, plainToInstance} from 'class-transformer';
 import {MatriculationService} from '../services/matriculation.service';
-import {CreateMatriculationTemplateDto, UpdateMatriculationTemplateDto} from '../dtos/matriculation.templates.dto';
+import {CreateMatriculationTemplateDto, DeleteMatriculationTemplateDto, UpdateMatriculationTemplateDto} from '../dtos/matriculation.templates.dto';
 import {CreateMatriculationLogDto, UpdateMatriculationLogDto} from '../dtos/matriculation.logs.dto';
 import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
 import { decodeToken } from '../middleware/auth.middleware';
@@ -103,8 +103,12 @@ export class MatriculationController {
 
      async deleteMatriculationTemplateAll(req: Request, res: Response) {
         try {
-            const { ids } = req.body;
-            const result = await this.matriculationService.deleteMatriculationTemplateAll(ids);
+            const deleteMatriculationTemplateDto: DeleteMatriculationTemplateDto = plainToInstance(
+                DeleteMatriculationTemplateDto, 
+                req.body,
+                { enableImplicitConversion: true }
+            );
+            const result = await this.matriculationService.deleteMatriculationTemplateAll(deleteMatriculationTemplateDto);
             res.status(StatusCodes.OK).json({ message: result });
         } catch (error) {
             res

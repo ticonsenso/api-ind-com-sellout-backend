@@ -79,4 +79,15 @@ export class MatriculationTemplatesRepository extends BaseRepository<Matriculati
             .getMany();
     }
 
+    async deleteMany(ids: number[]): Promise<number> {
+        const result = await this.repository
+            .createQueryBuilder()
+            .delete()
+            .from(MatriculationTemplate)
+            .whereInIds(ids)
+            .execute();
+            
+        return result.affected || 0;
+    }
+
 }
