@@ -1,5 +1,5 @@
 import {Exclude, Expose, Type} from 'class-transformer';
-import {IsBoolean, IsOptional, IsString} from 'class-validator';
+import {IsArray, IsBoolean, IsOptional, IsString} from 'class-validator';
 import {MatriculationLogResponseDto} from './matriculation.logs.dto';
 
 export class CreateMatriculationTemplateDto {
@@ -24,6 +24,13 @@ export class CreateMatriculationTemplateDto {
 export class UpdateMatriculationTemplateDto extends CreateMatriculationTemplateDto {
 }
 
+export class DeleteMatriculationTemplateDto {
+    @IsArray()
+    ids!:  number[];
+    
+    @IsString()
+    fechaCalculo!: string;
+}
 export class MatriculationTemplateResponseDto {
     @Expose()
     id!: number;

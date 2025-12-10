@@ -277,7 +277,7 @@ router.delete(
  *       - Matriculación - Plantillas
  *     summary: Eliminar varias plantillas de matriculación
  *     description: |
- *       Permite eliminar varias plantillas de matriculación enviando un arreglo de IDs.
+ *       Permite eliminar varias plantillas enviando un arreglo de IDs junto con la fecha de cálculo aplicada.
  *       El sistema valida que cada plantilla exista; si alguna no existe, se detiene el proceso y devuelve un error.
  *     security:
  *       - bearerAuth: []
@@ -289,16 +289,21 @@ router.delete(
  *             type: object
  *             required:
  *               - ids
+ *               - fechaCalculo
  *             properties:
  *               ids:
  *                 type: array
  *                 items:
  *                   type: integer
  *                 example: [1, 2, 3]
- *                 description: Lista de IDs de las plantillas a eliminar.
+ *                 description: Lista de IDs de las plantillas que se desean eliminar.
+ *               fechaCalculo:
+ *                 type: string
+ *                 example: "2025-01-15"
+ *                 description: Fecha en la que se realizó el cálculo de estas plantillas.
  *     responses:
  *       200:
- *         description: IDs procesados correctamente.
+ *         description: Proceso ejecutado correctamente.
  *         content:
  *           application/json:
  *             schema:
@@ -312,7 +317,7 @@ router.delete(
  *                     - "No se pudo eliminar: 1"
  *                     - "No se pudo eliminar: 2"
  *       400:
- *         description: Solicitud inválida.
+ *         description: Solicitud inválida (error en los datos enviados).
  *       401:
  *         description: Token no autorizado o inválido.
  *       500:

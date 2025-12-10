@@ -194,4 +194,19 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
       .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
       .execute();
   }
+
+  async findByMatriculationIdAndDate(
+    matriculationId: number,
+    calculateDate: string
+  ): Promise<MatriculationLog | null> {
+    return await this.repository.findOne({
+      where: {
+        matriculation: { id: matriculationId },
+        calculateDate: calculateDate as unknown as Date,
+      },
+      relations: { matriculation: true },
+    });
+  }
+
+  
 }
