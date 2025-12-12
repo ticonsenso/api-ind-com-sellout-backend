@@ -844,7 +844,7 @@ router.get(
  *                     example: "2023-05-15T10:30:00Z"
  *                   dataContent:
  *                     type: object
- *                     example: {"consolidated_data_stores": [{"distributor": "MAYOREO", "codeStoreDistributor": "3444"}]}
+ *                     example: {"consolidated_data_stores": [{"distributor": "MAYOREO", "codeStoreDistributor": "3444", "observation": "Ninguna"}]}
  *                   selloutConfigurationId:
  *                     type: integer
  *                     example: 1

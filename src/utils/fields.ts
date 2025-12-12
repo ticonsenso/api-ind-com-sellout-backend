@@ -88,6 +88,7 @@ export const fieldsConsolidatedDataStores: ExportField[] = [
     { key: 'storeName', header: 'NOMBRE ALMACEN' },
     { key: 'productModel', header: 'MODELO DEL PRODUCTO' },
     { key: 'calculateDate', header: 'FECHA CALCULO' },
+    { key: 'observation', header: 'OBSERVACION' },
 ];
 
 export const fieldsBaseValuesSellout = [

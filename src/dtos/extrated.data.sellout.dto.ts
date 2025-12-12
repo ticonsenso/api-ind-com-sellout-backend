@@ -74,6 +74,10 @@ export class CreateExtractedDataSelloutDto {
     @Type(() => MatriculationLog)
     matriculationLogs?: MatriculationLog[];
 
+    @IsOptional()
+    @IsString()
+    observation?: string;
+
 }
 
 export class UpdateExtractedDataSelloutDto {
@@ -140,6 +144,10 @@ export class UpdateExtractedDataSelloutDto {
     @IsOptional()
     @IsObject()
     matriculationLog?: CreateMatriculationLogDto;
+
+    @IsOptional()
+    @IsString()
+    observation?: string;
 }
 
 export class ExtractedDataSelloutDto {
@@ -204,6 +212,9 @@ export class ExtractedDataSelloutDto {
 
     @Expose()
     matriculationLog?: MatriculationLogResponseDto;
+
+    @Expose()
+    observation?: string;
 
 }
 

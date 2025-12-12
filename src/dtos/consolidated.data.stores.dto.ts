@@ -65,6 +65,10 @@ export class CreateConsolidatedDataStoresDto {
     @IsOptional()
     @IsBoolean()
     status?: boolean;
+
+    @IsOptional()
+    @IsString()
+    observation?: string;
 }
 
 
@@ -136,6 +140,10 @@ export class UpdateConsolidatedDataStoresDto {
     @IsOptional()
     @IsBoolean()
     status?: boolean;
+
+    @IsOptional()
+    @IsString()
+    observation?: string;
 }
 
 export class UpdateConsolidatedDto {
@@ -222,6 +230,9 @@ export class ConsolidatedDataStoresDto {
 
     @Expose()
     status?: boolean;
+
+    @Expose()
+    observation?: string;
 }
 
 export class ConsolidatedDataStoresFiltersResponseDto {

@@ -19,6 +19,7 @@ import {chunkArray, cleanString} from '../utils/utils';
 import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
 import {CreateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
 import {QueryDeepPartialEntity} from 'typeorm/query-builder/QueryPartialEntity';
+import { on } from 'events';
 
 export class ConsolidatedDataStoresService {
     private consolidatedDataStoresRepository: ConsolidatedDataStoresRepository;
@@ -71,6 +72,7 @@ export class ConsolidatedDataStoresService {
             storeName: storeSic?.storeName ?? null,
             productModel: productSic?.jdeName ?? null,
             calculateDate: consolidatedDataStores.calculateDate?.split('T')[0],
+            observation: consolidatedDataStores.observation,
         };
 
         return this.consolidatedDataStoresRepository.create(commonData);
@@ -118,6 +120,7 @@ export class ConsolidatedDataStoresService {
             productModel: productSic?.jdeName ?? null,
             calculateDate: consolidatedDataStores.calculateDate,
             status: consolidatedDataStores.status,
+            observation: consolidatedDataStores.observation,
         };
 
         return this.consolidatedDataStoresRepository.update(id, commonData);
@@ -355,6 +358,7 @@ export class ConsolidatedDataStoresService {
                         storeName: storeSic?.storeName ?? null,
                         productModel: productSic?.jdeName ?? null,
                         calculateDate,
+                        observation: consolidatedDataStore.observation,
                     };
 
                     const newStoreData = plainToClass(ConsolidatedDataStores, {

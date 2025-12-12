@@ -857,7 +857,8 @@ CREATE TABLE IF NOT EXISTS consolidated_data_stores (
     status BOOLEAN DEFAULT TRUE,
     matriculation_template_id INT REFERENCES matriculation_templates(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    observation TEXT NULL,
 );
 
 -- ALTER TABLE consolidated_data_stores ADD COLUMN status BOOLEAN DEFAULT TRUE;
@@ -870,6 +871,9 @@ CREATE TABLE IF NOT EXISTS consolidated_data_stores (
 -- FOREIGN KEY (matriculation_template_id)
 -- REFERENCES matriculation_templates(id)
 -- ON DELETE SET NULL;
+
+-- ALTER TABLE consolidated_data_stores
+-- ADD COLUMN observation TEXT NULL;
 
 
 CREATE TABLE IF NOT EXISTS stores (

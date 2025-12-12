@@ -57,5 +57,7 @@ export class ConsolidatedDataStores {
     @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     updatedAt!: Date;
 
+    @Column({ name: 'observation', type: 'text', nullable: true })
+    observation?: string | null;
 }
 
