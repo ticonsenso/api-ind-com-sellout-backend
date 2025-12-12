@@ -41,6 +41,7 @@ const consolidateInformationConsenso = new ConsolidateInformationConsenso(AppDat
  *               - storeName
  *               - productModel    
  *               - calculateDate
+ *               - observation
  *             properties:
  *               distributor:
  *                 type: string
@@ -63,6 +64,9 @@ const consolidateInformationConsenso = new ConsolidateInformationConsenso(AppDat
  *               calculateDate:
  *                 type: string
  *                 description: Fecha de cálculo
+ *               observation:
+ *                 type: string
+ *                 description: Observaciones adicionales
  *     responses:
  *       200:
  *         description: Datos consolidados de tiendas creados correctamente
@@ -86,6 +90,8 @@ const consolidateInformationConsenso = new ConsolidateInformationConsenso(AppDat
  *                 saleDate:
  *                   type: string
  *                 calculateDate:
+ *                   type: string
+ *                 observation:
  *                   type: string
  *       400:
  *         description: Datos de entrada inválidos.
@@ -146,6 +152,8 @@ router.post(
  *                 saleDate:
  *                   type: string
  *                 calculateDate:
+ *                   type: string
+ *                 observation:
  *                   type: string
  *       400:
  *         description: Datos de entrada inválidos.
@@ -259,6 +267,11 @@ router.put(
  *                 description: Estado activo/inactivo del registro.
  *                 example: true
  *
+ *               observation:
+ *                 type: string
+ *                 description: Observaciones adicionales
+ *                 example: "Revisar datos de venta"
+ *
  *     responses:
  *       200:
  *         description: Registro actualizado correctamente.
@@ -298,6 +311,8 @@ router.put(
  *                   type: number
  *                 status:
  *                   type: boolean
+ *                 observation:
+ *                   type: string
  *
  *       400:
  *         description: Datos enviados no válidos.
@@ -559,6 +574,8 @@ router.delete(
  *                         type: string
  *                       calculateDate:
  *                         type: string
+ *                       observation:
+ *                         type: string
  *                 total:
  *                   type: integer
  *       400:
@@ -665,6 +682,8 @@ router.post(
  *                       calculateDate:
  *                         type: string
  *                         format: date
+ *                       observation:
+ *                         type: string
  *                 total:
  *                   type: integer
  *                 totalAll:
@@ -801,6 +820,8 @@ router.get(
  *                       productModel:
  *                         type: string
  *                       calculateDate:
+ *                         type: string
+ *                       observation:
  *                         type: string
  *                 total:
  *                   type: integer
