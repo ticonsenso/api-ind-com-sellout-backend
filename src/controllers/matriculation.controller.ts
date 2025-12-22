@@ -1,11 +1,11 @@
-import {DataSource} from 'typeorm';
-import {Request, Response} from 'express';
-import {StatusCodes} from 'http-status-codes';
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {MatriculationService} from '../services/matriculation.service';
-import {CreateMatriculationTemplateDto, DeleteMatriculationTemplateDto, UpdateMatriculationTemplateDto} from '../dtos/matriculation.templates.dto';
-import {CreateMatriculationLogDto, UpdateMatriculationLogDto} from '../dtos/matriculation.logs.dto';
-import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
+import { DataSource } from 'typeorm';
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { MatriculationService } from '../services/matriculation.service';
+import { CreateMatriculationTemplateDto, DeleteMatriculationTemplateDto, UpdateMatriculationTemplateDto } from '../dtos/matriculation.templates.dto';
+import { CreateMatriculationLogDto, UpdateMatriculationLogDto } from '../dtos/matriculation.logs.dto';
+import { CreateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
 import { decodeToken } from '../middleware/auth.middleware';
 
 export class MatriculationController {
@@ -91,9 +91,17 @@ export class MatriculationController {
 
     async deleteMatriculationTemplate(req: Request, res: Response) {
         try {
-            const { id } = req.params;
-            await this.matriculationService.deleteMatriculationTemplate(Number(id));
-            res.status(StatusCodes.OK).json({ message: 'Matriculación de plantillas eliminada correctamente' });
+            const deleteMatriculationTemplateDto: DeleteMatriculationTemplateDto = plainToInstance(
+                DeleteMatriculationTemplateDto,
+                req.body,
+                { enableImplicitConversion: true }
+            );
+            const result = await this.matriculationService.deleteMatriculationTemplate(deleteMatriculationTemplateDto);
+            if (result instanceof Array) {
+                res.status(StatusCodes.OK).json({ message: result });
+            } else {
+                res.status(StatusCodes.OK).json({ message: result });
+            }
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -101,10 +109,10 @@ export class MatriculationController {
         }
     }
 
-     async deleteMatriculationTemplateAll(req: Request, res: Response) {
+    async deleteMatriculationTemplateAll(req: Request, res: Response) {
         try {
             const deleteMatriculationTemplateDto: DeleteMatriculationTemplateDto = plainToInstance(
-                DeleteMatriculationTemplateDto, 
+                DeleteMatriculationTemplateDto,
                 req.body,
                 { enableImplicitConversion: true }
             );
@@ -121,9 +129,13 @@ export class MatriculationController {
         try {
 
             const calculateDate = req.query.calculateDate as string;
+            const distributor = req.query.distributor as string;
+            const storeName = req.query.storeName as string;
 
             const result = await this.matriculationService.getMatriculationTemplatesWithFilters(
-                calculateDate
+                calculateDate,
+                distributor,
+                storeName
             );
 
             res.status(StatusCodes.OK).json(result);

@@ -1,12 +1,12 @@
-import {RequestHandler, Router} from "express";
+import { RequestHandler, Router } from "express";
 import AppDataSource from "../config/data-source";
-import {authenticateToken} from '../middleware/auth.middleware';
-import {MatriculationController} from "../controllers/matriculation.controller";
-import {CreateMatriculationTemplateDto, UpdateMatriculationTemplateDto} from "../dtos/matriculation.templates.dto";
-import {validatorMiddleware} from "../middleware/validator.middleware";
-import {CreateMatriculationLogDto, UpdateMatriculationLogDto} from "../dtos/matriculation.logs.dto";
-import {CreateClosingConfigurationDto, UpdateClosingConfigurationDto} from "../dtos/closing.cofiguration.dto";
-import {ClosingConfigurationController} from "../controllers/closing.configuration.controller";
+import { authenticateToken } from '../middleware/auth.middleware';
+import { MatriculationController } from "../controllers/matriculation.controller";
+import { CreateMatriculationTemplateDto, UpdateMatriculationTemplateDto } from "../dtos/matriculation.templates.dto";
+import { validatorMiddleware } from "../middleware/validator.middleware";
+import { CreateMatriculationLogDto, UpdateMatriculationLogDto } from "../dtos/matriculation.logs.dto";
+import { CreateClosingConfigurationDto, UpdateClosingConfigurationDto } from "../dtos/closing.cofiguration.dto";
+import { ClosingConfigurationController } from "../controllers/closing.configuration.controller";
 
 const router = Router();
 const matriculationController = new MatriculationController(AppDataSource);
@@ -236,24 +236,42 @@ router.post(
     authenticateToken,
     matriculationController.createMatriculationTemplateBeforeMonth
 );
+
 /**
  * @swagger
- * /api/matriculation/templates/{id}:
- *   delete:
+ * /api/matriculation/templates/deleteTemplates:
+ *   post:
  *     tags:
  *       - Matriculación Plantillas
- *     summary: Eliminar una plantilla de matriculación
- *     description: Elimina una plantilla de matriculación en el sistema
+ *     summary: Eliminar varias plantillas de matriculación
+ *     description: Elimina varias plantillas de matriculación en el sistema
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la plantilla de matriculación
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - ids
+ *             properties:
+ *               ids:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 description: IDs de las plantillas de matriculación
  *     responses:
  *       200:
  *         description: Plantilla de matriculación eliminada correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: 
+ *                   type: string
+ *                   example: "Matriculación de plantilla eliminada correctamente"
  *       400:
  *         description: Datos de entrada inválidos.
  *       404:
@@ -263,8 +281,8 @@ router.post(
  *       500:
  *         description: Error del servidor.
  */
-router.delete(
-    "/templates/:id",
+router.post(
+    "/templates/deleteTemplates",
     authenticateToken,
     matriculationController.deleteMatriculationTemplate
 );
@@ -347,6 +365,16 @@ router.post(
  *           type: string
  *           format: date
  *         description: Fecha para filtrar logs
+ *       - in: query
+ *         name: distributor
+ *         schema:
+ *           type: string
+ *         description: Distribuidor para filtrar logs
+ *       - in: query
+ *         name: storeName
+ *         schema:
+ *           type: string
+ *         description: Nombre de la tienda para filtrar logs
  *     responses:
  *       200:
  *         description: Plantillas obtenidas correctamente 

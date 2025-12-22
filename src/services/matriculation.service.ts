@@ -26,7 +26,6 @@ export class MatriculationService {
   private matriculationLogsRepository: MatriculationLogsRepository;
   private matriculationTemplateRepository: MatriculationTemplatesRepository;
   private closingConfigurationRepository: ClosingConfigurationRepository;
-  private matriculationLogRepository: MatriculationLogsRepository;
   private consolidatedDataStoresRepository: ConsolidatedDataStoresRepository;
   constructor(dataSource: DataSource) {
     this.matriculationLogsRepository = new MatriculationLogsRepository(
@@ -36,9 +35,6 @@ export class MatriculationService {
       dataSource
     );
     this.closingConfigurationRepository = new ClosingConfigurationRepository(
-      dataSource
-    );
-    this.matriculationLogRepository = new MatriculationLogsRepository(
       dataSource
     );
     this.consolidatedDataStoresRepository =
@@ -218,13 +214,20 @@ export class MatriculationService {
     );
   }
 
-  async deleteMatriculationTemplate(id: number): Promise<void> {
-    const existingTemplate =
-      await this.matriculationTemplateRepository.findById(id);
-    if (!existingTemplate) {
-      throw new Error("Matriculación de plantilla no encontrada");
+  async deleteMatriculationTemplate(deleteMatriculationTemplateDto: DeleteMatriculationTemplateDto): Promise<string[] | string> {
+    let sms: string[] = [];
+    deleteMatriculationTemplateDto.ids.forEach(async (id) => {
+      const existingTemplate =
+        await this.matriculationTemplateRepository.findById(id);
+      if (!existingTemplate) {
+        sms.push(`Matriculación de plantilla no encontrada`);
+      }
+      await this.matriculationTemplateRepository.delete(id);
+    });
+    if (sms.length > 0) {
+      return sms;
     }
-    await this.matriculationTemplateRepository.delete(id);
+    return "Matriculación de plantilla eliminada correctamente";
   }
 
   async deleteMatriculationTemplateAll(
@@ -234,7 +237,7 @@ export class MatriculationService {
     if (!deleteData.ids || !Array.isArray(deleteData.ids)) {
       return ["El parámetro 'ids' debe ser un array."];
     }
-    
+
     const idsToDelete: number[] = deleteData.ids;
     const noDeletedIds: string[] = [];
 
@@ -269,21 +272,23 @@ export class MatriculationService {
   }
 
   async getMatriculationTemplatesWithFilters(
-    calculateDate?: string
+    calculateDate?: string,
+    distributor?: string,
+    storeName?: string
   ): Promise<MatriculationTemplateResponseWithLogsDto[]> {
     const templatesWithLogs =
-      await this.matriculationTemplateRepository.findAllWithLogs(calculateDate);
+      await this.matriculationTemplateRepository.findAllWithLogs(calculateDate, distributor, storeName);
 
     const filteredTemplates = templatesWithLogs.map((template) => {
       const logs = template.logs || [];
 
       const filteredLogs = calculateDate
         ? logs.filter(
-            (log) =>
-              log.calculateDate &&
-              new Date(log.calculateDate).toISOString().split("T")[0] ===
-                calculateDate
-          )
+          (log) =>
+            log.calculateDate &&
+            new Date(log.calculateDate).toISOString().split("T")[0] ===
+            calculateDate
+        )
         : logs;
 
       const isUploaded = filteredLogs.some((log) => (log.uploadCount ?? 0) > 0);
@@ -433,6 +438,7 @@ export class MatriculationService {
       excludeExtraneousValues: true,
     });
   }
+
   async hasBeenUploaded(
     distributor: string,
     storeName: string,
@@ -509,7 +515,7 @@ export class MatriculationService {
     }
     // Obtenemos el log de ese mes y nombre
     const log =
-      await this.matriculationLogRepository.findByMatriculationNameAndCalculateDate(
+      await this.matriculationLogsRepository.findByMatriculationNameAndCalculateDate(
         template?.distributor!,
         template?.storeName!
       );
