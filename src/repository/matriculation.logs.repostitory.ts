@@ -208,5 +208,5 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
     });
   }
 
-  
+
 }

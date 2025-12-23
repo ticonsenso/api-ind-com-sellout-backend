@@ -1,6 +1,6 @@
-import {Brackets, DataSource, In} from 'typeorm';
-import {MatriculationTemplate} from '../models/matriculation.templates.model';
-import {BaseRepository} from './base.respository';
+import { Brackets, DataSource, In } from 'typeorm';
+import { MatriculationTemplate } from '../models/matriculation.templates.model';
+import { BaseRepository } from './base.respository';
 
 export class MatriculationTemplatesRepository extends BaseRepository<MatriculationTemplate> {
     constructor(dataSource: DataSource) {
@@ -58,7 +58,7 @@ export class MatriculationTemplatesRepository extends BaseRepository<Matriculati
         return { items, total };
     }
 
-    async findAllWithLogs(calculateMonth?: string): Promise<MatriculationTemplate[]> {
+    async findAllWithLogs(calculateMonth?: string, distributor?: string, storeName?: string): Promise<MatriculationTemplate[]> {
         const qb = this.repository
             .createQueryBuilder('template')
             .leftJoinAndSelect('template.logs', 'log')
@@ -74,6 +74,14 @@ export class MatriculationTemplatesRepository extends BaseRepository<Matriculati
             qb.andWhere('EXTRACT(MONTH FROM template.calculateMonth) = :month', { month });
         }
 
+        if (distributor) {
+            qb.andWhere('template.distributor ILIKE :distributor', { distributor: `%${distributor}%` });
+        }
+
+        if (storeName) {
+            qb.andWhere('template.storeName ILIKE :storeName', { storeName: `%${storeName}%` });
+        }
+
         return qb
             .orderBy('log.createdAt', 'DESC')
             .getMany();
@@ -86,7 +94,7 @@ export class MatriculationTemplatesRepository extends BaseRepository<Matriculati
             .from(MatriculationTemplate)
             .whereInIds(ids)
             .execute();
-            
+
         return result.affected || 0;
     }
 
