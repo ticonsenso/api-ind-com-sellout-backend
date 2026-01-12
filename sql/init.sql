@@ -861,6 +861,18 @@ CREATE TABLE IF NOT EXISTS consolidated_data_stores (
     observation TEXT NULL,
 );
 
+ALTER TABLE consolidated_data_stores ADD COLUMN prod_business_line VARCHAR(255) DEFAULT NULL; -- Linea Negocio
+ALTER TABLE consolidated_data_stores ADD COLUMN prod_category VARCHAR(255) DEFAULT NULL; -- Categoria
+ALTER TABLE consolidated_data_stores ADD COLUMN prod_sub_category VARCHAR(255) DEFAULT NULL; -- Subcategoria
+ALTER TABLE consolidated_data_stores ADD COLUMN prod_model VARCHAR(255) DEFAULT NULL; -- Modelo
+ALTER TABLE consolidated_data_stores ADD COLUMN prod_name_im VARCHAR(255) DEFAULT NULL; -- Nombre IM
+ALTER TABLE consolidated_data_stores ADD COLUMN alm_chanel VARCHAR(255) DEFAULT NULL; -- Canal
+ALTER TABLE consolidated_data_stores ADD COLUMN alm_commercial_group VARCHAR(255) DEFAULT NULL; -- Grupo Comercial
+ALTER TABLE consolidated_data_stores ADD COLUMN alm_store VARCHAR(255) DEFAULT NULL; -- Almacen
+ALTER TABLE consolidated_data_stores ADD COLUMN alm_group_zone VARCHAR(255) DEFAULT NULL; -- Grupo Zona
+ALTER TABLE consolidated_data_stores ADD COLUMN alm_zone_two VARCHAR(255) DEFAULT NULL; -- Zona 2
+ALTER TABLE consolidated_data_stores ADD COLUMN alm_store_category VARCHAR(255) DEFAULT NULL; -- Categoria Almacen
+
 -- ALTER TABLE consolidated_data_stores ADD COLUMN status BOOLEAN DEFAULT TRUE;
 
 -- ALTER TABLE consolidated_data_stores
