@@ -406,8 +406,9 @@ export class ExtratedDataSelloutService {
   }
 
   async deleteDataSelloutDistribuidor(distributor:string,calculateDate:string):Promise<any>{
-    await this.consolidatedDataStoresRepository.deleteDataByDistributor(distributor,calculateDate);
-    await this.matriculationLogsRepository.deleteDataByDistributor(distributor,calculateDate);
+    const matriculationTemplateId:number= Number(distributor);
+    await this.consolidatedDataStoresRepository.deleteDataByDistributor(matriculationTemplateId,calculateDate);
+    await this.matriculationLogsRepository.deleteDataByDistributor(matriculationTemplateId,calculateDate);
     return {
       mensaje: 'Datos eliminados correctamente.'
     };

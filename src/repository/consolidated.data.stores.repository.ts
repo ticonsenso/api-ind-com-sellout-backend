@@ -860,17 +860,20 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
       .execute();
   }
-
-    async deleteDataByDistributor(
-    distributor: string,
-    calculateDate: string
-  ): Promise<any> {
-    return await this.repository
-      .createQueryBuilder()
-      .delete()
-      .from("consolidated_data_stores")
-      .where("distributor = :distributor", { distributor })
-      .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
-      .execute();
-  }
+  async deleteDataByDistributor(
+  matriculationTemplateId: number,
+  calculateDate: string
+): Promise<any> {
+  return await this.repository
+    .createQueryBuilder()
+    .delete()
+    .from("consolidated_data_stores")
+    .where("matriculation_template_id = :templateId", { 
+      templateId: matriculationTemplateId 
+    })
+    .andWhere("calculate_date = :calculateDate", { 
+      calculateDate: primerDiaDelMesString(calculateDate) 
+    })
+    .execute();
+}
 }

@@ -166,17 +166,21 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
   }
 
   async deleteDataByDistributor(
-    distributor: string,
-    calculateDate: string
-  ): Promise<any> {
-    return await this.repository
-      .createQueryBuilder()
-      .delete()
-      .from("matriculation_logs")
-      .where("distributor = :distributor", { distributor })
-      .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
-      .execute();
-  }
+  matriculationId: string | number,
+  calculateDate: string
+): Promise<any> {
+  return await this.repository
+    .createQueryBuilder()
+    .delete()
+    .from("matriculation_logs")
+    .where("matriculation_id = :id", { 
+      id: typeof matriculationId === 'string' ? parseInt(matriculationId, 10) : matriculationId 
+    })
+    .andWhere("calculate_date = :calculateDate", { 
+      calculateDate: primerDiaDelMesString(calculateDate) 
+    })
+    .execute();
+}
 
   async deleteDataByDistributorAndStoreName(
     distributor: string,
