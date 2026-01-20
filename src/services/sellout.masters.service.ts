@@ -353,50 +353,19 @@ export class SelloutMastersService {
     }
 
     async createSelloutProductMastersBatch(configs: CreateSelloutProductMasterDto[]): Promise<void> {
-        const uniqueMap = new Map<string, CreateSelloutProductMasterDto>();
-
         for (const config of configs) {
             const distributor = cleanString(config.distributor ?? '');
             const productDistributor = cleanString(config.productDistributor ?? '');
             const productStore = cleanString(config.productStore ?? '');
             const searchProductKey = distributor + productStore + productDistributor;
-            config.searchProductStore = searchProductKey;
-            if (config.searchProductStore) {
-                uniqueMap.set(config.searchProductStore, config);
+            const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductKey);
+            if (existing) {
+                await this.selloutProductMasterRepository.update(existing.id, config);
+            } else {
+                await this.selloutProductMasterRepository.create(config);
             }
         }
-        const uniqueConfigs = Array.from(uniqueMap.values());
-        const chunks = chunkArray(uniqueConfigs, CreateSelloutProductMasterDto.length);
-        for (const chunk of chunks) {
-            const searchProductStoreList = chunk.map(c => c.searchProductStore!);
 
-            const existingStores = await this.selloutProductMasterRepository.findBySearchProductStore(searchProductStoreList);
-
-            const existingMap = new Map(existingStores.map(p => [p.searchProductStore, p]));
-
-            const toUpdate = [];
-            const toInsert = [];
-
-            for (const config of chunk) {
-                const existing = existingMap.get(config.searchProductStore!);
-                if (existing) {
-                    Object.assign(existing, {
-                        ...config,
-                        updatedAt: new Date(),
-                    });
-                    toUpdate.push(existing);
-                } else {
-                    toInsert.push(config);
-                }
-            }
-
-            if (toUpdate.length > 0) {
-                await this.selloutProductMasterRepository.save(toUpdate);
-            }
-            if (toInsert.length > 0) {
-                await this.selloutProductMasterRepository.insert(toInsert);
-            }
-        }
     }
 
     async createSelloutProductMasterExcel(selloutProductMaster: CreateSelloutProductMasterDto): Promise<SelloutProductMaster | undefined> {
