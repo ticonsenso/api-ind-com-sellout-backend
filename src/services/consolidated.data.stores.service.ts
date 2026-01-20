@@ -1,7 +1,7 @@
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {DataSource} from 'typeorm';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { DataSource } from 'typeorm';
 
-import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.stores.repository';
+import { ConsolidatedDataStoresRepository } from '../repository/consolidated.data.stores.repository';
 import {
     ConsolidatedDataStoresDto,
     ConsolidatedDataStoresFiltersResponseDto,
@@ -10,15 +10,15 @@ import {
     UpdateConsolidatedDataStoresDto,
     UpdateConsolidatedDto
 } from '../dtos/consolidated.data.stores.dto';
-import {ConsolidatedDataStores} from '../models/consolidated.data.stores.model';
-import {SelloutProductMasterRepository} from '../repository/sellout.product.master.repository';
-import {SelloutStoreMasterRepository} from '../repository/sellout.store.master.repository';
-import {ProductSicRepository} from '../repository/product.sic.repository';
-import {StoresSicRepository} from '../repository/stores.repository';
-import {chunkArray, cleanString} from '../utils/utils';
-import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
-import {CreateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
-import {QueryDeepPartialEntity} from 'typeorm/query-builder/QueryPartialEntity';
+import { ConsolidatedDataStores } from '../models/consolidated.data.stores.model';
+import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
+import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
+import { ProductSicRepository } from '../repository/product.sic.repository';
+import { StoresSicRepository } from '../repository/stores.repository';
+import { chunkArray, cleanString } from '../utils/utils';
+import { CreateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
+import { CreateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { on } from 'events';
 
 export class ConsolidatedDataStoresService {
@@ -438,95 +438,16 @@ export class ConsolidatedDataStoresService {
         }
     }
 
-    async syncConsolidatedDataStores(year: number, month: number): Promise<void> {
+    async syncConsolidatedDataStores(year: number, month: number): Promise<any> {
         const monthDate = `${year}-${String(month).padStart(2, '0')}-01`;
-
-        const storeCandidates = await this.consolidatedDataStoresRepository.findMonthlyStoresFields(monthDate);
-        const productCandidates = await this.consolidatedDataStoresRepository.findMonthlyProductsFields(monthDate);
-
-        const batchSize = 100;
-
-        let updatedStores = 0;
-        let updatedProducts = 0;
-
-        const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
-        const chunkedStores = chunkArray(storeCandidates, batchSize);
-        const chunkedProducts = chunkArray(productCandidates, batchSize);
-
-        for (const chunk of chunkedStores) {
-            const results = await Promise.allSettled(chunk.map(async (store) => {
-                const searchKey = cleanString(store.distributor + store.code_store_distributor);
-                const storeMaster = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchKey);
-
-                if (storeMaster?.codeStoreSic) {
-                    const storeSic = await this.storesRepository.findByStoreCodeOnly(Number(storeMaster.codeStoreSic));
-
-                    const updateData: QueryDeepPartialEntity<ConsolidatedDataStores> = {
-                        codeStore: storeMaster.codeStoreSic,
-                        authorizedDistributor: storeSic?.distributor2 ?? null,
-                        storeName: storeSic?.storeName ?? null,
-                        updatedAt: new Date(),
-                    };
-
-                    await this.consolidatedDataStoresRepository.updateFieldsByDistributorAndCode(
-                        store.distributor,
-                        store.code_store_distributor,
-                        updateData
-                    );
-
-                    return true;
-                }
-
-                return false;
-            }));
-
-            updatedStores += results.filter(r => r.status === 'fulfilled' && r.value === true).length;
-            await delay(100);
-        }
-        let count = 0;
-        for (const chunk of chunkedProducts) {
-            const results = await Promise.allSettled(chunk.map(async (product) => {
-                const searchKey = cleanString(product.distributor + product.code_product_distributor + product.description_distributor);
-                const productStore = await this.productStoreRepository.findBySearchProductStoreOnly(searchKey);
-
-                if (productStore?.codeProductSic) {
-
-                    const productSic = await this.productSicRepository.findByJdeCodeOnly(productStore.codeProductSic.toString());
-
-                    const updateData: QueryDeepPartialEntity<ConsolidatedDataStores> = {
-                        codeProduct: productStore.codeProductSic,
-                        productModel: productSic?.jdeName ?? null,
-                        updatedAt: new Date(),
-                    };
-
-                    const data = await this.consolidatedDataStoresRepository.updateFieldsByProductAndModel(
-                        product.distributor,
-                        product.code_product_distributor,
-                        product.description_distributor,
-                        updateData
-                    );
-                    count++;
-                    console.log('count', count, data);
-
-                    if (data.affected && data.affected > 0) {
-                        console.log('✔ Registro actualizado');
-                    } else {
-                        console.log('❌ Nada fue actualizado');
-                    }
-
-                    return true;
-                }
-
-                return false;
-            }));
-
-            updatedProducts += results.filter(r => r.status === 'fulfilled' && r.value === true).length;
-            await delay(100);
-        }
-
-        console.log('Stores actualizados:', updatedStores);
-        console.log('Productos actualizados:', updatedProducts);
+        console.log(monthDate)
+        const syncStores = await this.consolidatedDataStoresRepository.syncDataStores(monthDate);
+        const syncProducts = await this.consolidatedDataStoresRepository.syncDataProducts(monthDate);
+        console.log(syncStores, syncProducts)
+        return {
+            syncStores,
+            syncProducts,
+        };
     }
 
     async deleteConsolidatedDataStores(id: number): Promise<void> {

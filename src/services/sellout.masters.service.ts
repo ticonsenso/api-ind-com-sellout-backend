@@ -359,6 +359,7 @@ export class SelloutMastersService {
             const productStore = cleanString(config.productStore ?? '');
             const searchProductKey = distributor + productStore + productDistributor;
             const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductKey);
+            config.searchProductStore = searchProductKey;
             if (existing) {
                 await this.selloutProductMasterRepository.update(existing.id, config);
             } else {
