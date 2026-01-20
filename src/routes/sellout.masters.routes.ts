@@ -843,11 +843,10 @@ router.get(
  */
 router.post(
     "/store/bulk",
+    authenticateToken as RequestHandler,
     express.raw({ type: "application/gzip", limit: "20mb" }),
     express.json({ limit: "20mb" }),
     gzipMiddleware,
-    authenticateToken as RequestHandler,
-    validatorMiddleware(CreateSelloutStoreMasterDto) as RequestHandler,
     selloutMastersController.createSelloutStoreMastersBatch
 );
 
@@ -926,7 +925,6 @@ router.post(
     express.json({ limit: "20mb" }),
     gzipMiddleware,
     authenticateToken as RequestHandler,
-    validatorMiddleware(CreateSelloutProductMasterDto) as RequestHandler,
     selloutMastersController.createSelloutProductMastersBatch
 );
 

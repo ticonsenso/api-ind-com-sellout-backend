@@ -64,3 +64,5 @@ docker-compose.yml
 
 # Ignore run-serve.sh changes
 run-serve-dev.sh
+
+demo/
