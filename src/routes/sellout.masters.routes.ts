@@ -1,11 +1,11 @@
-import {RequestHandler, Router} from 'express';
+import express, { RequestHandler, Router } from 'express';
 import AppDataSource from '../config/data-source';
-import {authenticateToken} from '../middleware/auth.middleware';
-import {validatorMiddleware} from '../middleware/validator.middleware';
-import {SelloutMastersController} from '../controllers/sellout.masters.controller';
-import {CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
-import {CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
-
+import { authenticateToken } from '../middleware/auth.middleware';
+import { validatorMiddleware } from '../middleware/validator.middleware';
+import { SelloutMastersController } from '../controllers/sellout.masters.controller';
+import { CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
+import { CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
+import { gzipMiddleware } from "../middleware/gzipMiddleware";
 const router = Router();
 const selloutMastersController = new SelloutMastersController(AppDataSource);
 
@@ -910,7 +910,11 @@ router.post(
  */
 router.post(
     "/product/bulk",
-    authenticateToken,
+    express.raw({ type: "application/gzip", limit: "20mb" }), // necesario para recibir binario
+    express.json({ limit: "20mb" }), // necesario para json o base64
+    gzipMiddleware, // 👈 descomprime si aplica
+    authenticateToken as RequestHandler,
+    validatorMiddleware(CreateSelloutProductMasterDto) as RequestHandler,
     selloutMastersController.createSelloutProductMastersBatch
 );
 

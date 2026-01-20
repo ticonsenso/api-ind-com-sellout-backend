@@ -1,8 +1,8 @@
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {DataSource} from 'typeorm';
-import {SelloutStoreMasterRepository} from '../repository/sellout.store.master.repository';
-import {SelloutProductMasterRepository} from '../repository/sellout.product.master.repository';
-import {SelloutStoreMaster} from '../models/sellout.store.master.model';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { DataSource } from 'typeorm';
+import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
+import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
+import { SelloutStoreMaster } from '../models/sellout.store.master.model';
 import {
     CreateSelloutProductMasterDto,
     SelloutProductMasterDto,
@@ -15,15 +15,15 @@ import {
     SelloutStoreMasterFiltersResponseDto,
     UpdateSelloutStoreMasterDto
 } from '../dtos/sellout.store.master.dto';
-import {SelloutProductMaster} from '../models/sellout.product.master.model';
-import {chunkArray, cleanString} from '../utils/utils';
-import {ProductSicRepository} from '../repository/product.sic.repository';
-import {StoresSicRepository} from '../repository/stores.repository';
-import {StoresSic} from '../models/stores.sic.model';
-import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.stores.repository';
-import {ConsolidatedDataStoresService} from './consolidated.data.stores.service';
-import {ConsolidatedDataStores} from '../models/consolidated.data.stores.model';
-import {QueryDeepPartialEntity} from 'typeorm/query-builder/QueryPartialEntity';
+import { SelloutProductMaster } from '../models/sellout.product.master.model';
+import { chunkArray, cleanString } from '../utils/utils';
+import { ProductSicRepository } from '../repository/product.sic.repository';
+import { StoresSicRepository } from '../repository/stores.repository';
+import { StoresSic } from '../models/stores.sic.model';
+import { ConsolidatedDataStoresRepository } from '../repository/consolidated.data.stores.repository';
+import { ConsolidatedDataStoresService } from './consolidated.data.stores.service';
+import { ConsolidatedDataStores } from '../models/consolidated.data.stores.model';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 interface ModelProductSic {
     productSic: string;
@@ -86,7 +86,7 @@ export class SelloutMastersService {
         return saved;
     }
 
-    async createSelloutStoreMasterExcel(selloutStoreMaster: CreateSelloutStoreMasterDto): Promise<SelloutStoreMaster| undefined> {
+    async createSelloutStoreMasterExcel(selloutStoreMaster: CreateSelloutStoreMasterDto): Promise<SelloutStoreMaster | undefined> {
         try {
             if (!selloutStoreMaster.searchStore) {
                 selloutStoreMaster.searchStore = cleanString(selloutStoreMaster.distributor ?? '') + cleanString(selloutStoreMaster.storeDistributor ?? '');
@@ -95,13 +95,13 @@ export class SelloutMastersService {
             if (existing) {
                 const updated = await this.updateSelloutStoreMaster(existing.id, selloutStoreMaster);
                 return updated;
-            }else{
+            } else {
                 const saved = await this.selloutStoreMasterRepository.create(selloutStoreMaster);
                 return saved;
             }
         } catch (error: any) {
-           console.log(error);
-           return undefined;
+            console.log(error);
+            return undefined;
         }
     }
 
@@ -195,7 +195,7 @@ export class SelloutMastersService {
         let updatedProducts = 0;
 
         const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-        
+
         const chunkedProducts = chunkArray(productCandidates, batchSize);
 
         for (const chunk of chunkedProducts) {
@@ -365,12 +365,8 @@ export class SelloutMastersService {
                 uniqueMap.set(config.searchProductStore, config);
             }
         }
-
         const uniqueConfigs = Array.from(uniqueMap.values());
-
-        const chunkSize = 2000;
-        const chunks = chunkArray(uniqueConfigs, chunkSize);
-
+        const chunks = chunkArray(uniqueConfigs, CreateSelloutProductMasterDto.length);
         for (const chunk of chunks) {
             const searchProductStoreList = chunk.map(c => c.searchProductStore!);
 
@@ -400,13 +396,10 @@ export class SelloutMastersService {
             if (toInsert.length > 0) {
                 await this.selloutProductMasterRepository.insert(toInsert);
             }
-
-            await this.syncMasterProducts();
-
         }
     }
 
-    async createSelloutProductMasterExcel(selloutProductMaster: CreateSelloutProductMasterDto): Promise<SelloutProductMaster| undefined> {
+    async createSelloutProductMasterExcel(selloutProductMaster: CreateSelloutProductMasterDto): Promise<SelloutProductMaster | undefined> {
         try {
             if (!selloutProductMaster.searchProductStore) {
                 selloutProductMaster.searchProductStore = cleanString(selloutProductMaster.distributor ?? '') + cleanString(selloutProductMaster.productDistributor ?? '') + cleanString(selloutProductMaster.productStore ?? '');
@@ -415,13 +408,13 @@ export class SelloutMastersService {
             if (existing) {
                 const updated = await this.updateSelloutProductMaster(existing.id, selloutProductMaster);
                 return updated;
-            }else{
+            } else {
                 const saved = await this.selloutProductMasterRepository.create(selloutProductMaster);
                 return saved;
             }
         } catch (error: any) {
-           console.log(error);
-           return undefined;
+            console.log(error);
+            return undefined;
         }
     }
 
