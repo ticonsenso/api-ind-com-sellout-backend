@@ -397,18 +397,18 @@ export class ExtratedDataSelloutService {
   }
 
 
-  async deleteDataSelloutDistribuidorAndStoreName(distributor:string,storeName:string,calculateDate:string):Promise<any>{
-    await this.consolidatedDataStoresRepository.deleteDataByDistributorAndCodeStoreDistributor(distributor,storeName,calculateDate);
-    await this.matriculationLogsRepository.deleteDataByDistributorAndStoreName(distributor,storeName,calculateDate);
+  async deleteDataSelloutDistribuidorAndStoreName(distributor: string, storeName: string, calculateDate: string): Promise<any> {
+    await this.consolidatedDataStoresRepository.deleteDataByDistributorAndCodeStoreDistributor(distributor, storeName, calculateDate);
+    await this.matriculationLogsRepository.deleteDataByDistributorAndStoreName(distributor, storeName, calculateDate);
     return {
       mensaje: 'Datos eliminados correctamente.'
     };
   }
 
-  async deleteDataSelloutDistribuidor(distributor:string,calculateDate:string):Promise<any>{
-    const matriculationTemplateId:number= Number(distributor);
-    await this.consolidatedDataStoresRepository.deleteDataByDistributor(matriculationTemplateId,calculateDate);
-    await this.matriculationLogsRepository.deleteDataByDistributor(matriculationTemplateId,calculateDate);
+  async deleteDataSelloutDistribuidor(distributor: string, calculateDate: string): Promise<any> {
+    const matriculationTemplateId: number = Number(distributor);
+    await this.consolidatedDataStoresRepository.deleteDataByDistributor(matriculationTemplateId, calculateDate);
+    await this.matriculationLogsRepository.deleteDataByDistributor(matriculationTemplateId, calculateDate);
     return {
       mensaje: 'Datos eliminados correctamente.'
     };

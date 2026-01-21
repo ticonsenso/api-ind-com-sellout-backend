@@ -323,28 +323,6 @@ export class ConsolidatedDataStoresService {
         try {
             for (const consolidatedDataStore of consolidatedDataStores) {
                 try {
-                    const distributor = cleanString(consolidatedDataStore.distributor ?? '');
-                    const codeProductDistributor = cleanString(consolidatedDataStore.codeProductDistributor ?? '');
-                    const codeStoreDistributor = cleanString(consolidatedDataStore.codeStoreDistributor ?? '');
-                    const descriptionDistributor = cleanString(consolidatedDataStore.descriptionDistributor ?? '');
-
-                    const searchProductKey = distributor + codeProductDistributor + descriptionDistributor;
-                    const searchStoreKey = distributor + codeStoreDistributor;
-
-                    const [codeProduct, codeStore] = await Promise.all([
-                        this.productStoreRepository.findBySearchProductStoreOnly(searchProductKey),
-                        this.selloutStoreMasterRepository.findBySearchStoreOnly(searchStoreKey),
-                    ]);
-
-                    const [storeSic, productSic] = await Promise.all([
-                        codeStore?.codeStoreSic
-                            ? this.storesRepository.findByStoreCodeOnly(Number(codeStore.codeStoreSic))
-                            : Promise.resolve(null),
-                        codeProduct?.codeProductSic
-                            ? this.productSicRepository.findByJdeCodeOnly(codeProduct.codeProductSic.toString())
-                            : Promise.resolve(null),
-                    ]);
-
                     const commonData = {
                         distributor: consolidatedDataStore.distributor,
                         codeStoreDistributor: consolidatedDataStore.codeStoreDistributor,
@@ -352,17 +330,16 @@ export class ConsolidatedDataStoresService {
                         descriptionDistributor: consolidatedDataStore.descriptionDistributor,
                         unitsSoldDistributor: consolidatedDataStore.unitsSoldDistributor ?? 1,
                         saleDate: consolidatedDataStore.saleDate,
-                        codeProduct: codeProduct?.codeProductSic ?? null,
-                        codeStore: codeStore?.codeStoreSic ?? null,
-                        authorizedDistributor: storeSic?.distributor2 ?? null,
-                        storeName: storeSic?.storeName ?? null,
-                        productModel: productSic?.jdeName ?? null,
+                        codeProduct: null,
+                        codeStore: null,
+                        authorizedDistributor: null,
+                        storeName: null,
+                        productModel: null,
                         calculateDate,
-                        observation: consolidatedDataStore.observation,
+                        observation: null,
                     };
 
                     const newStoreData = plainToClass(ConsolidatedDataStores, {
-                        ...consolidatedDataStore,
                         ...commonData,
                         matriculationTemplate: { id: matriculationTemplateId },
                     });

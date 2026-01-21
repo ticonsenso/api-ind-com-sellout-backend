@@ -1,5 +1,5 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
-import {MatriculationTemplate} from './matriculation.templates.model';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, } from 'typeorm';
+import { MatriculationTemplate } from './matriculation.templates.model';
 
 @Entity({ name: 'consolidated_data_stores', schema: 'db-sellout' })
 export class ConsolidatedDataStores {
@@ -13,7 +13,7 @@ export class ConsolidatedDataStores {
     @Column({ name: 'code_store_distributor', type: 'varchar', length: 255 })
     codeStoreDistributor?: string | null;
 
-    @Column({ name: 'code_product_distributor', type: 'text'})
+    @Column({ name: 'code_product_distributor', type: 'text' })
     codeProductDistributor?: string | null;
 
     @Column({ name: 'description_distributor', type: 'text' })
@@ -42,7 +42,7 @@ export class ConsolidatedDataStores {
 
     @Column({ name: 'calculate_date', type: 'date' })
     calculateDate?: Date;
-    
+
     @ManyToOne(() => MatriculationTemplate, { onDelete: "CASCADE", cascade: true, eager: true })
     @JoinColumn({ name: "matriculation_template_id" })
     matriculationTemplate?: MatriculationTemplate;
