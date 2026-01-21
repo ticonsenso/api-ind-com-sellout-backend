@@ -1,10 +1,10 @@
-import {DataSource} from 'typeorm';
-import {Request, Response} from 'express';
-import {StatusCodes} from 'http-status-codes';
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {SelloutMastersService} from '../services/sellout.masters.service';
-import {CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
-import {CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
+import { DataSource } from 'typeorm';
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { SelloutMastersService } from '../services/sellout.masters.service';
+import { CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
+import { CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
 
 export class SelloutMastersController {
     private selloutMastersService: SelloutMastersService;
@@ -216,8 +216,8 @@ export class SelloutMastersController {
                 res.status(StatusCodes.BAD_REQUEST).json({ message: "El cuerpo de la solicitud debe ser un array no vacío." });
                 return;
             }
-            await this.selloutMastersService.createSelloutStoreMastersBatch(createSelloutStoreMasterDto);
-            res.status(StatusCodes.CREATED).json({ message: 'Maestros almacenes creados correctamente' });
+            const result = await this.selloutMastersService.createSelloutStoreMastersBatch(createSelloutStoreMasterDto);
+            res.status(StatusCodes.CREATED).json({ message: `Maestros almacenes creados correctamente: ${result.insert} insertados y ${result.update} actualizados`, errors: result.errors });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -232,8 +232,8 @@ export class SelloutMastersController {
                 res.status(StatusCodes.BAD_REQUEST).json({ message: "El cuerpo de la solicitud debe ser un array no vacío." });
                 return;
             }
-            await this.selloutMastersService.createSelloutProductMastersBatch(createSelloutProductMasterDto);
-            res.status(StatusCodes.CREATED).json({ message: 'Maestros productos creados correctamente' });
+            const result = await this.selloutMastersService.createSelloutProductMastersBatch(createSelloutProductMasterDto);
+            res.status(StatusCodes.CREATED).json({ message: `Maestros productos creados correctamente: ${result.insert} insertados y ${result.update} actualizados`, errors: result.errors });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)

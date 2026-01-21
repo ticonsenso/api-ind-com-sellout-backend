@@ -1,7 +1,7 @@
-import {CreateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
-import {SelloutStoreMaster} from '../models/sellout.store.master.model';
-import {BaseRepository} from './base.respository';
-import {Brackets, DataSource, EntityManager} from 'typeorm';
+import { CreateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
+import { SelloutStoreMaster } from '../models/sellout.store.master.model';
+import { BaseRepository } from './base.respository';
+import { Brackets, DataSource, EntityManager } from 'typeorm';
 
 export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMaster> {
     constructor(dataSource: DataSource) {

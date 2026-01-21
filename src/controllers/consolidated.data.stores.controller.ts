@@ -1,8 +1,8 @@
-import {DataSource} from 'typeorm';
-import {Request, Response} from 'express';
-import {StatusCodes} from 'http-status-codes';
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {ConsolidatedDataStoresService} from '../services/consolidated.data.stores.service';
+import { DataSource } from 'typeorm';
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { ConsolidatedDataStoresService } from '../services/consolidated.data.stores.service';
 import {
     CreateConsolidatedDataStoresDto,
     NullFieldFilters,
@@ -43,8 +43,8 @@ export class ConsolidatedDataStoresController {
     async syncConsolidatedDataStores(req: Request, res: Response) {
         try {
             const { year, month } = req.params;
-            await this.consolidatedDataStoresService.syncConsolidatedDataStores(Number(year), Number(month));
-            res.status(StatusCodes.CREATED).json({ message: 'Datos consolidados sincronizados correctamente' });
+            const syncConsolidatedDataStores = await this.consolidatedDataStoresService.syncConsolidatedDataStores(Number(year), Number(month));
+            res.status(StatusCodes.CREATED).json({ message: 'Sincronización completada. Se actualizaron ' + syncConsolidatedDataStores.syncStores + ' almacenes y ' + syncConsolidatedDataStores.syncProducts + ' productos.' });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)

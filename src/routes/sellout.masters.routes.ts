@@ -1,11 +1,11 @@
-import {RequestHandler, Router} from 'express';
+import express, { RequestHandler, Router } from 'express';
 import AppDataSource from '../config/data-source';
-import {authenticateToken} from '../middleware/auth.middleware';
-import {validatorMiddleware} from '../middleware/validator.middleware';
-import {SelloutMastersController} from '../controllers/sellout.masters.controller';
-import {CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto} from '../dtos/sellout.store.master.dto';
-import {CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
-
+import { authenticateToken } from '../middleware/auth.middleware';
+import { validatorMiddleware } from '../middleware/validator.middleware';
+import { SelloutMastersController } from '../controllers/sellout.masters.controller';
+import { CreateSelloutStoreMasterDto, UpdateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
+import { CreateSelloutProductMasterDto, UpdateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
+import { gzipMiddleware } from "../middleware/gzipMiddleware";
 const router = Router();
 const selloutMastersController = new SelloutMastersController(AppDataSource);
 
@@ -783,7 +783,7 @@ router.get(
  *     tags:
  *       - Maestro Almacen
  *     summary: Crear maestros de almacen en masa
- *     description: Crea maestros de almacen en masa en el sistema
+ *     description: Crea maestros de almacen en masa en el sistema. Soporta envío de datos en formato JSON o comprimidos con GZIP (application/gzip).
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -803,6 +803,10 @@ router.get(
  *                   type: string
  *                 status:
  *                   type: boolean
+ *         application/gzip:
+ *           schema:
+ *             type: string
+ *             format: binary
  *     responses:   
  *       200:
  *         description: Maestros de almacen creados correctamente
@@ -839,7 +843,10 @@ router.get(
  */
 router.post(
     "/store/bulk",
-    authenticateToken,
+    authenticateToken as RequestHandler,
+    express.raw({ type: "application/gzip", limit: "20mb" }),
+    express.json({ limit: "20mb" }),
+    gzipMiddleware,
     selloutMastersController.createSelloutStoreMastersBatch
 );
 
@@ -850,7 +857,7 @@ router.post(
  *     tags:
  *       - Maestro Producto
  *     summary: Crear maestros de producto en masa
- *     description: Crea maestros de producto en masa en el sistema
+ *     description: Crea maestros de producto en masa en el sistema. Soporta envío de datos en formato JSON o comprimidos con GZIP (application/gzip).
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -872,6 +879,10 @@ router.post(
  *                   type: string
  *                 status:
  *                   type: boolean
+ *         application/gzip:
+ *           schema:
+ *             type: string
+ *             format: binary
  *     responses:   
  *       200:
  *         description: Maestros de producto creados correctamente
@@ -910,7 +921,10 @@ router.post(
  */
 router.post(
     "/product/bulk",
-    authenticateToken,
+    express.raw({ type: "application/gzip", limit: "20mb" }),
+    express.json({ limit: "20mb" }),
+    gzipMiddleware,
+    authenticateToken as RequestHandler,
     selloutMastersController.createSelloutProductMastersBatch
 );
 

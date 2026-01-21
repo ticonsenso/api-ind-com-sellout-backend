@@ -617,10 +617,10 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     items: Array<
       | { distributor: string; codeStoreDistributor: string }
       | {
-          distributor: string;
-          codeProductDistributor: string;
-          descriptionDistributor: string;
-        }
+        distributor: string;
+        codeProductDistributor: string;
+        descriptionDistributor: string;
+      }
     >;
     total: number;
   }> {
@@ -844,7 +844,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .getRawMany();
   }
 
-    async deleteDataByDistributorAndCodeStoreDistributor(
+  async deleteDataByDistributorAndCodeStoreDistributor(
     distributor: string,
     codeStoreDistributor: string,
     calculateDate: string
@@ -861,19 +861,45 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .execute();
   }
   async deleteDataByDistributor(
-  matriculationTemplateId: number,
-  calculateDate: string
-): Promise<any> {
-  return await this.repository
-    .createQueryBuilder()
-    .delete()
-    .from("consolidated_data_stores")
-    .where("matriculation_template_id = :templateId", { 
-      templateId: matriculationTemplateId 
-    })
-    .andWhere("calculate_date = :calculateDate", { 
-      calculateDate: primerDiaDelMesString(calculateDate) 
-    })
-    .execute();
-}
+    matriculationTemplateId: number,
+    calculateDate: string
+  ): Promise<any> {
+    return await this.repository
+      .createQueryBuilder()
+      .delete()
+      .from("consolidated_data_stores")
+      .where("matriculation_template_id = :templateId", {
+        templateId: matriculationTemplateId
+      })
+      .andWhere("calculate_date = :calculateDate", {
+        calculateDate: primerDiaDelMesString(calculateDate)
+      })
+      .execute();
+  }
+
+  async syncDataStores(calculateDate: string): Promise<number> {
+    const result = await this.repository.query(
+      `UPDATE "db-sellout".consolidated_data_stores cds
+       SET code_store = t2.code_store_sic
+       FROM "db-sellout".sellout_store_master t2
+       WHERE REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), ' ', '') = t2.search_store
+       AND cds.code_store IS NULL
+       AND cds.calculate_date = $1`,
+      [calculateDate]
+    );
+    return result[1];
+  }
+
+  async syncDataProducts(calculateDate: string): Promise<number> {
+    const result = await this.repository.query(
+      `UPDATE "db-sellout".consolidated_data_stores cds
+       SET code_product = t2.code_product_sic
+       FROM "db-sellout".sellout_product_master t2
+       WHERE REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), ' ', '') = t2.search_product_store
+       AND cds.code_product IS NULL
+       AND cds.calculate_date = $1`,
+      [calculateDate]
+    );
+    return result[1];
+  }
 }
