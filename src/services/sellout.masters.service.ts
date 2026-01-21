@@ -105,48 +105,29 @@ export class SelloutMastersService {
         }
     }
 
-    async createSelloutStoreMastersBatch(configs: CreateSelloutStoreMasterDto[]): Promise<void> {
-        const uniqueMap = new Map<string, CreateSelloutStoreMasterDto>();
+    async createSelloutStoreMastersBatch(configs: CreateSelloutStoreMasterDto[]): Promise<{ insert: number; update: number; errors: string }> {
+        let insert = 0;
+        let update = 0;
+        let errors = '';
         for (const config of configs) {
             const distributor = cleanString(config.distributor ?? '');
             const storeDistributor = cleanString(config.storeDistributor ?? '');
-            const searchStoreKey = distributor + storeDistributor;
+            const searchStoreKey = `${distributor}${storeDistributor}`.replace(/\s/g, '');
             config.searchStore = searchStoreKey;
-            if (config.searchStore) {
-                uniqueMap.set(config.searchStore, config);
-            }
-        }
-
-        const uniqueConfigs = Array.from(uniqueMap.values());
-
-        const chunkSize = 1000;
-        const chunks = chunkArray(uniqueConfigs, chunkSize);
-
-        for (const chunk of chunks) {
-            const searchStoreList = chunk.map(c => c.searchStore!);
-
-            const existingStores = await this.selloutStoreMasterRepository.findBySearchStore(searchStoreList);
-
-            const existingMap = new Map(existingStores.map(p => [p.searchStore, p]));
-
-            const toUpdate = [];
-            const toInsert = [];
-
-            for (const config of chunk) {
-                const existing = existingMap.get(config.searchStore!);
+            try {
+                const existing = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchStoreKey);
                 if (existing) {
-                    Object.assign(existing, config);
-                    toUpdate.push(existing);
+                    update++;
+                    await this.selloutStoreMasterRepository.update(existing.id, config);
                 } else {
-                    toInsert.push(config);
+                    insert++;
+                    await this.selloutStoreMasterRepository.create(config);
                 }
+            } catch (error) {
+                errors += error + '\n';
             }
-
-            if (toUpdate.length > 0) await this.selloutStoreMasterRepository.save(toUpdate);
-            if (toInsert.length > 0) await this.selloutStoreMasterRepository.insert(toInsert);
-
-            await this.syncMasterStores();
         }
+        return { insert, update, errors };
     }
 
     async syncMasterStores(): Promise<void> {
@@ -352,21 +333,30 @@ export class SelloutMastersService {
         return saved;
     }
 
-    async createSelloutProductMastersBatch(configs: CreateSelloutProductMasterDto[]): Promise<void> {
+    async createSelloutProductMastersBatch(configs: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string }> {
+        let insert = 0;
+        let update = 0;
+        let errors = '';
         for (const config of configs) {
-            const distributor = cleanString(config.distributor ?? '');
-            const productDistributor = cleanString(config.productDistributor ?? '');
-            const productStore = cleanString(config.productStore ?? '');
-            const searchProductKey = distributor + productStore + productDistributor;
-            const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductKey);
-            config.searchProductStore = searchProductKey;
-            if (existing) {
-                await this.selloutProductMasterRepository.update(existing.id, config);
-            } else {
-                await this.selloutProductMasterRepository.create(config);
+            try {
+                const distributor = cleanString(config.distributor ?? '');
+                const productDistributor = cleanString(config.productDistributor ?? '');
+                const productStore = cleanString(config.productStore ?? '');
+                const searchProductKey = `${distributor}${productDistributor}${productStore}`.replace(/\s/g, '');
+                const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductKey);
+                config.searchProductStore = searchProductKey;
+                if (existing) {
+                    update++;
+                    await this.selloutProductMasterRepository.update(existing.id, config);
+                } else {
+                    insert++;
+                    await this.selloutProductMasterRepository.create(config);
+                }
+            } catch (error) {
+                errors += error + '\n';
             }
         }
-
+        return { insert, update, errors };
     }
 
     async createSelloutProductMasterExcel(selloutProductMaster: CreateSelloutProductMasterDto): Promise<SelloutProductMaster | undefined> {
