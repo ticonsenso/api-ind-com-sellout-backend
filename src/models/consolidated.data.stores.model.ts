@@ -31,15 +31,6 @@ export class ConsolidatedDataStores {
     @Column({ name: 'code_store', type: 'varchar', length: 255 })
     codeStore?: string | null;
 
-    @Column({ name: 'authorized_distributor', type: 'varchar', length: 255 })
-    authorizedDistributor?: string | null;
-
-    @Column({ name: 'store_name', type: 'varchar', length: 255 })
-    storeName?: string | null;
-
-    @Column({ name: 'product_model', type: 'varchar', length: 255 })
-    productModel?: string | null;
-
     @Column({ name: 'calculate_date', type: 'date' })
     calculateDate?: Date;
 
