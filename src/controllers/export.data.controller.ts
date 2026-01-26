@@ -1,7 +1,7 @@
-import {DataSource} from 'typeorm';
-import {exportToExcel} from '../helpers/export.to.excel.helper';
-import {Request, Response} from 'express';
-import {ProductSicRepository} from '../repository/product.sic.repository';
+import { DataSource } from 'typeorm';
+import { exportToExcel } from '../helpers/export.to.excel.helper';
+import { Request, Response } from 'express';
+import { ProductSicRepository } from '../repository/product.sic.repository';
 import {
     fieldsAdvisorCommission,
     fieldsBasePptoSellout,
@@ -21,18 +21,18 @@ import {
     filedsNoHomologadosProducts,
     filedsNoHomologadosStores
 } from '../utils/fields';
-import {ConsolidatedDataStoresRepository} from '../repository/consolidated.data.stores.repository';
-import {SelloutProductMasterRepository} from '../repository/sellout.product.master.repository';
-import {SelloutStoreMasterRepository} from '../repository/sellout.store.master.repository';
-import {StoresSicRepository} from '../repository/stores.repository';
-import {BaseValuesSelloutRepository} from '../repository/base.values.sellout.repository';
-import {BasePptoSelloutService} from '../services/base.ppto.sellout.service';
-import {AdvisorCommissionService} from '../services/advisor.commision.service';
-import {MatriculationService} from '../services/matriculation.service';
-import {StoreConfigurationService} from '../services/store.configuration.service';
-import {EmployeesService} from '../services/employees.service';
-import {StoreManagerCalculationCommissionService} from '../services/store.manager.calculation.commission.service';
-import {ConsolidatedCommissionCalculationService} from '../services/consolidated.commission.calculation.service';
+import { ConsolidatedDataStoresRepository } from '../repository/consolidated.data.stores.repository';
+import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
+import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
+import { StoresSicRepository } from '../repository/stores.repository';
+import { BaseValuesSelloutRepository } from '../repository/base.values.sellout.repository';
+import { BasePptoSelloutService } from '../services/base.ppto.sellout.service';
+import { AdvisorCommissionService } from '../services/advisor.commision.service';
+import { MatriculationService } from '../services/matriculation.service';
+import { StoreConfigurationService } from '../services/store.configuration.service';
+import { EmployeesService } from '../services/employees.service';
+import { StoreManagerCalculationCommissionService } from '../services/store.manager.calculation.commission.service';
+import { ConsolidatedCommissionCalculationService } from '../services/consolidated.commission.calculation.service';
 import { ConsolidatedDataStoresService } from '../services/consolidated.data.stores.service';
 import { NullFieldFilters } from '../dtos/consolidated.data.stores.dto';
 import { ExcelImportService } from '../services/excel.processing.service';
@@ -167,7 +167,7 @@ export class ExportDataController {
                     ...item,
                     taxSale: item.taxSale ? Number(item.taxSale) : 0,
                     budgetSale: item.budgetSale ? Number(item.budgetSale) : 0,
-                    complianceSale: item.complianceSale  ? Number(item.complianceSale) : 0,
+                    complianceSale: item.complianceSale ? Number(item.complianceSale) : 0,
                     rangeApplyBonus: item.rangeApplyBonus ? Number(item.rangeApplyBonus) : 0,
                     saleIntangible: item.saleIntangible ? Number(item.saleIntangible) : 0,
                     cashSale: item.cashSale ? Number(item.cashSale) : 0,
@@ -231,7 +231,7 @@ export class ExportDataController {
                     undefined,
                     new Date(calculateDate)
                 )).items;
-                 rawData = rawData.map(item => ({
+                rawData = rawData.map(item => ({
                     ...item,
                     fiscalSale: item.fiscalSale ? Number(item.fiscalSale) : 0,
                     pptoSale: item.pptoSale ? Number(item.pptoSale) : 0,
@@ -250,7 +250,7 @@ export class ExportDataController {
                     fiscalSaleCalculate: item.fiscalSaleCalculate ? Number(item.fiscalSaleCalculate) : 0,
                     rangeComplianceApl: item.rangeComplianceApl ? Number(item.rangeComplianceApl) : 0,
                     profitComplianceApl: item.profitComplianceApl ? Number(item.profitComplianceApl) : 0,
-                    directProfitCalculate: item.directProfitCalculate ? Number(item.directProfitCalculate) : 0,              
+                    directProfitCalculate: item.directProfitCalculate ? Number(item.directProfitCalculate) : 0,
                 }));
                 break;
 
@@ -268,9 +268,9 @@ export class ExportDataController {
                     pctNomina: item.pctNomina ? Number(item.pctNomina) : 0,
                 }));
                 break;
-             case 'noHomologadosStores':
+            case 'noHomologadosStores':
                 if (!calculateDate) return res.status(400).json({ message: 'Fecha de cálculo requerida' });
-                const nullFieldFiltersStore:NullFieldFilters = {
+                const nullFieldFiltersStore: NullFieldFilters = {
                     codeStore: true,
                 }
                 rawData = (await this.consolidatedDataStoresService.getConsolidatedDataStoresValuesNullUnique(
@@ -282,8 +282,8 @@ export class ExportDataController {
                     codeStore: 'NO SE VISITA',
                 }));
                 break;
-             case 'noHomologadosProducts':
-                const nullFieldFiltersProduct:NullFieldFilters = {
+            case 'noHomologadosProducts':
+                const nullFieldFiltersProduct: NullFieldFilters = {
                     codeProduct: true,
                 }
                 if (!calculateDate) return res.status(400).json({ message: 'Fecha de cálculo requerida' });
@@ -356,38 +356,38 @@ export class ExportDataController {
 
     async importDataHandler(req: Request, res: Response): Promise<void> {
         try {
-        const { type,date } = req.body;
-        const file = req.file;
+            const { type, date } = req.body;
+            const file = req.file;
 
-        if (!file) {
-            res.status(400).json({ message: "Debe enviar un archivo Excel." });
-            return;
-        }
+            if (!file) {
+                res.status(400).json({ message: "Debe enviar un archivo Excel." });
+                return;
+            }
 
-        if (!type) {
-            res.status(400).json({ message: "Debe enviar el tipo de importación." });
-            return;
-        }
+            if (!type) {
+                res.status(400).json({ message: "Debe enviar el tipo de importación." });
+                return;
+            }
 
-        // Procesamiento genérico
-        const result = await this.excelService.processExcel(date,type, file);
+            // Procesamiento genérico
+            const result = await this.excelService.processExcel(date, type, file);
 
-        if (result.errorFileBuffer) {
-            res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            res.setHeader("Content-Disposition", `attachment; filename=errores_${type}.xlsx`);
-            res.send(result.errorFileBuffer);
-            return;
-        }
+            if (result.errorFileBuffer) {
+                res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                res.setHeader("Content-Disposition", `attachment; filename=errores_${type}.xlsx`);
+                res.send(result.errorFileBuffer);
+                return;
+            }
 
-        res.status(200).json({
-            message: "Datos importados correctamente",
-            total_registros: result.total,
-            registros_ok: result.ok,
-            registros_error: result.errors.length,
-        });
+            res.status(200).json({
+                message: "Datos importados correctamente",
+                total_registros: result.total,
+                registros_ok: result.ok,
+                registros_error: result.errors.length,
+            });
         } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error procesando el archivo." });
+            console.error(error);
+            res.status(500).json({ message: "Error procesando el archivo." });
         }
     }
 }
