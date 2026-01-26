@@ -113,9 +113,9 @@ export class SelloutMastersService {
             const distributor = cleanString(config.distributor ?? '');
             const storeDistributor = cleanString(config.storeDistributor ?? '');
             const searchStoreKey = `${distributor}${storeDistributor}`.replace(/\s/g, '');
-            config.searchStore = searchStoreKey;
+            config.searchStore = searchStoreKey.toUpperCase();
             try {
-                const existing = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchStoreKey);
+                const existing = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchStoreKey.toUpperCase());
                 if (existing) {
                     update++;
                     await this.selloutStoreMasterRepository.update(existing.id, config);
@@ -337,9 +337,9 @@ export class SelloutMastersService {
                 const distributor = cleanString(config.distributor ?? '');
                 const productDistributor = cleanString(config.productDistributor ?? '');
                 const productStore = cleanString(config.productStore ?? '');
-                const searchProductKey = `${distributor}${productDistributor}${productStore}`.replace(/\s/g, '');
-                const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductKey);
-                config.searchProductStore = searchProductKey;
+                const searchProductKey = `${distributor}${productStore}${productDistributor}`.replace(/\s/g, '');
+                const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductKey.toUpperCase());
+                config.searchProductStore = searchProductKey.toUpperCase();
                 if (existing) {
                     update++;
                     await this.selloutProductMasterRepository.update(existing.id, config);
