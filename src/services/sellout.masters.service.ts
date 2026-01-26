@@ -332,25 +332,49 @@ export class SelloutMastersService {
         let insert = 0;
         let update = 0;
         let errors = '';
-        for (const config of configs) {
-            try {
+
+        try {
+            const preparedConfigs = configs.map(config => {
                 const distributor = cleanString(config.distributor ?? '');
                 const productDistributor = cleanString(config.productDistributor ?? '');
                 const productStore = cleanString(config.productStore ?? '');
                 const searchProductKey = `${distributor}${productDistributor}${productStore}`.replace(/\s/g, '');
-                const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductKey);
                 config.searchProductStore = searchProductKey;
-                if (existing) {
+                return config;
+            });
+
+            // Recolectar todas las claves de búsqueda para verificar registros existentes
+            const allSearchKeys = preparedConfigs.map(c => c.searchProductStore!).filter(k => k);
+            const uniqueKeys = [...new Set(allSearchKeys)];
+
+            // Buscar registros existentes en bloques para evitar límites de parámetros de consulta
+            let existingRecords: SelloutProductMaster[] = [];
+            const chunkedKeys = chunkArray(uniqueKeys, 1000);
+
+            for (const keysChunk of chunkedKeys) {
+                const found = await this.selloutProductMasterRepository.findBySearchProductStore(keysChunk);
+                existingRecords = existingRecords.concat(found);
+            }
+
+            const existingSet = new Set(existingRecords.map(r => r.searchProductStore).filter((k): k is string => !!k));
+
+            // Calcular conteos basados en existencia
+            for (const config of preparedConfigs) {
+                if (existingSet.has(config.searchProductStore!)) {
                     update++;
-                    await this.selloutProductMasterRepository.update(existing.id, config);
                 } else {
                     insert++;
-                    await this.selloutProductMasterRepository.create(config);
                 }
-            } catch (error) {
-                errors += error + '\n';
             }
+
+            // Usar upsert del repositorio para procesamiento por lotes eficiente
+            // upsert maneja el batching internamente
+            await this.selloutProductMasterRepository.upsert(preparedConfigs);
+
+        } catch (error: any) {
+            errors += (error.message || 'Error en operación por lotes') + '\n';
         }
+
         return { insert, update, errors };
     }
 
