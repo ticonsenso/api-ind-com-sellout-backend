@@ -337,7 +337,7 @@ export class SelloutMastersService {
                 const distributor = cleanString(config.distributor ?? '');
                 const productDistributor = cleanString(config.productDistributor ?? '');
                 const productStore = cleanString(config.productStore ?? '');
-                const searchProductKey = `${distributor}${productDistributor}${productStore}`.replace(/\s/g, '');
+                const searchProductKey = `${distributor}${productStore}${productDistributor}`.replace(/\s/g, '');
                 const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductKey.toUpperCase());
                 config.searchProductStore = searchProductKey.toUpperCase();
                 if (existing) {
