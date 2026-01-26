@@ -1,4 +1,4 @@
-import {ExportField} from "../controllers/export.data.controller";
+import { ExportField } from "../controllers/export.data.controller";
 
 export const fieldsProductSic: ExportField[] = [
     { key: 'idProductSic', header: 'ID' },
@@ -78,6 +78,7 @@ export const fieldsSelloutStoreMaster: ExportField[] = [
 ];
 
 export const fieldsConsolidatedDataStores: ExportField[] = [
+    // --- Datos Originales ---
     { key: 'distributor', header: 'DISTRIBUIDOR' },
     { key: 'codeStoreDistributor', header: 'COD. ALMACEN DISTRIBUIDOR' },
     { key: 'codeProductDistributor', header: 'COD. PROD DISTRIBUIDOR' },
@@ -85,10 +86,24 @@ export const fieldsConsolidatedDataStores: ExportField[] = [
     { key: 'unitsSoldDistributor', header: 'UNIDADES VENTA DISTRIBUIDOR' },
     { key: 'codeProduct', header: 'COD. PRODUCTO' },
     { key: 'codeStore', header: 'COD. ALMACEN' },
-    { key: 'storeName', header: 'NOMBRE ALMACEN' },
-    { key: 'productModel', header: 'MODELO DEL PRODUCTO' },
+    { key: 'saleDate', header: 'FECHA VENTA' },
     { key: 'calculateDate', header: 'FECHA CALCULO' },
     { key: 'observation', header: 'OBSERVACION' },
+    // --- Nuevos Datos: Información del Producto (Product SIC) ---
+    { key: 'lineaNegocioSap', header: 'LINEA DE NEGOCIO' },
+    { key: 'categoria', header: 'CATEGORIA' },
+    { key: 'subCategoria', header: 'SUB CATEGORIA' },
+    { key: 'marModeloIm', header: 'MODELO' },
+    { key: 'nombreIme', header: 'NOMBRE IM' },
+
+    // --- Nuevos Datos: Información de la Tienda (Stores SIC) ---
+    { key: 'canal', header: 'CANAL' },
+    { key: 'grupoComercial', header: 'GRUPO COMERCIAL' }, // Diferenciado del 'distributor' original
+    { key: 'almacen', header: 'NOMBRE ALMACEN' },
+    { key: 'grupoZona', header: 'GRUPO ZONA' },
+    { key: 'zona', header: 'ZONA' },
+    { key: 'categoria', header: 'CATEGORIA ALMACEN' },
+    { key: 'supervisor', header: 'SUPERVISOR' },
 ];
 
 export const fieldsBaseValuesSellout = [
@@ -129,8 +144,8 @@ export const fieldsBasePptoSellout = [
 
 export const fieldsAdvisorCommission = [
     { key: 'employee.documentNumber', header: 'IDENTIFICADOR' },
-    { key: 'employee.code', header: 'CÓDIGO' },    
-    { key: 'employee.name', header: 'COLABORADOR' },    
+    { key: 'employee.code', header: 'CÓDIGO' },
+    { key: 'employee.name', header: 'COLABORADOR' },
     { key: 'companyPosition.name', header: 'CARGO' },
     { key: 'employee.section', header: 'REGIONAL' },
     { key: 'employee.subDepar', header: 'SECCION' },
@@ -142,7 +157,7 @@ export const fieldsAdvisorCommission = [
     { key: 'cashSale', header: 'VENTA CONTADO' },
     { key: 'creditSale', header: 'VENTA CREDITO' },
     { key: 'taxSale', header: 'TOTAL VENTAS' },
-    { key: 'saleIntangible', header: 'TOTAL INTANGIBLES'},
+    { key: 'saleIntangible', header: 'TOTAL INTANGIBLES' },
     { key: 'budgetSale', header: 'PRESUPUESTO' },
     { key: 'complianceSale', header: 'CUMP' },
     { key: 'rangeApplyBonus', header: 'RANGO' },

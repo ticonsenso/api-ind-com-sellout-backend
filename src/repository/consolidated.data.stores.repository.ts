@@ -485,6 +485,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   }> {
     const qb = this.repository
       .createQueryBuilder("s")
+      .leftJoin("product_sic", "ps", "ps.codigo_jde = s.code_product")
+      .leftJoin("stores_sic", "ss", "ss.cod_almacen = s.code_store")
       .select([
         "s.distributor",
         "s.codeStoreDistributor",
@@ -493,9 +495,10 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "SUM(s.unitsSoldDistributor) as unitsSoldDistributor",
         "s.codeProduct",
         "s.codeStore",
-        "s.storeName",
-        "s.productModel",
-        "s.calculateDate",
+        "ss.nombre_almacen",
+        "ps.nombre_sap",
+        "MAX(s.calculateDate) as calculateDate",
+        "MAX(s.saleDate) as saleDate",
       ])
       .groupBy("s.distributor")
       .addGroupBy("s.codeStoreDistributor")
@@ -503,9 +506,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addGroupBy("s.descriptionDistributor")
       .addGroupBy("s.codeProduct")
       .addGroupBy("s.codeStore")
-      .addGroupBy("s.storeName")
-      .addGroupBy("s.productModel")
-      .addGroupBy("s.calculateDate")
+      .addGroupBy("ss.nombre_almacen")
+      .addGroupBy("ps.nombre_sap")
       .orderBy("s.distributor", "ASC")
       .addOrderBy("s.codeStoreDistributor", "ASC")
       .addOrderBy("s.codeProductDistributor", "ASC")
@@ -550,7 +552,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .offset((page - 1) * limit)
       .limit(limit)
       .getRawMany();
-    console.log(items);
     const itemsMapped: any = items.map((item: any) => ({
       id: item.id,
       distributor: item.s_distributor,
@@ -558,13 +559,13 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       codeProductDistributor: item.s_code_product_distributor,
       descriptionDistributor: item.s_description_distributor,
       unitsSoldDistributor: item.unitssolddistributor ? Number(item.unitssolddistributor) : null,
-      saleDate: item.s_sale_date,
+      saleDate: item.saledate,
       codeProduct: item.s_code_product,
       codeStore: item.s_code_store,
       authorizedDistributor: item.s_authorized_distributor,
-      storeName: item.s_store_name,
-      productModel: item.s_product_model,
-      calculateDate: item.s_calculate_date,
+      storeName: item.nombre_almacen,
+      productModel: item.nombre_sap,
+      calculateDate: item.calculatedate,
       matriculationTemplate: item.matriculationTemplate,
       status: item.status,
     }));
@@ -812,35 +813,75 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
     return await this.repository
       .createQueryBuilder("s")
+      // 1. Unimos las tablas (INNER JOIN)
+      // Nota: El 3er argumento es la condición exacta del ON
+      .leftJoin("product_sic", "ps", "ps.codigo_jde = s.code_product")
+      .leftJoin("stores_sic", "ss", "ss.cod_almacen = s.code_store")
+
+      // 2. Seleccionamos campos de la tabla principal (s)
       .select("s.distributor", "distributor")
       .addSelect("s.code_store_distributor", "codeStoreDistributor")
       .addSelect("s.code_product_distributor", "codeProductDistributor")
       .addSelect("s.description_distributor", "descriptionDistributor")
-      .addSelect("SUM(s.units_sold_distributor)", "unitsSoldDistributor")
+      .addSelect("SUM(s.units_sold_distributor)", "unitsSoldDistributor") // La agregación
       .addSelect("s.code_product", "codeProduct")
       .addSelect("s.code_store", "codeStore")
-      .addSelect("s.store_name", "storeName")
-      .addSelect("s.product_model", "productModel")
-      .addSelect("s.calculate_date", "calculateDate")
+      .addSelect("MAX(s.sale_date)", "saleDate")
       .addSelect("s.observation", "observation")
+      .addSelect("MAX(s.calculate_date)", "calculateDate")
+
+      // 3. Seleccionamos campos de Product SIC (ps)
+      .addSelect("ps.linea_negocio_sap", "lineaNegocioSap")
+      .addSelect("ps.mar_desc_grupo_art", "categoria")
+      .addSelect("ps.mar_desc_jerarq", "subCategoria")
+      .addSelect("ps.mar_modelo_im", "marModeloIm")
+      .addSelect("ps.nombre_ime", "nombreIme")
+
+      // 4. Seleccionamos campos de Stores SIC (ss)
+      .addSelect("ss.canal", "canal")
+      .addSelect("ss.distrib_sap", "grupoComercial")
+      .addSelect("ss.nombre_almacen", "almacen")
+      .addSelect("ss.grupo_zona", "grupoZona")
+      .addSelect("ss.zona", "zona")
+      .addSelect("ss.categoria", "categoria")
+      .addSelect("ss.supervisor", "supervisor")
+
+      // 5. Filtros
       .where("EXTRACT(YEAR FROM s.calculate_date) = :year", { year })
       .andWhere("EXTRACT(MONTH FROM s.calculate_date) = :month", { month })
+
+      // 6. Agrupación (GROUP BY)
+      // ¡OJO! Todos los campos seleccionados (menos el SUM) deben estar aquí
       .groupBy("s.distributor")
       .addGroupBy("s.code_store_distributor")
       .addGroupBy("s.code_product_distributor")
       .addGroupBy("s.description_distributor")
       .addGroupBy("s.code_product")
       .addGroupBy("s.code_store")
-      .addGroupBy("s.store_name")
-      .addGroupBy("s.product_model")
-      .addGroupBy("s.calculate_date")
       .addGroupBy("s.observation")
+      // Agregamos los campos de ps
+      .addGroupBy("ps.linea_negocio_sap")
+      .addGroupBy("ps.mar_desc_grupo_art")
+      .addGroupBy("ps.mar_desc_jerarq")
+      .addGroupBy("ps.mar_modelo_im")
+      .addGroupBy("ps.nombre_ime")
+      // Agregamos los campos de ss
+      .addGroupBy("ss.canal")
+      .addGroupBy("ss.distrib_sap")
+      .addGroupBy("ss.nombre_almacen")
+      .addGroupBy("ss.grupo_zona")
+      .addGroupBy("ss.zona")
+      .addGroupBy("ss.categoria")
+      .addGroupBy("ss.supervisor")
+
+      // 7. Ordenamiento
       .orderBy("s.distributor", "ASC")
       .addOrderBy("s.code_store_distributor", "ASC")
       .addOrderBy("s.code_product_distributor", "ASC")
       .addOrderBy("s.description_distributor", "ASC")
       .addOrderBy("s.code_product", "ASC")
       .addOrderBy("s.code_store", "ASC")
+
       .getRawMany();
   }
 
