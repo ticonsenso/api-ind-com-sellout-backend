@@ -1,7 +1,7 @@
-import {CreateSelloutProductMasterDto} from '../dtos/sellout.product.master.dto';
-import {SelloutProductMaster} from '../models/sellout.product.master.model';
-import {BaseRepository} from './base.respository';
-import {Brackets, DataSource} from 'typeorm';
+import { CreateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
+import { SelloutProductMaster } from '../models/sellout.product.master.model';
+import { BaseRepository } from './base.respository';
+import { Brackets, DataSource } from 'typeorm';
 
 interface ModelProductSic {
     codeProductSic: string;
@@ -20,7 +20,7 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
     async findBySearchProductStoreOnly(searchProductStore: string): Promise<SelloutProductMaster | null> {
         return this.repository
             .createQueryBuilder('selloutProductMaster')
-            .where('selloutProductMaster.searchProductStore ILIKE :searchProductStore', { searchProductStore: `%${searchProductStore}%` })
+            .where('selloutProductMaster.searchProductStore = :searchProductStore', { searchProductStore: searchProductStore })
             .getOne();
     }
 

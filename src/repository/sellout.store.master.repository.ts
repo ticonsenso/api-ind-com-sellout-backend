@@ -32,7 +32,7 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     async findBySearchStoreOnly(searchStore: string): Promise<SelloutStoreMaster | null> {
         return this.repository
             .createQueryBuilder('selloutStoreMaster')
-            .where('selloutStoreMaster.searchStore ILIKE :searchStore', { searchStore: `%${searchStore}%` })
+            .where('selloutStoreMaster.searchStore = :searchStore', { searchStore: searchStore.toUpperCase() })
             .getOne();
     }
 
