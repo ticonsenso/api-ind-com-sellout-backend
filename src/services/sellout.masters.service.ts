@@ -147,8 +147,6 @@ export class SelloutMastersService {
 
                     const updateData: QueryDeepPartialEntity<ConsolidatedDataStores> = {
                         codeStore: storeMaster.codeStoreSic,
-                        authorizedDistributor: storeSic?.distributor2 ?? null,
-                        storeName: storeSic?.storeName ?? null,
                         updatedAt: new Date(),
                     };
 
@@ -190,7 +188,6 @@ export class SelloutMastersService {
 
                     const updateData: QueryDeepPartialEntity<ConsolidatedDataStores> = {
                         codeProduct: productStore.codeProductSic,
-                        productModel: productSic?.jdeName ?? null,
                         updatedAt: new Date(),
                     };
 
@@ -274,8 +271,6 @@ export class SelloutMastersService {
                         const storeSic = await this.selloutStoreRepository.getDistribuidorAndStoreNameByStoreSic(Number(codeStoreSic));
                         for (const record of consolidatedRecords) {
                             record.codeStore = codeStoreSic;
-                            record.authorizedDistributor = storeSic?.distributor2 ?? null;
-                            record.storeName = storeSic?.storeName ?? null;
                         }
 
                         await this.consolidatedDataStoresRepository.save(consolidatedRecords);
@@ -451,10 +446,8 @@ export class SelloutMastersService {
                         if (consolidatedRecords.length === 0) {
                             throw new Error('No se encontraron registros que coincidan con el searchStore');
                         }
-                        const productModel = await this.selloutProductSicRepository.getModelProductSicByProductSic(codeProductSic.toString());
                         for (const record of consolidatedRecords) {
                             record.codeProduct = codeProductSic;
-                            record.productModel = productModel?.productModel ?? null;
                         }
 
                         await this.consolidatedDataStoresRepository.save(consolidatedRecords);

@@ -716,25 +716,10 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       }
 
       if (
-        isNullOrEmpty(item.authorizedDistributor) &&
-        !authorizedDistributorMap.has(storeKey)
+        isNullOrEmpty(item.codeProduct) &&
+        !codeProductMap.has(productKey)
       ) {
-        authorizedDistributorMap.set(storeKey, item);
-      }
-
-      if (isNullOrEmpty(item.storeName) && !storeNameMap.has(storeKey)) {
-        storeNameMap.set(storeKey, item);
-      }
-
-      if (isNullOrEmpty(item.codeProduct) && !codeProductMap.has(productKey)) {
         codeProductMap.set(productKey, item);
-      }
-
-      if (
-        isNullOrEmpty(item.productModel) &&
-        !productModelMap.has(productKey)
-      ) {
-        productModelMap.set(productKey, item);
       }
     }
 

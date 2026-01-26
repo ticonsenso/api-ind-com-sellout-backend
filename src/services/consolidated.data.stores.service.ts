@@ -283,13 +283,12 @@ export class ConsolidatedDataStoresService {
 
         if (updatePayload.codeProduct) {
             const productSic = await this.productSicRepository.findByJdeCodeOnly(updatePayload.codeProduct.toString());
-            updatePayload.productModel = productSic?.jdeName ?? null;
+            updatePayload.codeProduct = productSic?.jdeName ?? null;
         }
 
         if (updatePayload.codeStore) {
             const storeSic = await this.storesRepository.findByStoreCodeOnly(Number(updatePayload.codeStore));
-            updatePayload.authorizedDistributor = storeSic?.distributor2 ?? null;
-            updatePayload.storeName = storeSic?.storeName ?? null;
+            updatePayload.codeStore = storeSic?.distributor2 ?? null;
         }
 
         return updatePayload;
