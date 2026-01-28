@@ -52,7 +52,7 @@ export class ColumnConfigController {
 
   async updateCategory(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const dto = plainToInstance(UpdateColumnCategoryDto, req.body);
       const result = await this.columnConfigService.updateCategory(id, dto);
       res
@@ -67,7 +67,7 @@ export class ColumnConfigController {
 
   async deleteCategory(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.columnConfigService.deleteCategory(id);
       res
         .status(StatusCodes.OK)
@@ -111,7 +111,7 @@ export class ColumnConfigController {
 
   async updateKeyword(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const dto = plainToInstance(UpdateColumnKeywordDto, req.body);
       const result = await this.columnConfigService.updateKeyword(id, dto);
       res
@@ -126,7 +126,7 @@ export class ColumnConfigController {
 
   async deleteKeyword(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.columnConfigService.deleteKeyword(id);
       res
         .status(StatusCodes.OK)

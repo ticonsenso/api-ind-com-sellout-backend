@@ -1035,7 +1035,7 @@ export class ComissionsConfigController {
 
   async updateMonthlyResult(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateMonthlyResultDto, req.body);
       const errors = await validate(updateDto);
 
@@ -1059,7 +1059,7 @@ export class ComissionsConfigController {
 
   async deleteMonthlyResult(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.monthlyResultsService.deleteMonthlyResult(id);
       res.status(StatusCodes.NO_CONTENT).send();
     } catch (error: any) {
@@ -1100,7 +1100,7 @@ export class ComissionsConfigController {
 
   async updateSettlementPeriod(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateSettlementPeriodDto, req.body);
       const result = await this.settlementPeriodsService.updateSettlementPeriod(
         id,
@@ -1117,7 +1117,7 @@ export class ComissionsConfigController {
 
   async deleteSettlementPeriod(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.settlementPeriodsService.deleteSettlementPeriod(id);
       res.status(StatusCodes.NO_CONTENT).send();
     } catch (error: any) {
@@ -1158,7 +1158,7 @@ export class ComissionsConfigController {
 
   async updateParameterLine(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateParameterLineDto, req.body);
       const result = await this.parameterLinesService.updateParameterLines(
         id,
@@ -1175,7 +1175,7 @@ export class ComissionsConfigController {
 
   async deleteParameterLine(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.parameterLinesService.deleteParameterLines(id);
       res
         .status(StatusCodes.OK)
@@ -1217,7 +1217,7 @@ export class ComissionsConfigController {
 
   async updateSeason(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateSeasonDto, req.body);
       const result = await this.seasonsService.updateSeason(id, updateDto);
       res
@@ -1230,7 +1230,7 @@ export class ComissionsConfigController {
 
   async deleteSeason(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.seasonsService.deleteSeason(id);
       res
         .status(StatusCodes.OK)
@@ -1271,7 +1271,7 @@ export class ComissionsConfigController {
 
   async updateKpiConfig(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateKpiConfigDto, req.body);
       const result = await this.kpiConfigService.updateKpiConfig(id, updateDto);
       res.status(StatusCodes.OK).json({
@@ -1401,7 +1401,7 @@ export class ComissionsConfigController {
 
   async deleteStoreSize(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.storeSizeService.deleteStoreSize(id);
       res
         .status(StatusCodes.OK)
@@ -1475,7 +1475,7 @@ export class ComissionsConfigController {
 
   async updateSalesRotationConfiguration(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateSalesRotationConfigurationDto, req.body);
       const result = await this.salesRotationConfigurationsService.updateSalesRotationConfiguration(id, updateDto);
       res.status(StatusCodes.OK).json({ message: "Configuración de rotación de ventas actualizada correctamente", result });
@@ -1486,7 +1486,7 @@ export class ComissionsConfigController {
 
   async deleteSalesRotationConfiguration(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.salesRotationConfigurationsService.deleteSalesRotationConfiguration(id);
       res.status(StatusCodes.OK).json({ message: "Configuración de rotación de ventas eliminada correctamente" });
     } catch (error: any) {
@@ -1496,7 +1496,7 @@ export class ComissionsConfigController {
 
   async deleteAllSalesRotationConfigurations(req: Request, res: Response): Promise<void> {
     try {
-      const commissionConfigurationId = parseInt(req.params.id);
+      const commissionConfigurationId = parseInt(req.params.id as string);
       await this.salesRotationConfigurationsService.deleteAllSalesRotationConfigurations(commissionConfigurationId);
       res.status(StatusCodes.OK).json({ message: "Configuraciones de rotación de ventas eliminadas correctamente" });
     } catch (error: any) {

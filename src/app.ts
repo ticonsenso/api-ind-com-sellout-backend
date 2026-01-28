@@ -1,9 +1,9 @@
 import cors from "cors";
-import express, {Application} from "express";
+import express, { Application } from "express";
 import passport from "passport";
 import "reflect-metadata";
 import swaggerUi from "swagger-ui-express";
-import {env} from "./config/env";
+import { env } from "./config/env";
 import swaggerSpec from "./docs/swaggerConfig";
 import comissionsConfigRoutes from "./routes/comissions.config.routes";
 import configureEtlRoutes from "./routes/configure.etl.routes";
@@ -25,7 +25,6 @@ import exportDataRoutes from "./routes/export.data.routes";
 import storeManagerCalculationCommissionRoutes from "./routes/store.manager.calculation.routes";
 import columnConfigRoutes from "./routes/column.config.routes";
 import morgan from "morgan";
-import zlib from "zlib";
 
 const app: Application = express();
 app.use(express.raw({ type: "application/gzip", limit: "10mb" }));
@@ -43,7 +42,7 @@ app.use(
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 // Middlewares
 //app.use(cors());
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 

@@ -9,6 +9,7 @@ import {
   UpdateResult,
 } from "typeorm";
 import { primerDiaDelMesString } from "../utils/utils";
+import { ReadStream } from "fs";
 
 export class ConsolidatedDataStoresRepository extends BaseRepository<ConsolidatedDataStores> {
   constructor(dataSource: TypeORMDataSource) {
@@ -792,7 +793,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .getRawMany();
   }
 
-  async findByCalculateDateDataAgrupacion(calculateDate: Date): Promise<any[]> {
+  async findByCalculateDateDataAgrupacion(calculateDate: Date): Promise<ReadStream> {
     const date = calculateDate.toISOString().split("T")[0];
     const [year, month] = date.split("-");
 
@@ -867,7 +868,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addOrderBy("s.code_product", "ASC")
       .addOrderBy("s.code_store", "ASC")
 
-      .getRawMany();
+      .stream();
   }
 
   async deleteDataByDistributorAndCodeStoreDistributor(

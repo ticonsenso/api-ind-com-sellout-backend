@@ -49,6 +49,7 @@
     "passport": "^0.7.0",
     "passport-saml": "^3.2.4",
     "pg": "^8.13.3",
+    "pg-query-stream": "^4.11.2",
     "reflect-metadata": "^0.2.2",
     "saml2-js": "^4.0.3",
     "swagger-jsdoc": "^6.2.8",

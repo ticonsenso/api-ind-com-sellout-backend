@@ -1,4 +1,4 @@
-import { ExportField } from "../controllers/export.data.controller";
+import { ExportField, ExportFieldAvanced } from "../controllers/export.data.controller";
 
 export const fieldsProductSic: ExportField[] = [
     { key: 'idProductSic', header: 'ID' },
@@ -77,33 +77,33 @@ export const fieldsSelloutStoreMaster: ExportField[] = [
     },
 ];
 
-export const fieldsConsolidatedDataStores: ExportField[] = [
+export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     // --- Datos Originales ---
-    { key: 'distributor', header: 'DISTRIBUIDOR' },
-    { key: 'codeStoreDistributor', header: 'COD. ALMACEN DISTRIBUIDOR' },
-    { key: 'codeProductDistributor', header: 'COD. PROD DISTRIBUIDOR' },
-    { key: 'descriptionDistributor', header: 'DESCRIPCION DISTRIBUIDOR' },
-    { key: 'unitsSoldDistributor', header: 'UNIDADES VENTA DISTRIBUIDOR' },
-    { key: 'codeProduct', header: 'COD. PRODUCTO' },
-    { key: 'codeStore', header: 'COD. ALMACEN' },
-    { key: 'saleDate', header: 'FECHA VENTA' },
-    { key: 'calculateDate', header: 'FECHA CALCULO' },
-    { key: 'observation', header: 'OBSERVACION' },
+    { key: 'distributor', header: 'DISTRIBUIDOR', width: 25 },
+    { key: 'codeStoreDistributor', header: 'COD. ALMACEN DISTRIBUIDOR', width: 25 },
+    { key: 'codeProductDistributor', header: 'COD. PROD DISTRIBUIDOR', width: 25 },
+    { key: 'descriptionDistributor', header: 'DESCRIPCION DISTRIBUIDOR', width: 25 },
+    { key: 'unitsSoldDistributor', header: 'UNIDADES VENTA DISTRIBUIDOR', width: 25 },
+    { key: 'codeProduct', header: 'COD. PRODUCTO', width: 25 },
+    { key: 'codeStore', header: 'COD. ALMACEN', width: 25 },
+    { key: 'saleDate', header: 'FECHA VENTA', width: 25 },
+    { key: 'calculateDate', header: 'FECHA CALCULO', width: 25 },
+    { key: 'observation', header: 'OBSERVACION', width: 25 },
     // --- Nuevos Datos: Información del Producto (Product SIC) ---
-    { key: 'lineaNegocioSap', header: 'LINEA DE NEGOCIO' },
-    { key: 'categoria', header: 'CATEGORIA' },
-    { key: 'subCategoria', header: 'SUB CATEGORIA' },
-    { key: 'marModeloIm', header: 'MODELO' },
-    { key: 'nombreIme', header: 'NOMBRE IM' },
+    { key: 'lineaNegocioSap', header: 'LINEA DE NEGOCIO', width: 25 },
+    { key: 'categoria', header: 'CATEGORIA', width: 25 },
+    { key: 'subCategoria', header: 'SUB CATEGORIA', width: 25 },
+    { key: 'marModeloIm', header: 'MODELO', width: 25 },
+    { key: 'nombreIme', header: 'NOMBRE IM', width: 25 },
 
     // --- Nuevos Datos: Información de la Tienda (Stores SIC) ---
-    { key: 'canal', header: 'CANAL' },
-    { key: 'grupoComercial', header: 'GRUPO COMERCIAL' }, // Diferenciado del 'distributor' original
-    { key: 'almacen', header: 'NOMBRE ALMACEN' },
-    { key: 'grupoZona', header: 'GRUPO ZONA' },
-    { key: 'zona', header: 'ZONA' },
-    { key: 'categoria', header: 'CATEGORIA ALMACEN' },
-    { key: 'supervisor', header: 'SUPERVISOR' },
+    { key: 'canal', header: 'CANAL', width: 25 },
+    { key: 'grupoComercial', header: 'GRUPO COMERCIAL', width: 25 }, // Diferenciado del 'distributor' original
+    { key: 'almacen', header: 'NOMBRE ALMACEN', width: 25 },
+    { key: 'grupoZona', header: 'GRUPO ZONA', width: 25 },
+    { key: 'zona', header: 'ZONA', width: 25 },
+    { key: 'categoria', header: 'CATEGORIA ALMACEN', width: 25 },
+    { key: 'supervisor', header: 'SUPERVISOR', width: 25 },
 ];
 
 export const fieldsBaseValuesSellout = [
@@ -297,3 +297,4 @@ export const filedsNoHomologadosProducts: ExportField[] = [
     { key: 'descriptionDistributor', header: 'DESCRIPCIÓN PRODUCTO ALMACEN' },
     { key: 'codeProduct', header: 'COD. PRODUCTO SIC' },
 ];
+
