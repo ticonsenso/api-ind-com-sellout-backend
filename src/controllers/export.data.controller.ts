@@ -36,10 +36,18 @@ import { ConsolidatedCommissionCalculationService } from '../services/consolidat
 import { ConsolidatedDataStoresService } from '../services/consolidated.data.stores.service';
 import { NullFieldFilters } from '../dtos/consolidated.data.stores.dto';
 import { ExcelImportService } from '../services/excel.processing.service';
+import * as Excel from 'exceljs';
 
 export interface ExportField {
     key: string;
     header: string;
+    transform?: (value: any, item: any) => any;
+}
+
+export interface ExportFieldAvanced {
+    key: string;
+    header: string;
+    width?: number;
     transform?: (value: any, item: any) => any;
 }
 
@@ -115,6 +123,7 @@ export class ExportDataController {
         this.consolidatedDataStoresService = new ConsolidatedDataStoresService(dataSource);
         this.excelService = new ExcelImportService(dataSource);
         this.importDataHandler = this.importDataHandler.bind(this);
+        this.exportDataAvancedHandler = this.exportDataAvancedHandler.bind(this);
     }
 
     async exportGenericHandler(
@@ -141,12 +150,6 @@ export class ExportDataController {
             case 'mt. alm':
                 rawData = await this.selloutStoreMasterRepository.findAll();
                 break;
-
-            case 'consolidated_data_stores':
-                if (!calculateDate) return res.status(400).json({ message: 'Fecha de cálculo requerida' });
-                rawData = await this.consolidatedDataStoresRepository.findByCalculateDateDataAgrupacion(new Date(calculateDate));
-                break;
-
             case 'valores':
                 rawData = await this.baseValuesSelloutRepository.findAll();
                 break;
@@ -319,7 +322,7 @@ export class ExportDataController {
 
     async exportDataHandler(req: Request, res: Response): Promise<void> {
         try {
-            const { excel_name } = req.params;
+            const { excel_name } = req.params as { excel_name: string };
             const { calculate_date } = req.query;
 
             const fieldMap: Record<string, any[]> = {
@@ -327,7 +330,6 @@ export class ExportDataController {
                 'alm sic': fieldsStoresSic,
                 'mt prod': fieldsSelloutProductMaster,
                 'mt. alm': fieldsSelloutStoreMaster,
-                'consolidated_data_stores': fieldsConsolidatedDataStores,
                 'valores': fieldsBaseValuesSellout,
                 'Base Ppto': fieldsBasePptoSellout,
                 'advisor_commission': fieldsAdvisorCommission,
@@ -390,4 +392,45 @@ export class ExportDataController {
             res.status(500).json({ message: "Error procesando el archivo." });
         }
     }
+
+    async exportDataAvancedHandler(req: Request, res: Response): Promise<void> {
+        console.log(req.query);
+        const { calculate_date } = req.query as { calculate_date: string };
+        const calculateDate = new Date(calculate_date);
+
+        // 1. Configurar headers para descarga inmediata
+        const excelName = `sellou_mercado_${calculate_date}`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename=${excelName}.xlsx`);
+
+        // 2. Crear el WorkbookWriter conectado directamente al Response
+        // Esto escribe en la red a medida que genera las filas. ¡Cero memoria acumulada!
+        const workbook = new Excel.stream.xlsx.WorkbookWriter({
+            stream: res,
+            useStyles: true,
+            useSharedStrings: true
+        });
+
+        const worksheet = workbook.addWorksheet('Reporte');
+
+        // 3. Definir columnas (mapeo con tus alias del SELECT)
+        worksheet.columns = fieldsConsolidatedDataStores;
+
+        // 4. Obtener el stream de la base de datos
+        const dbStream = await this.consolidatedDataStoresRepository.findByCalculateDateDataAgrupacion(calculateDate);
+
+        // 5. "Pipear" los datos: Leer DB -> Escribir Excel
+        for await (const row of dbStream) {
+            // row es un objeto crudo { distributor: 'X', unitsSoldDistributor: 10, ... }
+
+            // Agregamos la fila y hacemos COMMIT inmediato.
+            // .commit() libera la fila de la memoria una vez escrita.
+            worksheet.addRow(row).commit();
+        }
+
+        // 6. Finalizar
+        await worksheet.commit(); // Finalizar hoja
+        await workbook.commit();  // Finalizar libro y cerrar stream de respuesta
+    }
+
 }

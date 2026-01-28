@@ -1,12 +1,47 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import AppDataSource from '../config/data-source';
-import {ExportDataController} from '../controllers/export.data.controller';
-import {authenticateToken} from '../middleware/auth.middleware';
+import { ExportDataController } from '../controllers/export.data.controller';
+import { authenticateToken } from '../middleware/auth.middleware';
 import { uploadExcel } from '../middleware/excel.middleware';
 
 const router = Router();
 const exportDataController = new ExportDataController(AppDataSource);
 
+
+/**
+ * @swagger
+ * /api/export/data/avanced:
+ *   get:
+ *     tags:
+ *       - Export Data
+ *     summary: Exportación avanzada de datos en Excel (Streaming)
+ *     description: |
+ *       Genera y descarga un reporte en formato Excel utilizando un flujo de datos (streaming) para optimizar el rendimiento.
+ *       El archivo se genera dinámicamente en base a la fecha de cálculo proporcionada.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: calculate_date
+ *         in: query
+ *         description: Fecha de corte para el cálculo de datos (Formato YYYY-MM-DD).
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *     responses:
+ *       200:
+ *         description: Archivo Excel generado exitosamente.
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: Petición incorrecta o parámetros faltantes.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.get('/avanced', authenticateToken, exportDataController.exportDataAvancedHandler);
 
 /**
  * @swagger

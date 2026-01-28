@@ -169,7 +169,7 @@ export class SelloutMastersController {
 
     async getModelProductSicByProductSic(req: Request, res: Response) {
         try {
-            const { productSic } = req.params;
+            const { productSic } = req.params as { productSic: string };
             const modelProductSic = await this.selloutMastersService.getModelProductSicByProductSic(productSic);
             if (!modelProductSic) {
                 res.status(StatusCodes.NOT_FOUND).json({ message: 'Modelo de producto no encontrado' });

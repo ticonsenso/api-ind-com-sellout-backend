@@ -1,71 +1,71 @@
-import {plainToClass, plainToInstance} from "class-transformer";
-import {validate} from "class-validator";
-import {Request, Response} from "express";
-import {StatusCodes} from "http-status-codes";
-import {DataSource} from "typeorm";
+import { plainToClass, plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { DataSource } from "typeorm";
 import {
-    CommissionConfigurationSearchDto,
-    CreateCommissionConfigurationDto,
-    UpdateCommissionConfigurationDto,
+  CommissionConfigurationSearchDto,
+  CreateCommissionConfigurationDto,
+  UpdateCommissionConfigurationDto,
 } from "../dtos/commission.configurations.dto";
 import {
-    CommissionParameterSearchDto,
-    CreateCommissionParameterDto,
-    UpdateCommissionParameterDto,
+  CommissionParameterSearchDto,
+  CreateCommissionParameterDto,
+  UpdateCommissionParameterDto,
 } from "../dtos/commission.parameters.dto";
-import {CommissionRuleSearchDto, CreateCommissionRuleDto, UpdateCommissionRuleDto,} from "../dtos/commission.rules.dto";
-import {CompanySearchDto, CreateCompanyDto, UpdateCompanyDto} from "../dtos/companies.dto";
+import { CommissionRuleSearchDto, CreateCommissionRuleDto, UpdateCommissionRuleDto, } from "../dtos/commission.rules.dto";
+import { CompanySearchDto, CreateCompanyDto, UpdateCompanyDto } from "../dtos/companies.dto";
 import {
-    CompanyPositionSearchDto,
-    CreateCompanyPositionDto,
-    UpdateCompanyPositionDto,
+  CompanyPositionSearchDto,
+  CreateCompanyPositionDto,
+  UpdateCompanyPositionDto,
 } from "../dtos/company.positions.dto";
-import {CreateEmployeeDto, EmployeeSearchDto, UpdateEmployeeDto,} from "../dtos/employees.dto";
-import {CreateKpiConfigDto, SearchKpiConfigDto, UpdateKpiConfigDto,} from "../dtos/kpi.config.dto";
-import {CreateMonthlyGoalDto, MonthlyGoalSearchDto, UpdateMonthlyGoalDto,} from "../dtos/monthly.goals.dto";
-import {CreateMonthlyResultDto, MonthlyResultSearchDto, UpdateMonthlyResultDto,} from "../dtos/monthly.results.dto";
+import { CreateEmployeeDto, EmployeeSearchDto, UpdateEmployeeDto, } from "../dtos/employees.dto";
+import { CreateKpiConfigDto, SearchKpiConfigDto, UpdateKpiConfigDto, } from "../dtos/kpi.config.dto";
+import { CreateMonthlyGoalDto, MonthlyGoalSearchDto, UpdateMonthlyGoalDto, } from "../dtos/monthly.goals.dto";
+import { CreateMonthlyResultDto, MonthlyResultSearchDto, UpdateMonthlyResultDto, } from "../dtos/monthly.results.dto";
 import {
-    CreateParameterCategoryDto,
-    ParameterCategorySearchDto,
-    UpdateParameterCategoryDto,
+  CreateParameterCategoryDto,
+  ParameterCategorySearchDto,
+  UpdateParameterCategoryDto,
 } from "../dtos/parameter.categories.dto";
 import {
-    CreateParameterLineDto,
-    CreateParameterLineSearchDto,
-    UpdateParameterLineDto,
+  CreateParameterLineDto,
+  CreateParameterLineSearchDto,
+  UpdateParameterLineDto,
 } from "../dtos/parameter.lines.dto";
-import {CreateProductLineDto, ProductLineSearchDto, UpdateProductLineDto,} from "../dtos/product.lines.dto";
-import {CreateSeasonDto, SearchSeasonDto, UpdateSeasonDto,} from "../dtos/season.dto";
+import { CreateProductLineDto, ProductLineSearchDto, UpdateProductLineDto, } from "../dtos/product.lines.dto";
+import { CreateSeasonDto, SearchSeasonDto, UpdateSeasonDto, } from "../dtos/season.dto";
 import {
-    CreateSettlementPeriodDto,
-    SettlementPeriodSearchDto,
-    UpdateSettlementPeriodDto,
+  CreateSettlementPeriodDto,
+  SettlementPeriodSearchDto,
+  UpdateSettlementPeriodDto,
 } from "../dtos/settlement.periods.dto";
-import {CreateStoreSizeDto, StoreSizeSearchDto, UpdateStoreSizeDto,} from "../dtos/store.size.dto";
-import {CreateVariableScaleDto, UpdateVariableScaleDto, VariableScaleSearchDto,} from "../dtos/variable.scales.dto";
-import {CommissionConfigurationsService} from "../services/commission.configurations.service";
-import {CommissionParametersService} from "../services/commission.parameters.service";
-import {CommissionRulesService} from "../services/commission.rules.service";
-import {CompaniesService} from "../services/companies.service";
-import {CompanyPositionsService} from "../services/company.positions.service";
-import {EmployeesService} from "../services/employees.service";
-import {KpiConfigService} from "../services/kpi.config.service";
-import {MonthlyGoalsService} from "../services/monthly.goals.service";
-import {MonthlyResultsService} from "../services/monthly.results.service";
-import {ParameterCategoriesService} from "../services/parameter.categories.service";
-import {ParameterLinesService} from "../services/parameter.lines.service";
-import {ProductLinesService} from "../services/product.lines.service";
-import {SeasonsService} from "../services/seasons.service";
-import {SettlementPeriodsService} from "../services/settlement.periods.service";
-import {StoreSizeService} from "../services/store.size.service";
-import {VariableScalesService} from "../services/variable.scales.service";
+import { CreateStoreSizeDto, StoreSizeSearchDto, UpdateStoreSizeDto, } from "../dtos/store.size.dto";
+import { CreateVariableScaleDto, UpdateVariableScaleDto, VariableScaleSearchDto, } from "../dtos/variable.scales.dto";
+import { CommissionConfigurationsService } from "../services/commission.configurations.service";
+import { CommissionParametersService } from "../services/commission.parameters.service";
+import { CommissionRulesService } from "../services/commission.rules.service";
+import { CompaniesService } from "../services/companies.service";
+import { CompanyPositionsService } from "../services/company.positions.service";
+import { EmployeesService } from "../services/employees.service";
+import { KpiConfigService } from "../services/kpi.config.service";
+import { MonthlyGoalsService } from "../services/monthly.goals.service";
+import { MonthlyResultsService } from "../services/monthly.results.service";
+import { ParameterCategoriesService } from "../services/parameter.categories.service";
+import { ParameterLinesService } from "../services/parameter.lines.service";
+import { ProductLinesService } from "../services/product.lines.service";
+import { SeasonsService } from "../services/seasons.service";
+import { SettlementPeriodsService } from "../services/settlement.periods.service";
+import { StoreSizeService } from "../services/store.size.service";
+import { VariableScalesService } from "../services/variable.scales.service";
 import {
-    CreateSalesRotationConfigurationDto,
-    SalesRotationConfigurationSearchDto,
-    UpdateSalesRotationConfigurationDto
+  CreateSalesRotationConfigurationDto,
+  SalesRotationConfigurationSearchDto,
+  UpdateSalesRotationConfigurationDto
 } from "../dtos/sales.rotation.configurations.dto";
-import {SalesRotationConfigurationsService} from "../services/sales.rotation.configurations.service";
-import {AdvisorCommissionService} from "../services/advisor.commision.service";
+import { SalesRotationConfigurationsService } from "../services/sales.rotation.configurations.service";
+import { AdvisorCommissionService } from "../services/advisor.commision.service";
 
 export class ComissionsConfigController {
   private companiesService: CompaniesService;
@@ -1035,7 +1035,7 @@ export class ComissionsConfigController {
 
   async updateMonthlyResult(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateMonthlyResultDto, req.body);
       const errors = await validate(updateDto);
 
@@ -1059,7 +1059,7 @@ export class ComissionsConfigController {
 
   async deleteMonthlyResult(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.monthlyResultsService.deleteMonthlyResult(id);
       res.status(StatusCodes.NO_CONTENT).send();
     } catch (error: any) {
@@ -1100,7 +1100,7 @@ export class ComissionsConfigController {
 
   async updateSettlementPeriod(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateSettlementPeriodDto, req.body);
       const result = await this.settlementPeriodsService.updateSettlementPeriod(
         id,
@@ -1117,7 +1117,7 @@ export class ComissionsConfigController {
 
   async deleteSettlementPeriod(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.settlementPeriodsService.deleteSettlementPeriod(id);
       res.status(StatusCodes.NO_CONTENT).send();
     } catch (error: any) {
@@ -1158,7 +1158,7 @@ export class ComissionsConfigController {
 
   async updateParameterLine(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateParameterLineDto, req.body);
       const result = await this.parameterLinesService.updateParameterLines(
         id,
@@ -1175,7 +1175,7 @@ export class ComissionsConfigController {
 
   async deleteParameterLine(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.parameterLinesService.deleteParameterLines(id);
       res
         .status(StatusCodes.OK)
@@ -1217,7 +1217,7 @@ export class ComissionsConfigController {
 
   async updateSeason(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateSeasonDto, req.body);
       const result = await this.seasonsService.updateSeason(id, updateDto);
       res
@@ -1230,7 +1230,7 @@ export class ComissionsConfigController {
 
   async deleteSeason(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.seasonsService.deleteSeason(id);
       res
         .status(StatusCodes.OK)
@@ -1271,7 +1271,7 @@ export class ComissionsConfigController {
 
   async updateKpiConfig(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateKpiConfigDto, req.body);
       const result = await this.kpiConfigService.updateKpiConfig(id, updateDto);
       res.status(StatusCodes.OK).json({
@@ -1285,7 +1285,7 @@ export class ComissionsConfigController {
 
   async deleteKpiConfig(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.kpiConfigService.deleteKpiConfig(id);
       res
         .status(StatusCodes.OK)
@@ -1327,7 +1327,7 @@ export class ComissionsConfigController {
 
   async updateVariableScale(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateVariableScaleDto, req.body);
       const result = await this.variableScalesService.updateVariableScale(
         id,
@@ -1343,7 +1343,7 @@ export class ComissionsConfigController {
 
   async deleteVariableScale(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.variableScalesService.deleteVariableScale(id);
       res
         .status(StatusCodes.OK)
@@ -1387,7 +1387,7 @@ export class ComissionsConfigController {
 
   async updateStoreSize(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateStoreSizeDto, req.body);
       const result = await this.storeSizeService.updateStoreSize(id, updateDto);
       res.status(StatusCodes.OK).json({
@@ -1401,7 +1401,7 @@ export class ComissionsConfigController {
 
   async deleteStoreSize(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.storeSizeService.deleteStoreSize(id);
       res
         .status(StatusCodes.OK)
@@ -1475,7 +1475,7 @@ export class ComissionsConfigController {
 
   async updateSalesRotationConfiguration(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const updateDto = plainToInstance(UpdateSalesRotationConfigurationDto, req.body);
       const result = await this.salesRotationConfigurationsService.updateSalesRotationConfiguration(id, updateDto);
       res.status(StatusCodes.OK).json({ message: "Configuración de rotación de ventas actualizada correctamente", result });
@@ -1486,7 +1486,7 @@ export class ComissionsConfigController {
 
   async deleteSalesRotationConfiguration(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await this.salesRotationConfigurationsService.deleteSalesRotationConfiguration(id);
       res.status(StatusCodes.OK).json({ message: "Configuración de rotación de ventas eliminada correctamente" });
     } catch (error: any) {
@@ -1496,7 +1496,7 @@ export class ComissionsConfigController {
 
   async deleteAllSalesRotationConfigurations(req: Request, res: Response): Promise<void> {
     try {
-      const commissionConfigurationId = parseInt(req.params.id);
+      const commissionConfigurationId = parseInt(req.params.id as string);
       await this.salesRotationConfigurationsService.deleteAllSalesRotationConfigurations(commissionConfigurationId);
       res.status(StatusCodes.OK).json({ message: "Configuraciones de rotación de ventas eliminadas correctamente" });
     } catch (error: any) {
