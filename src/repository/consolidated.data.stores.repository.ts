@@ -274,10 +274,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .andWhere(
         `
       (
-        s.codeStoreDistributor IS NULL OR s.codeStoreDistributor = '' OR
-        s.authorizedDistributor IS NULL OR s.authorizedDistributor = '' OR
-        s.storeName IS NULL OR s.storeName = '' OR
-        s.productModel IS NULL OR s.productModel = ''
+        s.codeProduct IS NULL OR s.codeProduct = '' OR
+        s.codeStore IS NULL OR s.codeStore = ''
       )
     `
       )

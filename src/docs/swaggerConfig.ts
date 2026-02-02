@@ -13,7 +13,7 @@ const options: swaggerJsdoc.Options = {
     openapi: "3.0.0",
     info: {
       title: "API SELLOUT (Consenso)",
-      version: "1.0.17",
+      version: "1.0.18",
       description: "Proyecto de manejo de datos sellout",
     },
 
