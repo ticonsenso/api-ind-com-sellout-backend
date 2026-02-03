@@ -1,7 +1,7 @@
 import { CreateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
 import { SelloutStoreMaster } from '../models/sellout.store.master.model';
 import { BaseRepository } from './base.respository';
-import { Brackets, DataSource, EntityManager } from 'typeorm';
+import { Brackets, DataSource, EntityManager, Raw } from 'typeorm';
 
 export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMaster> {
     constructor(dataSource: DataSource) {
@@ -13,9 +13,10 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     }
 
     async findBySearchStore(searchStore: string[]): Promise<SelloutStoreMaster[]> {
+        const upperSearchStore = searchStore.map(s => s.toUpperCase());
         return this.repository.createQueryBuilder('selloutStoreMaster')
             .select(['selloutStoreMaster.id', 'selloutStoreMaster.searchStore'])
-            .where('selloutStoreMaster.searchStore IN (:...searchStore)', { searchStore })
+            .where('UPPER(selloutStoreMaster.searchStore) IN (:...searchStore)', { searchStore: upperSearchStore })
             .getMany();
     }
 
@@ -32,7 +33,7 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     async findBySearchStoreOnly(searchStore: string): Promise<SelloutStoreMaster | null> {
         return this.repository
             .createQueryBuilder('selloutStoreMaster')
-            .where('selloutStoreMaster.searchStore = :searchStore', { searchStore: searchStore.toUpperCase() })
+            .where('UPPER(selloutStoreMaster.searchStore) = :searchStore', { searchStore: searchStore.toUpperCase() })
             .getOne();
     }
 
@@ -46,7 +47,7 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     async findBySearchStoreOnlyManager(searchStore: string, manager: EntityManager): Promise<SelloutStoreMaster | null> {
         return manager.findOne(SelloutStoreMaster, {
             where: {
-                searchStore: searchStore,
+                searchStore: Raw(alias => `UPPER(${alias}) = :searchStore`, { searchStore: searchStore.toUpperCase() }),
             },
         });
     }

@@ -907,7 +907,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       `UPDATE "db-sellout".consolidated_data_stores cds
        SET code_store = t2.code_store_sic
        FROM "db-sellout".sellout_store_master t2
-       WHERE REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), ' ', '') = t2.search_store
+       WHERE UPPER(REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), ' ', '')) = t2.search_store
        AND cds.code_store IS NULL
        AND cds.calculate_date = $1`,
       [calculateDate]
@@ -920,7 +920,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       `UPDATE "db-sellout".consolidated_data_stores cds
        SET code_product = t2.code_product_sic
        FROM "db-sellout".sellout_product_master t2
-       WHERE REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), ' ', '') = t2.search_product_store
+       WHERE UPPER(REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), ' ', '')) = t2.search_product_store
        AND cds.code_product IS NULL
        AND cds.calculate_date = $1`,
       [calculateDate]
