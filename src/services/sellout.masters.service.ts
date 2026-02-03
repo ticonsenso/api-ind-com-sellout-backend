@@ -363,7 +363,7 @@ export class SelloutMastersService {
             if (existing) {
                 return await this.updateSelloutProductMasterSinc(existing.id, selloutProductMaster);
             } else {
-                return await this.selloutProductMasterRepository.create(selloutProductMaster);            
+                return await this.selloutProductMasterRepository.create(selloutProductMaster);
             }
         } catch (error: any) {
             return undefined;
