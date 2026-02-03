@@ -129,7 +129,7 @@ async saveValidRows(date:string,type: string, rows: any[]): Promise<void> {
           this.selloutMastersService.createSelloutStoreMasterExcel(cfg),
         ),
       );
-      this.updateData(date, configs, undefined);
+      //this.updateData(date, configs, undefined);
     },
     [ExcelImportService.NOHOMOLOGADOSPRODUCTS]: async () => {
       const configs: CreateSelloutProductMasterDto[] = rows
@@ -147,7 +147,7 @@ async saveValidRows(date:string,type: string, rows: any[]): Promise<void> {
           this.selloutMastersService.createSelloutProductMasterExcel(cfg),
         ),
       );
-      this.updateData(date, undefined, configs);
+      //this.updateData(date, undefined, configs);
     }
   };
 

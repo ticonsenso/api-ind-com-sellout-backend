@@ -361,16 +361,22 @@ export class SelloutMastersService {
             }
             const existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(selloutProductMaster.searchProductStore);
             if (existing) {
-                const updated = await this.updateSelloutProductMaster(existing.id, selloutProductMaster);
-                return updated;
+                return await this.updateSelloutProductMasterSinc(existing.id, selloutProductMaster);
             } else {
-                const saved = await this.selloutProductMasterRepository.create(selloutProductMaster);
-                return saved;
+                return await this.selloutProductMasterRepository.create(selloutProductMaster);            
             }
         } catch (error: any) {
-            console.log(error);
             return undefined;
         }
+    }
+
+    async updateSelloutProductMasterSinc(id: number, selloutProductMaster: UpdateSelloutProductMasterDto): Promise<SelloutProductMaster> {
+        const existingSelloutProductMaster = await this.selloutProductMasterRepository.findById(id);
+        if (!existingSelloutProductMaster) {
+            throw new Error(`Maestros de productos con ID ${id} no encontrado`);
+        }
+        const saved = await this.selloutProductMasterRepository.update(id, selloutProductMaster);
+        return saved;
     }
 
     async updateSelloutProductMaster(id: number, selloutProductMaster: UpdateSelloutProductMasterDto): Promise<SelloutProductMaster> {
@@ -386,7 +392,6 @@ export class SelloutMastersService {
         selloutProductMaster.searchProductStore = searchProductKey;
 
         const saved = await this.selloutProductMasterRepository.update(id, selloutProductMaster);
-        await this.syncConsolidatedDataStoresOnUpdateProduct([saved]);
         return saved;
     }
 
