@@ -1,6 +1,6 @@
 import path from "path";
-import {DataSource, EntityManager} from "typeorm";
-import {env} from "./env";
+import { DataSource, EntityManager } from "typeorm";
+import { env } from "./env";
 
 export let statusConeccion = { status: false, message: "" };
 
@@ -34,10 +34,13 @@ const AppDataSource = new DataSource({
 // Verificar la conexión
 export const initializeDataSource = async () => {
   try {
-    await AppDataSource.initialize();
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
     const message = `Conexión a la base de datos (${env.NODE_ENV}), host: ${env.DB_HOST}, base de datos: ${env.DB_NAME}, esquema: ${env.DB_DEFAULT_SCHEMA} establecida correctamente`;
     console.log(message);
     statusConeccion = { status: true, message: message };
+    return AppDataSource;
   } catch (error) {
     console.error(
       `Error al conectar a la base de datos (${env.NODE_ENV}):`,
@@ -52,6 +55,7 @@ export const initializeDataSource = async () => {
     const message = `Error al conectar a la base de datos (${env.NODE_ENV}), host: ${env.DB_HOST}`;
     console.error(message);
     statusConeccion = { status: false, message: message };
+    throw error;
   }
 };
 
@@ -68,5 +72,4 @@ export async function resetSequences(
   }
 }
 
-initializeDataSource();
 export default AppDataSource;
