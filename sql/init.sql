@@ -1248,3 +1248,12 @@ CREATE TABLE IF NOT EXISTS column_keyword (
 );
 
 
+CREATE TABLE IF NOT EXISTS config_lines (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    line_name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+

@@ -25,6 +25,8 @@ import exportDataRoutes from "./routes/export.data.routes";
 import storeManagerCalculationCommissionRoutes from "./routes/store.manager.calculation.routes";
 import columnConfigRoutes from "./routes/column.config.routes";
 import morgan from "morgan";
+import zlib from "zlib";
+import confLinesRoutes from "./routes/conf.lines.routes";
 
 const app: Application = express();
 app.use(express.raw({ type: "application/gzip", limit: "10mb" }));
@@ -68,6 +70,7 @@ app.use(`${basePath}/api/base/sellout`, baseSelloutRoutes);
 app.use(`${basePath}/api/matriculation`, matriculationRoutes);
 app.use(`${basePath}/api/export/data`, exportDataRoutes);
 app.use(`${basePath}/api/column-config`, columnConfigRoutes);
+app.use(`${basePath}/api/conf-lines`, confLinesRoutes);
 
 // Health check endpoint
 app.use(`${basePath}`, healthRoutes);

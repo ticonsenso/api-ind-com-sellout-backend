@@ -1,8 +1,8 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
-import {Company} from './companies.model';
-import {CompanyPosition} from './company.positions.model';
-import {Employee} from './employees.model';
-import {StoreSize} from './store.size.model';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, } from 'typeorm';
+import { Company } from './companies.model';
+import { CompanyPosition } from './company.positions.model';
+import { Employee } from './employees.model';
+import { StoreSize } from './store.size.model';
 
 @Entity('advisor_commission')
 export class AdvisorCommission {

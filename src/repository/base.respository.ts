@@ -1,5 +1,5 @@
-import {DataSource, DeepPartial, EntityTarget, ObjectLiteral, Repository} from 'typeorm';
-import {chunkArray} from '../utils/utils';
+import { DataSource, DeepPartial, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
+import { chunkArray } from '../utils/utils';
 
 export class BaseRepository<T extends ObjectLiteral> {
   public repository: Repository<T>;
@@ -71,6 +71,13 @@ export class BaseRepository<T extends ObjectLiteral> {
 
   async delete(id: number): Promise<void> {
     await this.repository.delete(id);
+  }
+  async deleteAndReturn(id: number): Promise<boolean> {
+    const result = await this.repository.delete(id);
+    if (result.affected === 0) {
+      return false;
+    }
+    return true;
   }
 
   async deleteByUserId(userId: number): Promise<void> {

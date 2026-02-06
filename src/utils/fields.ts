@@ -79,30 +79,30 @@ export const fieldsSelloutStoreMaster: ExportField[] = [
 
 export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     // --- Datos Originales ---
-    { key: 'distributor', header: 'DISTRIBUIDOR', width: 25 },
-    { key: 'codeStoreDistributor', header: 'COD. ALMACEN DISTRIBUIDOR', width: 25 },
-    { key: 'codeProductDistributor', header: 'COD. PROD DISTRIBUIDOR', width: 25 },
-    { key: 'descriptionDistributor', header: 'DESCRIPCION DISTRIBUIDOR', width: 25 },
-    { key: 'unitsSoldDistributor', header: 'UNIDADES VENTA DISTRIBUIDOR', width: 25 },
-    { key: 'codeProduct', header: 'COD. PRODUCTO', width: 25 },
-    { key: 'codeStore', header: 'COD. ALMACEN', width: 25 },
-    { key: 'saleDate', header: 'FECHA VENTA', width: 25 },
-    { key: 'calculateDate', header: 'FECHA CALCULO', width: 25 },
-    { key: 'observation', header: 'OBSERVACION', width: 25 },
+    { key: 's_distributor', header: 'DISTRIBUIDOR', width: 25 },
+    { key: 'code_store_distributor', header: 'COD. ALMACEN DISTRIBUIDOR', width: 25 },
+    { key: 'code_product_distributor', header: 'COD. PROD DISTRIBUIDOR', width: 25 },
+    { key: 'description_distributor', header: 'DESCRIPCION DISTRIBUIDOR', width: 25 },
+    { key: 'units_sold_distributor', header: 'UNIDADES VENTA DISTRIBUIDOR', width: 25 },
+    { key: 'code_product', header: 'COD. PRODUCTO', width: 25 },
+    { key: 'code_store', header: 'COD. ALMACEN', width: 25 },
+    { key: 'sale_date', header: 'FECHA VENTA', width: 25 },
+    { key: 'calculate_date', header: 'FECHA CALCULO', width: 25 },
+    { key: 's_observation', header: 'OBSERVACION', width: 25 },
     // --- Nuevos Datos: Información del Producto (Product SIC) ---
-    { key: 'lineaNegocioSap', header: 'LINEA DE NEGOCIO', width: 25 },
+    { key: 'lineanegociosap', header: 'LINEA DE NEGOCIO', width: 25 },
     { key: 'categoria', header: 'CATEGORIA', width: 25 },
-    { key: 'subCategoria', header: 'SUB CATEGORIA', width: 25 },
-    { key: 'marModeloIm', header: 'MODELO', width: 25 },
-    { key: 'nombreIme', header: 'NOMBRE IM', width: 25 },
+    { key: 'subcategoria', header: 'SUB CATEGORIA', width: 25 },
+    { key: 'marmodeloim', header: 'MODELO', width: 25 },
+    { key: 'nombreime', header: 'NOMBRE IM', width: 25 },
 
     // --- Nuevos Datos: Información de la Tienda (Stores SIC) ---
     { key: 'canal', header: 'CANAL', width: 25 },
-    { key: 'grupoComercial', header: 'GRUPO COMERCIAL', width: 25 }, // Diferenciado del 'distributor' original
+    { key: 'grupocomercial', header: 'GRUPO COMERCIAL', width: 25 }, // Diferenciado del 'distributor' original
     { key: 'almacen', header: 'NOMBRE ALMACEN', width: 25 },
-    { key: 'grupoZona', header: 'GRUPO ZONA', width: 25 },
+    { key: 'grupozona', header: 'GRUPO ZONA', width: 25 },
     { key: 'zona', header: 'ZONA', width: 25 },
-    { key: 'categoria', header: 'CATEGORIA ALMACEN', width: 25 },
+    { key: 'categoriaalmacen', header: 'CATEGORIA ALMACEN', width: 25 },
     { key: 'supervisor', header: 'SUPERVISOR', width: 25 },
 ];
 
