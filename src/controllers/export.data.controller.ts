@@ -49,6 +49,7 @@ export interface ExportFieldAvanced {
     header: string;
     width?: number;
     transform?: (value: any, item: any) => any;
+    type?: 'string' | 'number' | 'date' | 'boolean';
 }
 
 export function flattenDataForExport<T>(data: T[], fields: ExportField[]): Record<string, any>[] {
@@ -421,11 +422,19 @@ export class ExportDataController {
 
         // 5. "Pipear" los datos: Leer DB -> Escribir Excel
         for await (const row of dbStream) {
-            // row es un objeto crudo { distributor: 'X', unitsSoldDistributor: 10, ... }
+            // Procesamiento de tipos
+            const processedRow: any = { ...row };
+
+            fieldsConsolidatedDataStores.forEach(field => {
+                if (field.type === 'number' && processedRow[field.key] !== null && processedRow[field.key] !== undefined) {
+                    // Convertir a string y reemplazar punto por coma
+                    processedRow[field.key] = Number(processedRow[field.key]).toString().replace('.', ',');
+                }
+            });
 
             // Agregamos la fila y hacemos COMMIT inmediato.
             // .commit() libera la fila de la memoria una vez escrita.
-            worksheet.addRow(row).commit();
+            worksheet.addRow(processedRow).commit();
         }
 
         // 6. Finalizar
