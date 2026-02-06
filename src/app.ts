@@ -1,9 +1,9 @@
 import cors from "cors";
-import express, {Application} from "express";
+import express, { Application } from "express";
 import passport from "passport";
 import "reflect-metadata";
 import swaggerUi from "swagger-ui-express";
-import {env} from "./config/env";
+import { env } from "./config/env";
 import swaggerSpec from "./docs/swaggerConfig";
 import comissionsConfigRoutes from "./routes/comissions.config.routes";
 import configureEtlRoutes from "./routes/configure.etl.routes";
@@ -26,6 +26,7 @@ import storeManagerCalculationCommissionRoutes from "./routes/store.manager.calc
 import columnConfigRoutes from "./routes/column.config.routes";
 import morgan from "morgan";
 import zlib from "zlib";
+import confLinesRoutes from "./routes/conf.lines.routes";
 
 const app: Application = express();
 app.use(express.raw({ type: "application/gzip", limit: "10mb" }));
@@ -69,6 +70,7 @@ app.use(`${basePath}/api/base/sellout`, baseSelloutRoutes);
 app.use(`${basePath}/api/matriculation`, matriculationRoutes);
 app.use(`${basePath}/api/export/data`, exportDataRoutes);
 app.use(`${basePath}/api/column-config`, columnConfigRoutes);
+app.use(`${basePath}/api/conf-lines`, confLinesRoutes);
 
 // Health check endpoint
 app.use(`${basePath}`, healthRoutes);

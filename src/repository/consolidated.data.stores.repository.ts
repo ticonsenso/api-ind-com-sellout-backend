@@ -484,52 +484,60 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   }> {
     const qb = this.repository
       .createQueryBuilder("s")
-      .leftJoin("product_sic", "ps", "ps.codigo_jde = s.code_product")
-      .leftJoin("stores_sic", "ss", "ss.cod_almacen = s.code_store")
+      // Left Join con Subconsulta para Product SIC
+      .leftJoin(
+        (subQuery) => {
+          return subQuery
+            .select("codigo_jde")
+            .addSelect("MAX(nombre_sap)", "nombre_sap")
+            .from("db-sellout.product_sic", "ps_inner")
+            .groupBy("codigo_jde");
+        },
+        "ps",
+        "ps.codigo_jde = s.codeProduct"
+      )
+      // Left Join con Subconsulta para Stores SIC
+      .leftJoin(
+        (subQuery) => {
+          return subQuery
+            .select("cod_almacen")
+            .addSelect("MAX(nombre_almacen)", "nombre_almacen")
+            .from("db-sellout.stores_sic", "ss_inner")
+            .groupBy("cod_almacen");
+        },
+        "ss",
+        "ss.cod_almacen = s.codeStore"
+      )
       .select([
-        "s.distributor",
-        "s.codeStoreDistributor",
-        "s.codeProductDistributor",
-        "s.descriptionDistributor",
-        "SUM(s.unitsSoldDistributor) as unitsSoldDistributor",
-        "s.codeProduct",
-        "s.codeStore",
-        "ss.nombre_almacen",
-        "ps.nombre_sap",
-        "MAX(s.calculateDate) as calculateDate",
-        "MAX(s.saleDate) as saleDate",
-      ])
-      .groupBy("s.distributor")
-      .addGroupBy("s.codeStoreDistributor")
-      .addGroupBy("s.codeProductDistributor")
-      .addGroupBy("s.descriptionDistributor")
-      .addGroupBy("s.codeProduct")
-      .addGroupBy("s.codeStore")
-      .addGroupBy("ss.nombre_almacen")
-      .addGroupBy("ps.nombre_sap")
-      .orderBy("s.distributor", "ASC")
-      .addOrderBy("s.codeStoreDistributor", "ASC")
-      .addOrderBy("s.codeProductDistributor", "ASC")
-      .addOrderBy("s.descriptionDistributor", "ASC")
-      .addOrderBy("s.codeProduct", "ASC")
-      .addOrderBy("s.codeStore", "ASC");
+        "s.calculate_date AS calculate_date",
+        "s.distributor AS distributor",
+        "s.code_store_distributor AS code_store_distributor",
+        "s.code_product_distributor AS code_product_distributor",
+        "s.description_distributor AS description_distributor",
+        "s.units_sold_distributor AS units_sold_distributor",
+        "s.code_product AS code_product",
+        "s.code_store AS code_store",
+        "s.sale_date AS sale_date",
+        "ss.nombre_almacen AS store_name",
+        "ps.nombre_sap AS product_model",
+      ]);
 
-    // === Filtros dinámicos individualizados ===
+    // === Filtros dinámicos ===
     if (filters?.distributor) {
       qb.andWhere("s.distributor ILIKE :d", { d: `%${filters.distributor}%` });
     }
     if (filters?.codeStoreDistributor) {
-      qb.andWhere("s.codeStoreDistributor ILIKE :csd", {
+      qb.andWhere("s.code_store_distributor ILIKE :csd", {
         csd: `%${filters.codeStoreDistributor}%`,
       });
     }
     if (filters?.codeProductDistributor) {
-      qb.andWhere("s.codeProductDistributor ILIKE :cpd", {
+      qb.andWhere("s.code_product_distributor ILIKE :cpd", {
         cpd: `%${filters.codeProductDistributor}%`,
       });
     }
     if (filters?.descriptionDistributor) {
-      qb.andWhere("s.descriptionDistributor ILIKE :desc", {
+      qb.andWhere("s.description_distributor ILIKE :desc", {
         desc: `%${filters.descriptionDistributor}%`,
       });
     }
@@ -537,10 +545,10 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     // === Filtro por año y mes ===
     if (calculateDate) {
       const date = calculateDate.toISOString().split("T")[0];
-      const [year, month] = date.split("-");
-
-      qb.andWhere("EXTRACT(YEAR FROM s.calculateDate) = :year", { year });
-      qb.andWhere("EXTRACT(MONTH FROM s.calculateDate) = :month", { month });
+      // const [year, month] = date.split("-");
+      // qb.andWhere("EXTRACT(YEAR FROM s.calculate_date) = :year", { year });
+      // qb.andWhere("EXTRACT(MONTH FROM s.calculate_date) = :month", { month });
+      qb.andWhere(`s.calculate_date::date = '${date}'`);
     }
 
     // === Total sin paginar ===
@@ -551,21 +559,21 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .offset((page - 1) * limit)
       .limit(limit)
       .getRawMany();
+
+    // === Mapeo ===
     const itemsMapped: any = items.map((item: any) => ({
+      calculateDate: item.calculate_date,
+      distributor: item.distributor,
+      codeStoreDistributor: item.code_store_distributor,
+      codeProductDistributor: item.code_product_distributor,
+      descriptionDistributor: item.description_distributor,
+      unitsSoldDistributor: item.units_sold_distributor ? Number(item.units_sold_distributor) : null,
+      codeProduct: item.code_product,
+      codeStore: item.code_store,
+      saleDate: item.sale_date,
+      storeName: item.store_name,
+      productModel: item.product_model,
       id: item.id,
-      distributor: item.s_distributor,
-      codeStoreDistributor: item.s_code_store_distributor,
-      codeProductDistributor: item.s_code_product_distributor,
-      descriptionDistributor: item.s_description_distributor,
-      unitsSoldDistributor: item.unitssolddistributor ? Number(item.unitssolddistributor) : null,
-      saleDate: item.saledate,
-      codeProduct: item.s_code_product,
-      codeStore: item.s_code_store,
-      authorizedDistributor: item.s_authorized_distributor,
-      storeName: item.nombre_almacen,
-      productModel: item.nombre_sap,
-      calculateDate: item.calculatedate,
-      matriculationTemplate: item.matriculationTemplate,
       status: item.status,
     }));
 
@@ -573,41 +581,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     const total = itemsMapped.length;
 
     return { items: itemsMapped, total, totalAll };
-  }
-
-  async findByCalculateDateData(
-    calculateDate: Date
-  ): Promise<ConsolidatedDataStores[]> {
-    const qb = this.repository.createQueryBuilder("s").orderBy("s.id", "ASC");
-
-    const date = calculateDate?.toISOString().split("T")[0];
-    const year = date.split("-")[0];
-    const month = date.split("-")[1];
-
-    qb.andWhere("EXTRACT(YEAR FROM s.calculateDate) = :year", { year });
-    qb.andWhere("EXTRACT(MONTH FROM s.calculateDate) = :month", { month });
-
-    const items = await qb.getMany();
-
-    const uniqueMap = new Map<
-      string,
-      ConsolidatedDataStores & { unitsSoldDistributor: number }
-    >();
-
-    for (const item of items) {
-      const key = `${item.distributor}-${item.codeStoreDistributor}-${item.codeProductDistributor}-${item.descriptionDistributor}`;
-
-      if (uniqueMap.has(key)) {
-        uniqueMap.get(key)!.unitsSoldDistributor! += 1;
-      } else {
-        uniqueMap.set(key, {
-          ...item,
-          unitsSoldDistributor: 1,
-        });
-      }
-    }
-
-    return Array.from(uniqueMap.values());
   }
 
   async findConsolidatedNullFieldsUnique(
@@ -794,79 +767,83 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   async findByCalculateDateDataAgrupacion(calculateDate: Date): Promise<ReadStream> {
     const date = calculateDate.toISOString().split("T")[0];
     const [year, month] = date.split("-");
+    console.log(year, month);
 
-    return await this.repository
+    const qb = this.repository
       .createQueryBuilder("s")
-      // 1. Unimos las tablas (INNER JOIN)
-      // Nota: El 3er argumento es la condición exacta del ON
-      .leftJoin("product_sic", "ps", "ps.codigo_jde = s.code_product")
-      .leftJoin("stores_sic", "ss", "ss.cod_almacen = s.code_store")
+      // 1. LEFT JOIN con Subconsulta para Product SIC (ps)
+      .leftJoin(
+        (subQuery) => {
+          return subQuery
+            .select("codigo_jde") // Campo de agrupación (sin MAX)
+            .addSelect("MAX(linea_negocio_sap)", "lineanegociosap")
+            .addSelect("MAX(mar_desc_grupo_art)", "categoria")
+            .addSelect("MAX(mar_desc_jerarq)", "subcategoria")
+            .addSelect("MAX(mar_modelo_im)", "marmodeloim")
+            .addSelect("MAX(nombre_ime)", "nombreime")
+            .addSelect("MAX(nombre_sap)", "nombresap")
+            .from("db-sellout.product_sic", "ps_inner")
+            .groupBy("codigo_jde");
+        },
+        "ps",
+        "ps.codigo_jde = s.code_product"
+      )
+      // 2. LEFT JOIN con Subconsulta para Stores SIC (ss)
+      .leftJoin(
+        (subQuery) => {
+          return subQuery
+            .select("cod_almacen") // Campo de agrupación (sin MAX)
+            .addSelect("MAX(canal)", "canal")
+            .addSelect("MAX(distrib_sap)", "grupocomercial")
+            .addSelect("MAX(nombre_almacen)", "almacen")
+            .addSelect("MAX(grupo_zona)", "grupozona")
+            .addSelect("MAX(zona)", "zona")
+            .addSelect("MAX(categoria)", "categoriaalmacen") // Alias para evitar colisión
+            .addSelect("MAX(supervisor)", "supervisor")
+            .from("db-sellout.stores_sic", "ss_inner")
+            .groupBy("cod_almacen");
+        },
+        "ss",
+        "ss.cod_almacen = s.code_store"
+      )
+      // 3. Selección final de columnas
+      // Nota: Usamos los nombres de columna de 's' y los alias definidos en 'ps' y 'ss'
+      .select([
+        // --- Tabla Principal ---
+        "s.distributor",
+        "s.code_store_distributor",
+        "s.code_product_distributor",
+        "s.description_distributor",
+        "s.units_sold_distributor",
+        "s.code_product",
+        "s.code_store",
+        "s.sale_date",
+        "s.calculate_date",
+        "s.observation",
 
-      // 2. Seleccionamos campos de la tabla principal (s)
-      .select("s.distributor", "distributor")
-      .addSelect("s.code_store_distributor", "codeStoreDistributor")
-      .addSelect("s.code_product_distributor", "codeProductDistributor")
-      .addSelect("s.description_distributor", "descriptionDistributor")
-      .addSelect("SUM(s.units_sold_distributor)", "unitsSoldDistributor") // La agregación
-      .addSelect("s.code_product", "codeProduct")
-      .addSelect("s.code_store", "codeStore")
-      .addSelect("MAX(s.sale_date)", "saleDate")
-      .addSelect("s.observation", "observation")
-      .addSelect("MAX(s.calculate_date)", "calculateDate")
+        // --- Datos de Producto (Alias definidos en subquery ps) ---
+        "ps.lineanegociosap",
+        "ps.categoria",
+        "ps.subcategoria",
+        "ps.marmodeloim",
+        "ps.nombreime",
 
-      // 3. Seleccionamos campos de Product SIC (ps)
-      .addSelect("ps.linea_negocio_sap", "lineaNegocioSap")
-      .addSelect("ps.mar_desc_grupo_art", "categoria")
-      .addSelect("ps.mar_desc_jerarq", "subCategoria")
-      .addSelect("ps.mar_modelo_im", "marModeloIm")
-      .addSelect("ps.nombre_ime", "nombreIme")
-
-      // 4. Seleccionamos campos de Stores SIC (ss)
-      .addSelect("ss.canal", "canal")
-      .addSelect("ss.distrib_sap", "grupoComercial")
-      .addSelect("ss.nombre_almacen", "almacen")
-      .addSelect("ss.grupo_zona", "grupoZona")
-      .addSelect("ss.zona", "zona")
-      .addSelect("ss.categoria", "categoria")
-      .addSelect("ss.supervisor", "supervisor")
-
-      // 5. Filtros
-      .where("EXTRACT(YEAR FROM s.calculate_date) = :year", { year })
-      .andWhere("EXTRACT(MONTH FROM s.calculate_date) = :month", { month })
-
-      // 6. Agrupación (GROUP BY)
-      // ¡OJO! Todos los campos seleccionados (menos el SUM) deben estar aquí
-      .groupBy("s.distributor")
-      .addGroupBy("s.code_store_distributor")
-      .addGroupBy("s.code_product_distributor")
-      .addGroupBy("s.description_distributor")
-      .addGroupBy("s.code_product")
-      .addGroupBy("s.code_store")
-      .addGroupBy("s.observation")
-      // Agregamos los campos de ps
-      .addGroupBy("ps.linea_negocio_sap")
-      .addGroupBy("ps.mar_desc_grupo_art")
-      .addGroupBy("ps.mar_desc_jerarq")
-      .addGroupBy("ps.mar_modelo_im")
-      .addGroupBy("ps.nombre_ime")
-      // Agregamos los campos de ss
-      .addGroupBy("ss.canal")
-      .addGroupBy("ss.distrib_sap")
-      .addGroupBy("ss.nombre_almacen")
-      .addGroupBy("ss.grupo_zona")
-      .addGroupBy("ss.zona")
-      .addGroupBy("ss.categoria")
-      .addGroupBy("ss.supervisor")
-
-      // 7. Ordenamiento
+        // --- Datos de Tienda (Alias definidos en subquery ss) ---
+        "ss.canal",
+        "ss.grupocomercial",
+        "ss.almacen",
+        "ss.grupozona",
+        "ss.zona",
+        "ss.categoriaalmacen",
+        "ss.supervisor",
+      ])
+      // 4. Filtros
+      .where(`s.calculate_date::date = '${date}'`)
+      // 5. Ordenamiento (Usando columnas base para asegurar compatibilidad)
       .orderBy("s.distributor", "ASC")
       .addOrderBy("s.code_store_distributor", "ASC")
-      .addOrderBy("s.code_product_distributor", "ASC")
-      .addOrderBy("s.description_distributor", "ASC")
-      .addOrderBy("s.code_product", "ASC")
-      .addOrderBy("s.code_store", "ASC")
-
-      .stream();
+      .addOrderBy("s.code_product_distributor", "ASC");
+    return qb.stream();
   }
 
   async deleteDataByDistributorAndCodeStoreDistributor(
