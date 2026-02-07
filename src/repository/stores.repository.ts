@@ -1,7 +1,7 @@
-import {Brackets, DataSource as TypeORMDataSource, In} from "typeorm";
-import {StoresSic} from "../models/stores.sic.model";
-import {BaseRepository} from "./base.respository";
-import {NullFieldFiltersSic} from "../dtos/stores.sic.dto";
+import { Brackets, DataSource as TypeORMDataSource, In } from "typeorm";
+import { StoresSic } from "../models/stores.sic.model";
+import { BaseRepository } from "./base.respository";
+import { NullFieldFiltersSic } from "../dtos/stores.sic.dto";
 
 
 export class StoresSicRepository extends BaseRepository<StoresSic> {
@@ -9,43 +9,43 @@ export class StoresSicRepository extends BaseRepository<StoresSic> {
         super(StoresSic, dataSource);
     }
 
-    async getDistribuidorAndStoreNameByStoreSic(storeSic: number): Promise<StoresSic | null> {
+    async getDistribuidorAndStoreNameByStoreSic(storeSic: string): Promise<StoresSic | null> {
         const store = await this.repository.findOne({
             select: {
-                storeCode: true,
-                storeName: true,
-                distributor2: true,
+                codAlmacen: true,
+                nombreAlmacen: true,
+                distribuidor: true,
             },
             where: {
-                storeCode: storeSic,
+                codAlmacen: storeSic,
             },
         });
         return store;
     }
 
-    async findByStoreCodeOnly(storeCode: number): Promise<StoresSic | null> {
+    async findByStoreCodeOnly(storeCode: string): Promise<StoresSic | null> {
         return this.repository.findOne({
             where: {
-                storeCode: storeCode,
+                codAlmacen: storeCode,
             },
         });
     }
 
-    async findByStoreCode(storeCode: number[]): Promise<StoresSic[]> {
+    async findByStoreCode(storeCode: string[]): Promise<StoresSic[]> {
         return this.repository.find({
             where: {
-                storeCode: In(storeCode),
+                codAlmacen: In(storeCode),
             },
         });
     }
 
     buildSearchBrackets(search: string): Brackets {
         return new Brackets(qb => {
-            qb.where('CAST(s.storeCode AS TEXT) ILIKE :search', { search: `%${search}%` })
-              .orWhere('s.storeName ILIKE :search')
-              .orWhere('s.city ILIKE :search')
-              .orWhere('s.region ILIKE :search')
-              .orWhere('s.province ILIKE :search');
+            qb.where('s.codAlmacen ILIKE :search', { search: `%${search}%` })
+                .orWhere('s.nombreAlmacen ILIKE :search')
+                .orWhere('s.ciudad ILIKE :search')
+                .orWhere('s.region ILIKE :search')
+                .orWhere('s.provincia ILIKE :search');
         });
     }
 
@@ -63,8 +63,8 @@ export class StoresSicRepository extends BaseRepository<StoresSic> {
 
         if (nullFields && Object.keys(nullFields).length > 0) {
             qb.andWhere(new Brackets(qb2 => {
-                if (nullFields.zone) {
-                    qb2.orWhere('s.zone IS NULL OR s.zone = \'\'');
+                if (nullFields.zona) {
+                    qb2.orWhere('s.zona IS NULL OR s.zona = \'\'');
                 }
             }));
         }

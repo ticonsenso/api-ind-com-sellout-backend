@@ -1,15 +1,15 @@
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {DataSource} from 'typeorm';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { DataSource } from 'typeorm';
 
-import {ProductSicRepository} from '../repository/product.sic.repository';
-import {ProductSic} from '../models/product_sic.model';
+import { ProductSicRepository } from '../repository/product.sic.repository';
+import { ProductSic } from '../models/product_sic.model';
 import {
     CreateProductSicDto,
     ProductSicPaginatedResponseDto,
     ProductSicResponseDto,
     UpdateProductSicDto
 } from '../dtos/product.sic.dto';
-import {chunkArray} from '../utils/utils';
+import { chunkArray } from '../utils/utils';
 
 export class ProductSicService {
     private productSicRepository: ProductSicRepository;
@@ -26,8 +26,8 @@ export class ProductSicService {
     async createProductSicBatch(configs: CreateProductSicDto[]): Promise<void> {
         const uniqueMap = new Map<string, CreateProductSicDto>();
         for (const config of configs) {
-            if (config.idProductSic) {
-                uniqueMap.set(config.idProductSic.toString(), config);
+            if (config.idProductoSic) {
+                uniqueMap.set(config.idProductoSic, config);
             }
         }
         const uniqueConfigs = Array.from(uniqueMap.values());
@@ -36,17 +36,17 @@ export class ProductSicService {
         const chunks = chunkArray(uniqueConfigs, chunkSize);
 
         for (const chunk of chunks) {
-            const idProductSicList = chunk.map(c => c.idProductSic!);
+            const idProductSicList = chunk.map(c => c.idProductoSic!);
 
             const existingStores = await this.productSicRepository.findByIdProductSic(idProductSicList);
 
-            const existingMap = new Map(existingStores.map(p => [p.idProductSic, p]));
+            const existingMap = new Map(existingStores.map(p => [p.idProductoSic, p]));
 
             const toUpdate = [];
             const toInsert = [];
 
             for (const config of chunk) {
-                const existing = existingMap.get(config.idProductSic!);
+                const existing = existingMap.get(config.idProductoSic!);
                 if (existing) {
                     Object.assign(existing, config);
                     toUpdate.push(existing);

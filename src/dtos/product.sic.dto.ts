@@ -1,250 +1,179 @@
-import {Expose, Type} from "class-transformer";
-import {IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString,} from "class-validator";
+import { Expose, Type } from "class-transformer";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateProductSicDto {
 
     @IsOptional()
-    @IsNumber({}, { message: "El ID del producto SIC debe ser un número" })
-    idProductSic?: number | null;
+    @IsString({ message: "El ID del producto SIC debe ser una cadena de texto" })
+    idProductoSic?: string | null;
 
-    @IsNotEmpty({ message: "El código de la tienda es requerido" })
-    @IsString({ message: "El código de la tienda debe ser una cadena de texto" })
-    jdeCode!: string;
+    @IsNotEmpty({ message: "El código JDE es requerido" })
+    @IsString({ message: "El código JDE debe ser una cadena de texto" })
+    codigoJde!: string;
 
-    @IsNotEmpty({ message: "El nombre de la tienda es requerido" })
-    @IsString({ message: "El nombre de la tienda debe ser una cadena de texto" })
-    jdeName!: string;
+    @IsOptional()
+    @IsString({ message: "El número de repetidos debe ser una cadena de texto" })
+    numRepetidos?: string | null;
 
-    @IsNotEmpty({ message: "El nombre alterno es requerido" })
-    @IsString({ message: "El nombre alterno debe ser una cadena de texto" })
-    imeName!: string;
+    @IsNotEmpty({ message: "El nombre IME es requerido" })
+    @IsString({ message: "El nombre IME debe ser una cadena de texto" })
+    nombreIme!: string;
 
     @IsNotEmpty({ message: "El código SAP es requerido" })
     @IsString({ message: "El código SAP debe ser una cadena de texto" })
-    sapCode!: string;
+    codigoSap!: string;
 
     @IsNotEmpty({ message: "El nombre SAP es requerido" })
     @IsString({ message: "El nombre SAP debe ser una cadena de texto" })
-    sapName!: string;
+    nombreSap!: string;
 
-    @IsNotEmpty({ message: "El distribuidor es requerido" })
-    @IsString({ message: "El distribuidor debe ser una cadena de texto" })
-    companyLine!: string;
+    @IsNotEmpty({ message: "La línea de negocio SAP es requerida" })
+    @IsString({ message: "La línea de negocio SAP debe ser una cadena de texto" })
+    lineaNegocioSap!: string;
 
-    @IsNotEmpty({ message: "La categoría es requerida" })
-    @IsString({ message: "La categoría debe ser una cadena de texto" })
-    category!: string;
+    @IsNotEmpty({ message: "La descripción del grupo de artículo es requerida" })
+    @IsString({ message: "La descripción del grupo de artículo debe ser una cadena de texto" })
+    marDescGrupoArt!: string;
 
-    @IsNotEmpty({ message: "El canal de venta es requerido" })
-    @IsString({ message: "El canal de venta debe ser una cadena de texto" })
-    subCategory!: string;
+    @IsNotEmpty({ message: "La descripción de jerarquía es requerida" })
+    @IsString({ message: "La descripción de jerarquía debe ser una cadena de texto" })
+    marDescJerarq!: string;
 
-    @IsNotEmpty({ message: "La región de venta es requerida" })
-    @IsString({ message: "La región de venta debe ser una cadena de texto" })
-    marModelLm!: string;
+    @IsNotEmpty({ message: "El modelo IM es requerido" })
+    @IsString({ message: "El modelo IM debe ser una cadena de texto" })
+    marModeloIm!: string;
 
-    @IsOptional()
-    @IsString({ message: "El modelo debe ser una cadena de texto" })
-    model?: string | null;
+    @IsNotEmpty({ message: "La línea de diseño SAP es requerida" })
+    @IsString({ message: "La línea de diseño SAP debe ser una cadena de texto" })
+    lineaDisenioSap!: string;
 
-    @IsNotEmpty({ message: "La línea de diseño es requerida" })
-    @IsString({ message: "La línea de diseño debe ser una cadena de texto" })
-    designLine!: string;
-
-    @IsNotEmpty({ message: "La marca es requerida" })
-    @IsString({ message: "La marca debe ser una cadena de texto" })
-    brand!: string;
-
-    @IsNotEmpty({ message: "El campo discontinued es requerido" })
-    @IsBoolean({ message: "El campo discontinued debe ser un booleano" })
-    discontinued!: boolean;
-
-    @IsNotEmpty({ message: "El estado es requerido" })
-    @IsBoolean({ message: "El estado debe ser un booleano" })
-    status!: boolean;
-
-    @IsNotEmpty({ message: "El sheet visit es requerido" })
-    @IsString({ message: "El sheet visit debe ser una cadena de texto" })
-    sheetVisit!: string;
-
-    @IsNotEmpty({ message: "El equivalente Pro ID es requerido" })
-    @IsString({ message: "El equivalente Pro ID debe ser una cadena de texto" })
-    equivalentProId!: string;
-
-    @IsNotEmpty({ message: "El equivalente es requerido" })
-    @IsString({ message: "El equivalente debe ser una cadena de texto" })
-    equivalent!: string;
+    @IsNotEmpty({ message: "La marca SAP es requerida" })
+    @IsString({ message: "La marca SAP debe ser una cadena de texto" })
+    marcaSap!: string;
 
     @IsOptional()
-    @IsString({ message: "La vigencia debe ser una cadena de texto" })
-    validity?: string | null;
+    @IsString({ message: "El color SAP debe ser una cadena de texto" })
+    colorSap?: string | null;
 
     @IsOptional()
-    @IsString({ message: "El repeated numbers debe ser una cadena de texto" })
-    repeatedNumbers?: string | null;
-}
-
-export class UpdateProductSicDto {
-    @IsNotEmpty({ message: "El código de la tienda es requerido" })
-    @IsString({ message: "El código de la tienda debe ser una cadena de texto" })
-    jdeCode!: string;
-
-    @IsNotEmpty({ message: "El nombre de la tienda es requerido" })
-    @IsString({ message: "El nombre de la tienda debe ser una cadena de texto" })
-    jdeName!: string;
-
-    @IsOptional()
-    @IsString({ message: "El nombre de la tienda debe ser una cadena de texto" })
-    imeName?: string;
-
-    @IsOptional()
-    @IsString({ message: "El código de la tienda debe ser una cadena de texto" })
-    sapCode?: string;
-
-    @IsOptional()
-    @IsString({ message: "El código de la tienda debe ser una cadena de texto" })
-    sapName?: string;
-
-    @IsNotEmpty({ message: "El distribuidor es requerido" })
-    @IsString({ message: "El distribuidor debe ser una cadena de texto" })
-    companyLine!: string;
-
-    @IsNotEmpty({ message: "El distribuidor SAP es requerido" })
-    @IsString({ message: "El distribuidor SAP debe ser una cadena de texto" })
-    category!: string;
-
-    @IsNotEmpty({ message: "El canal de venta es requerido" })
-    @IsString({ message: "El canal de venta debe ser una cadena de texto" })
-    subCategory!: string;
-
-    @IsNotEmpty({ message: "La región de venta es requerida" })
-    @IsString({ message: "La región de venta debe ser una cadena de texto" })
-    marModelLm!: string;
-
-    @IsNotEmpty({ message: "La ciudad es requerida" })
-    @IsString({ message: "La ciudad debe ser una cadena de texto" })
-    designLine!: string;
-
-    @IsNotEmpty({ message: "La región es requerida" })
-    @IsString({ message: "La región debe ser una cadena de texto" })
-    brand!: string;
-
-    @IsNotEmpty({ message: "La categoría es requerida" })
-    @IsString({ message: "La categoría debe ser una cadena de texto" })
-    discontinued!: boolean;
+    @IsBoolean({ message: "El campo descontinuado debe ser un booleano" })
+    descontinuado?: boolean;
 
     @IsOptional()
     @IsBoolean({ message: "El estado debe ser un booleano" })
-    status?: boolean;
+    estado?: boolean;
+
+    @IsNotEmpty({ message: "Hojas visita es requerido" })
+    @IsString({ message: "Hojas visita debe ser una cadena de texto" })
+    hojasVis!: string;
+
+    @IsNotEmpty({ message: "PRO ID Equivalencia es requerido" })
+    @IsString({ message: "PRO ID Equivalencia debe ser una cadena de texto" })
+    proIdEquivalencia!: string;
+
+    @IsNotEmpty({ message: "Equivalencia es requerida" })
+    @IsString({ message: "Equivalencia debe ser una cadena de texto" })
+    equivalencia!: string;
 
     @IsOptional()
-    @IsString({ message: "El sheet visit debe ser una cadena de texto" })
-    sheetVisit?: string | null;
-
-    @IsOptional()
-    @IsString({ message: "El equivalente debe ser una cadena de texto" })
-    equivalentProId?: string | null;
-
-    @IsNotEmpty({ message: "El equivalente es requerido" })
-    @IsString({ message: "El equivalente debe ser una cadena de texto" })
-    equivalent!: string;
-
-    @IsOptional()
-    @IsString({ message: "La vigencia debe ser una cadena de texto" })
-    validity?: string;
-
-    @IsOptional()
-    @IsString({ message: "El repeated numbers debe ser una cadena de texto" })
-    repeatedNumbers?: string | null;
-
-    @IsNotEmpty({ message: "El ID del producto SIC es requerido" })
-    @IsNumber({}, { message: "El ID del producto SIC debe ser un número" })
-    idProductSic!: number;
+    @IsString({ message: "Vigencia debe ser una cadena de texto" })
+    vigencia?: string | null;
 }
+
+export class UpdateProductSicDto extends CreateProductSicDto { }
 
 export class ProductSicResponseDto {
     @Expose()
     id!: number;
 
     @Expose()
-    idProductSic!: number | null;
+    idProductoSic!: string | null;
 
     @Expose()
-    jdeCode!: string;
+    codigoJde!: string;
 
     @Expose()
-    jdeName!: string;
+    numRepetidos!: string | null;
 
     @Expose()
-    imeName!: string;
+    nombreIme!: string;
 
     @Expose()
-    sapCode!: string;
+    codigoSap!: string;
 
     @Expose()
-    sapName!: string;
+    nombreSap!: string;
 
     @Expose()
-    companyLine!: string;
+    lineaNegocioSap!: string;
 
     @Expose()
-    category!: string;
+    marDescGrupoArt!: string;
 
     @Expose()
-    subCategory!: string;
+    marDescJerarq!: string;
 
     @Expose()
-    marModelLm!: string;
+    marModeloIm!: string;
 
     @Expose()
-    designLine!: string;
+    lineaDisenioSap!: string;
 
     @Expose()
-    brand!: string;
+    marcaSap!: string;
 
     @Expose()
-    discontinued!: boolean;
+    colorSap!: string | null;
 
     @Expose()
-    status!: boolean;
+    descontinuado!: boolean;
 
     @Expose()
-    sheetVisit!: string;
+    estado!: boolean;
 
     @Expose()
-    equivalentProId!: string;
+    hojasVis!: string;
 
     @Expose()
-    equivalent!: string;
+    proIdEquivalencia!: string;
 
     @Expose()
-    validity!: string | null;
+    equivalencia!: string;
 
     @Expose()
-    repeatedNumbers!: string | null;
+    vigencia!: string | null;
 }
 
 export class ProductSicResponsePptoDto {
     @Expose()
-    companyLine!: string;
+    lineaNegocioSap!: string;
 
     @Expose()
-    category!: string;
+    marDescGrupoArt!: string;
 
     @Expose()
-    subCategory!: string;
+    marDescJerarq!: string;
 
     @Expose()
-    model!: string | null;
+    marModeloIm!: string | null;
 
     @Expose()
-    equivalentProId!: string;
+    proIdEquivalencia!: string;
 
     @Expose()
-    jdeName!: string;
+    // TODO: Verify if we still need jdeName or if it maps to nombreIme or nombreSap.
+    // Assuming nombreSap or nombreIme might be relevant, but keeping name generic if needed.
+    // Based on previous code: jdeName.
+    // User requested "codigo_jde" and "nombre_ime", "nombre_sap".
+    // I will map to nombreIme for now as it seems most descriptive name, or maybe nombreSap.
+    // Let's check original: jdeName was maintained. New schema has 'nombre_ime' and 'nombre_sap'.
+    // I'll map to nombreSap as a safe bet for a name, or nombreIme.
+    // The previous code had jdeName map to 'jde_name'.
+    // I will expose 'nombreSap' here.
+    nombreSap!: string;
 
     @Expose()
-    brand!: string;
+    marcaSap!: string;
 }
 
 export class StoreSearchDto {
@@ -253,12 +182,12 @@ export class StoreSearchDto {
     id?: number;
 
     @IsOptional()
-    @IsString({ message: "El código de la tienda debe ser una cadena de texto" })
-    jdeCode?: string;
+    @IsString({ message: "El código JDE debe ser una cadena de texto" })
+    codigoJde?: string;
 
     @IsOptional()
-    @IsString({ message: "El nombre de la tienda debe ser una cadena de texto" })
-    jdeName?: string;
+    @IsString({ message: "El nombre SAP debe ser una cadena de texto" })
+    nombreSap?: string;
 }
 
 export class ProductSicPaginatedResponseDto {

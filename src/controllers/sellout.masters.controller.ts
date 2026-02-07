@@ -73,8 +73,8 @@ export class SelloutMastersController {
 
     async getDistribuidorAndStoreNameByStoreSic(req: Request, res: Response) {
         try {
-            const { storeSic } = req.params;
-            const distribuidorAndStoreName = await this.selloutMastersService.getDistribuidorAndStoreNameByStoreSic(Number(storeSic));
+            const { storeSic } = req.params as { storeSic: string };
+            const distribuidorAndStoreName = await this.selloutMastersService.getDistribuidorAndStoreNameByStoreSic(storeSic);
             if (!distribuidorAndStoreName) {
                 res.status(StatusCodes.NOT_FOUND).json({ message: 'Almacen SIC no encontrado' });
                 return;

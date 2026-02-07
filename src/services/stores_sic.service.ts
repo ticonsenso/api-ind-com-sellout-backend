@@ -1,7 +1,7 @@
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {DataSource} from 'typeorm';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { DataSource } from 'typeorm';
 
-import {StoresSicRepository} from '../repository/stores.repository';
+import { StoresSicRepository } from '../repository/stores.repository';
 import {
     CreateStoreSicDto,
     NullFieldFiltersSic,
@@ -9,10 +9,8 @@ import {
     StoreSicResponseDto,
     UpdateStoreSicDto
 } from '../dtos/stores.sic.dto';
-import {StoresSic} from '../models/stores.sic.model';
-import {chunkArray} from '../utils/utils';
-
-const normalize = (str: string) => str.replace(/\s+/g, '').trim().toUpperCase();
+import { StoresSic } from '../models/stores.sic.model';
+import { chunkArray } from '../utils/utils';
 
 export class StoresSicService {
     private storesRepository: StoresSicRepository;
@@ -32,9 +30,9 @@ export class StoresSicService {
 
         const uniqueMap = new Map<string, CreateStoreSicDto>();
         for (const config of configs) {
-            if (config.storeCode) {
-                const cleanCode = normalize(config.storeCode.toString());
-                config.storeCode = parseInt(cleanCode);
+            if (config.codAlmacen) {
+                const cleanCode = normalize(config.codAlmacen);
+                config.codAlmacen = cleanCode;
                 uniqueMap.set(cleanCode, config);
             }
         }
@@ -46,13 +44,13 @@ export class StoresSicService {
         for (const chunk of chunks) {
             const seen = new Set();
             const deduplicated = chunk.filter(c => {
-                const key = c.storeCode!.toString();
+                const key = c.codAlmacen;
                 if (seen.has(key)) return false;
                 seen.add(key);
                 return true;
             });
 
-            await this.storesRepository.upsertBatch(deduplicated, ['storeCode']);
+            await this.storesRepository.upsertBatch(deduplicated, ['codAlmacen']);
         }
     }
 

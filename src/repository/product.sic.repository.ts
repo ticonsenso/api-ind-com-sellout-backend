@@ -1,6 +1,6 @@
-import {Brackets, DataSource as TypeORMDataSource, In} from "typeorm";
-import {BaseRepository} from "./base.respository";
-import {ProductSic} from "../models/product_sic.model";
+import { Brackets, DataSource as TypeORMDataSource, In } from "typeorm";
+import { BaseRepository } from "./base.respository";
+import { ProductSic } from "../models/product_sic.model";
 
 interface ModelProductSic {
     productSic: string;
@@ -15,21 +15,21 @@ export class ProductSicRepository extends BaseRepository<ProductSic> {
     async getModelProductSicByProductSic(productSic: string): Promise<ModelProductSic | null> {
         const modelProductSic = await this.repository.findOne({
             where: {
-                jdeCode: productSic,
+                codigoJde: productSic,
 
             },
         });
         return modelProductSic ? {
-            productSic: modelProductSic.jdeCode!,
-            productModel: modelProductSic.jdeName!,
+            productSic: modelProductSic.codigoJde!,
+            productModel: modelProductSic.nombreSap!,
 
         } : null;
     }
 
-    async findByIdProductSic(idProductSic: number[]): Promise<ProductSic[]> {
+    async findByIdProductSic(idProductSic: string[]): Promise<ProductSic[]> {
         return this.repository.find({
             where: {
-                idProductSic: In(idProductSic),
+                idProductoSic: In(idProductSic),
             },
         });
     }
@@ -37,7 +37,7 @@ export class ProductSicRepository extends BaseRepository<ProductSic> {
     async findByJdeCodeOnly(jdeCode: string): Promise<ProductSic | null> {
         return this.repository.findOne({
             where: {
-                jdeCode: jdeCode,
+                codigoJde: jdeCode,
             },
         });
     }
@@ -46,9 +46,9 @@ export class ProductSicRepository extends BaseRepository<ProductSic> {
         return this.repository.findOne({
             where: [
                 {
-                    equivalentProId: code,
-                    discontinued: false,
-                    status: true,
+                    proIdEquivalencia: code,
+                    descontinuado: false,
+                    estado: true,
                 },
 
             ],
@@ -63,10 +63,10 @@ export class ProductSicRepository extends BaseRepository<ProductSic> {
         const qb = this.repository.createQueryBuilder('s').orderBy('s.id', 'ASC');
         if (search?.trim()) {
             qb.andWhere(new Brackets((qb1: any) => {
-                qb1.where('s.jdeCode ILIKE :search', { search: `%${search}%` })
-                    .orWhere('s.jdeName ILIKE :search', { search: `%${search}%` })
-                    .orWhere('s.companyLine ILIKE :search', { search: `%${search}%` })
-                    .orWhere('s.category ILIKE :search', { search: `%${search}%` })
+                qb1.where('s.codigoJde ILIKE :search', { search: `%${search}%` })
+                    .orWhere('s.nombreSap ILIKE :search', { search: `%${search}%` })
+                    .orWhere('s.lineaNegocioSap ILIKE :search', { search: `%${search}%` })
+                    .orWhere('s.marDescGrupoArt ILIKE :search', { search: `%${search}%` })
 
             }));
         }

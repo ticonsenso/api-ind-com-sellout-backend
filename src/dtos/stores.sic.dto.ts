@@ -1,70 +1,30 @@
-import {Expose, Type} from "class-transformer";
-import {IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString,} from "class-validator";
+import { Expose, Type } from "class-transformer";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateStoreSicDto {
     @IsNotEmpty()
-    @IsNumber()
-    storeCode!: number;
+    @IsString()
+    codAlmacen!: string;
 
     @IsNotEmpty()
     @IsString()
-    storeName!: string;
-
-    @IsOptional()
-    @IsString()
-    storeAddress?: string;
-
-    @IsOptional()
-    @IsString()
-    distributor?: string;
+    nombreAlmacen!: string;
 
     @IsNotEmpty()
     @IsString()
-    distributor2!: string;
-
-    @IsOptional()
-    @IsString()
-    phone?: string;
-
-    @IsOptional()
-    @IsString()
-    agencyManager?: string;
-
-    @IsOptional()
-    @IsString()
-    size?: string;
-
-    @IsOptional()
-    @IsString()
-    ubication?: string;
-
-    @IsOptional()
-    @IsNumber()
-    sales?: number;
-
-    @IsOptional()
-    @IsString()
-    channel?: string;
+    direccionAlmacen!: string;
 
     @IsNotEmpty()
     @IsString()
-    distributorSap!: string;
+    distribuidor!: string;
 
     @IsNotEmpty()
     @IsString()
-    endChannel!: string;
-
-    @IsOptional()
-    @IsString()
-    supervisor?: string;
+    categoria!: string;
 
     @IsNotEmpty()
     @IsString()
-    wholesaleRegion!: string;
-
-    @IsNotEmpty()
-    @IsString()
-    city!: string;
+    ciudad!: string;
 
     @IsNotEmpty()
     @IsString()
@@ -72,89 +32,122 @@ export class CreateStoreSicDto {
 
     @IsNotEmpty()
     @IsString()
-    province!: string;
-
-    @IsNotEmpty()
-    @IsString()
-    category!: string;
-
-    @IsOptional()
-    @IsString()
-    zone?: string;
+    provincia!: string;
 
     @IsOptional()
     @IsBoolean()
-    status?: boolean;
+    estado?: boolean;
+
+    @IsOptional()
+    @IsString()
+    telefono?: string;
+
+    @IsOptional()
+    @IsString()
+    jefeAgencia?: string;
+
+    @IsOptional()
+    @IsString()
+    tamanio?: string;
+
+    @IsOptional()
+    @IsString()
+    ubicacion?: string;
+
+    @IsOptional()
+    @IsNumber()
+    ventas?: number;
+
+    @IsNotEmpty()
+    @IsString()
+    canal!: string;
+
+    @IsOptional()
+    @IsString()
+    regionMayoreo?: string;
+
+    @IsOptional()
+    @IsString()
+    distribSap?: string;
+
+    @IsOptional()
+    @IsString()
+    grupoZona?: string;
+
+    @IsOptional()
+    @IsString()
+    supervisor?: string;
+
+    @IsOptional()
+    @IsString()
+    zona?: string;
 }
 
-export class UpdateStoreSicDto extends CreateStoreSicDto {}
+export class UpdateStoreSicDto extends CreateStoreSicDto { }
 
 export class StoreSicResponseDto {
     @Expose()
     id!: number;
 
     @Expose()
-    storeCode!: number;
+    codAlmacen!: string;
 
     @Expose()
-    storeName!: string;
+    nombreAlmacen!: string;
 
     @Expose()
-    storeAddress!: string;
+    direccionAlmacen!: string;
 
     @Expose()
-    distributor!: string;
+    distribuidor!: string;
 
     @Expose()
-    distributor2!: string;
+    categoria!: string;
 
     @Expose()
-    phone!: string;
-
-    @Expose()
-    agencyManager!: string;
-
-    @Expose()
-    size!: string;
-
-    @Expose()
-    ubication!: string;
-
-    @Expose()
-    sales!: number;
-
-    @Expose()
-    channel!: string;
-
-    @Expose()
-    distributorSap!: string;
-
-    @Expose()
-    endChannel!: string;
-
-    @Expose()
-    supervisor!: string;
-
-    @Expose()
-    wholesaleRegion!: string;
-
-    @Expose()
-    city!: string;
+    ciudad!: string;
 
     @Expose()
     region!: string;
 
     @Expose()
-    province!: string;
+    provincia!: string;
 
     @Expose()
-    category!: string;
+    estado?: boolean;
 
     @Expose()
-    zone?: string;
+    telefono?: string;
 
     @Expose()
-    status!: boolean;
+    jefeAgencia?: string;
+
+    @Expose()
+    tamanio?: string;
+
+    @Expose()
+    ubicacion?: string;
+
+    @Expose()
+    ventas?: number;
+
+    @Expose()
+    canal!: string;
+
+    @Expose()
+    regionMayoreo?: string;
+
+    @Expose()
+    distribSap?: string;
+
+    @Expose()
+    grupoZona?: string;
+
+    @Expose()
+    supervisor?: string;
+
+    @Expose()
+    zona?: string;
 }
 
 export class StoreResponseDto {
@@ -162,16 +155,16 @@ export class StoreResponseDto {
     id!: number;
 
     @Expose()
-    storeCode!: number;
+    codAlmacen!: string;
 
     @Expose()
-    storeName!: string;
+    nombreAlmacen!: string;
 
     @Expose()
-    endChannel!: string;
+    canal!: string;
 
     @Expose()
-    city!: string;
+    ciudad!: string;
 
     @Expose()
     region!: string;
@@ -183,12 +176,12 @@ export class StoreSicSearchDto {
     id?: number;
 
     @IsOptional()
-    @IsNumber({}, { message: "El código de la tienda debe ser un número" })
-    storeCode?: number;
+    @IsString({ message: "El código del almacén debe ser una cadena de texto" })
+    codAlmacen?: string;
 
     @IsOptional()
-    @IsString({ message: "El nombre de la tienda debe ser una cadena de texto" })
-    storeName?: string;
+    @IsString({ message: "El nombre del almacén debe ser una cadena de texto" })
+    nombreAlmacen?: string;
 }
 
 export class StorePaginatedResponseDto {
@@ -202,5 +195,5 @@ export class StorePaginatedResponseDto {
 
 
 export class NullFieldFiltersSic {
-    zone?: boolean;
+    zona?: boolean;
 }

@@ -52,7 +52,7 @@ export class ConsolidatedDataStoresService {
 
         const [storeSic, productSic] = await Promise.all([
             codeStore?.codeStoreSic
-                ? this.storesRepository.findByStoreCodeOnly(Number(codeStore.codeStoreSic))
+                ? this.storesRepository.findByStoreCodeOnly(codeStore.codeStoreSic)
                 : Promise.resolve(null),
             codeProduct?.codeProductSic
                 ? this.productSicRepository.findByJdeCodeOnly(codeProduct.codeProductSic.toString())
@@ -68,9 +68,9 @@ export class ConsolidatedDataStoresService {
             saleDate: consolidatedDataStores.saleDate?.split('T')[0],
             codeProduct: codeProduct?.codeProductSic ?? null,
             codeStore: codeStore?.codeStoreSic ?? null,
-            authorizedDistributor: storeSic?.distributor2 ?? null,
-            storeName: storeSic?.storeName ?? null,
-            productModel: productSic?.jdeName ?? null,
+            authorizedDistributor: storeSic?.distribuidor ?? null,
+            storeName: storeSic?.nombreAlmacen ?? null,
+            productModel: productSic?.codigoJde ?? null,
             calculateDate: consolidatedDataStores.calculateDate?.split('T')[0],
             observation: consolidatedDataStores.observation,
         };
@@ -99,7 +99,7 @@ export class ConsolidatedDataStoresService {
 
         const [storeSic, productSic] = await Promise.all([
             codeStore?.codeStoreSic
-                ? this.storesRepository.findByStoreCodeOnly(Number(codeStore.codeStoreSic))
+                ? this.storesRepository.findByStoreCodeOnly(codeStore.codeStoreSic)
                 : Promise.resolve(null),
             codeProduct?.codeProductSic
                 ? this.productSicRepository.findByJdeCodeOnly(codeProduct.codeProductSic.toString())
@@ -115,9 +115,9 @@ export class ConsolidatedDataStoresService {
             saleDate: consolidatedDataStores.saleDate,
             codeProduct: codeProduct?.codeProductSic ?? null,
             codeStore: codeStore?.codeStoreSic ?? null,
-            authorizedDistributor: storeSic?.distributor2 ?? null,
-            storeName: storeSic?.storeName ?? null,
-            productModel: productSic?.jdeName ?? null,
+            authorizedDistributor: storeSic?.distribuidor ?? null,
+            storeName: storeSic?.nombreAlmacen ?? null,
+            productModel: productSic?.codigoJde ?? null,
             calculateDate: consolidatedDataStores.calculateDate,
             status: consolidatedDataStores.status,
             observation: consolidatedDataStores.observation,
@@ -224,7 +224,7 @@ export class ConsolidatedDataStoresService {
         if (storeMaster) {
             dto.codeStore = storeMaster.codeStoreSic?.toString();
         } else if (isValid(dto.codeStore)) {
-            const storeSic = await this.storesRepository.findByStoreCodeOnly(Number(dto.codeStore));
+            const storeSic = await this.storesRepository.findByStoreCodeOnly(dto.codeStore!.toString());
 
             if (!storeSic) {
                 throw new Error('La tienda no existe en maestros ni en almacenes SIC.');
@@ -283,12 +283,12 @@ export class ConsolidatedDataStoresService {
 
         if (updatePayload.codeProduct) {
             const productSic = await this.productSicRepository.findByJdeCodeOnly(updatePayload.codeProduct.toString());
-            updatePayload.codeProduct = productSic?.jdeName ?? null;
+            updatePayload.codeProduct = productSic?.codigoJde ?? null;
         }
 
         if (updatePayload.codeStore) {
-            const storeSic = await this.storesRepository.findByStoreCodeOnly(Number(updatePayload.codeStore));
-            updatePayload.codeStore = storeSic?.distributor2 ?? null;
+            const storeSic = await this.storesRepository.findByStoreCodeOnly(updatePayload.codeStore.toString());
+            updatePayload.codeStore = storeSic?.distribuidor ?? null;
         }
 
         return updatePayload;
