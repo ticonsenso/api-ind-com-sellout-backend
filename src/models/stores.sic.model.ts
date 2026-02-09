@@ -1,80 +1,78 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,} from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
 
-@Entity('stores_sic')
+@Entity({ name: 'stores_sic', schema: 'db-sellout' })
 export class StoresSic {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ name: 'store_code', type: 'numeric', unique: true })
-    storeCode!: number;
+    @Column({ name: 'cod_almacen', type: 'varchar', length: 255, unique: true })
+    codAlmacen!: string;
 
-    @Column({ name: 'store_name', type: 'varchar', length: 255 })
-    storeName!: string;
+    @Column({ name: 'nombre_almacen', type: 'varchar', length: 255 })
+    nombreAlmacen!: string;
 
-    @Column({ name: 'store_address', type: 'varchar', length: 255 })
-    storeAddress!: string;
+    @Column({ name: 'direccion_almacen', type: 'varchar', length: 255 })
+    direccionAlmacen!: string;
 
-    @Column({ name: 'distributor', type: 'varchar', length: 255 })
-    distributor!: string;
+    @Column({ name: 'distribuidor', type: 'varchar', length: 255 })
+    distribuidor!: string;
 
-    @Column({ name: 'distributor2', type: 'varchar', length: 255 })
-    distributor2!: string;
+    @Column({ name: 'categoria', type: 'varchar', length: 255 })
+    categoria!: string;
 
-    @Column({ name: 'phone', type: 'varchar', length: 255 })
-    phone!: string;
-
-    @Column({ name: 'agency_manager', type: 'varchar', length: 255 })
-    agencyManager!: string;
-
-    @Column({ name: 'size', type: 'varchar', length: 255 })
-    size!: string;
-
-    @Column({ name: 'ubication', type: 'varchar', length: 255 })
-    ubication!: string;
-
-    @Column({ name: 'sales', type: 'int' })
-    sales!: number;
-
-    @Column({ name: 'channel', type: 'varchar', length: 255 })
-    channel!: string;
-
-    @Column({ name: 'distributor_sap', type: 'varchar', length: 255 })
-    distributorSap!: string;
-
-    @Column({ name: 'end_channel', type: 'varchar', length: 255 })
-    endChannel!: string;
-
-    @Column({ name: 'supervisor', type: 'varchar', length: 255 })
-    supervisor!: string;
-
-    @Column({ name: 'wholesale_region', type: 'varchar', length: 255 })
-    wholesaleRegion!: string;
-
-    @Column({ name: 'city', type: 'varchar', length: 255 })
-    city!: string;
+    @Column({ name: 'ciudad', type: 'varchar', length: 255 })
+    ciudad!: string;
 
     @Column({ name: 'region', type: 'varchar', length: 255 })
     region!: string;
 
-    @Column({ name: 'province', type: 'varchar', length: 255 })
-    province!: string;
+    @Column({ name: 'provincia', type: 'varchar', length: 255 })
+    provincia!: string;
 
-    @Column({ name: 'category', type: 'varchar', length: 255 })
-    category!: string;
+    @Column({ name: 'estado', type: 'boolean', default: true, nullable: true })
+    estado?: boolean;
 
-    @Column({ name: 'zone', type: 'varchar', length: 255, nullable: true })
-    zone?: string;
+    @Column({ name: 'telefono', type: 'varchar', length: 255, nullable: true })
+    telefono?: string;
 
-    @Column({ type: 'boolean', default: true })
-    status!: boolean;
+    @Column({ name: 'jefe_agencia', type: 'varchar', length: 255, nullable: true })
+    jefeAgencia?: string;
 
-    @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
-    createdAt!: Date;
+    @Column({ name: 'tamanio', type: 'varchar', length: 255, nullable: true })
+    tamanio?: string;
+
+    @Column({ name: 'ubicacion', type: 'varchar', length: 255, nullable: true })
+    ubicacion?: string;
+
+    @Column({ name: 'ventas', type: 'int', nullable: true })
+    ventas?: number;
+
+    @Column({ name: 'canal', type: 'varchar', length: 255 })
+    canal!: string;
+
+    @Column({ name: 'region_mayoreo', type: 'varchar', length: 255, nullable: true })
+    regionMayoreo?: string;
+
+    @Column({ name: 'distrib_sap', type: 'varchar', length: 255, nullable: true })
+    distribSap?: string;
+
+    @Column({ name: 'grupo_zona', type: 'varchar', length: 255, nullable: true })
+    grupoZona?: string;
+
+    @Column({ name: 'supervisor', type: 'varchar', length: 255, nullable: true })
+    supervisor?: string;
+
+    @Column({ name: 'zona', type: 'varchar', length: 255, nullable: true })
+    zona?: string;
+
+    @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: true })
+    createdAt?: Date;
 
     @UpdateDateColumn({
         name: 'updated_at',
         type: 'timestamp',
         onUpdate: 'CURRENT_TIMESTAMP',
+        nullable: true,
     })
-    updatedAt!: Date;
+    updatedAt?: Date;
 }

@@ -118,7 +118,6 @@ export class ConfigLinesController {
                 sortBy: (sortBy as string) || 'id',
                 sortOrder: (sortOrder as 'ASC' | 'DESC') || 'ASC'
             };
-            console.log(searchDto);
             const configLines = await this.configLinesService.findPaginated(searchDto);
             return res.status(StatusCodes.OK).json({
                 data: configLines.data,

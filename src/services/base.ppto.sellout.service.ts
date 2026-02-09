@@ -1,18 +1,18 @@
-import {DataSource} from 'typeorm';
+import { DataSource } from 'typeorm';
 import {
     BasePptoSelloutFiltersResponseDto,
     BasePptoSelloutResponseDto,
     CreateBasePptoSelloutDto,
     UpdateBasePptoSelloutDto
 } from '../dtos/base.ppto.sellout.dto';
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {BasePptoSelloutRepository} from '../repository/base.ppto.sellout.repository';
-import {BasePptoSellout} from '../models/base.ppto.sellout.model';
-import {chunkArray} from '../utils/utils';
-import {EmployeesRepository} from '../repository/employees.repository';
-import {StoresSicRepository} from '../repository/stores.repository';
-import {ProductSicRepository} from '../repository/product.sic.repository';
-import {WebServicesRepository} from '../repository/web.services.repository';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { BasePptoSelloutRepository } from '../repository/base.ppto.sellout.repository';
+import { BasePptoSellout } from '../models/base.ppto.sellout.model';
+import { chunkArray } from '../utils/utils';
+import { EmployeesRepository } from '../repository/employees.repository';
+import { StoresSicRepository } from '../repository/stores.repository';
+import { ProductSicRepository } from '../repository/product.sic.repository';
+import { WebServicesRepository } from '../repository/web.services.repository';
 
 export class BasePptoSelloutService {
     private basePptoSelloutRepository: BasePptoSelloutRepository;
@@ -37,7 +37,7 @@ export class BasePptoSelloutService {
         const codeZone = await this.employeeRepository.findByCode(basePptoSellout.codeZone);
         if (!codeZone) throw new Error(`La zona no existe: ${basePptoSellout.codeZone}`);
 
-        const storeSic = await this.storeMasterRepository.findByStoreCodeOnly(Number(basePptoSellout.storeCode));
+        const storeSic = await this.storeMasterRepository.findByStoreCodeOnly(basePptoSellout.storeCode!.toString());
         if (!storeSic) throw new Error(`El almacén sic no existe: ${basePptoSellout.storeCode}`);
 
         const employeePromotor = await this.employeeRepository.findByCode(basePptoSellout.promotorCode);
@@ -53,7 +53,7 @@ export class BasePptoSelloutService {
         if (!productSic) throw new Error(`El producto sic no existe: ${basePptoSellout.equivalentCode}`);
 
         const webServices = await this.webServicesRepository.findByMaterialCode(basePptoSellout.equivalentCode);
-        if (!webServices) throw new Error(`El producto en web services no existe: ${productSic.jdeCode}`);
+        if (!webServices) throw new Error(`El producto en web services no existe: ${productSic.codigoJde}`);
 
         basePptoSelloutSave.employeeSupervisor = employeeSupervisor;
         basePptoSelloutSave.employeeCodeZone = codeZone;
@@ -127,38 +127,38 @@ export class BasePptoSelloutService {
 
     async getAllBasePptoSellout(): Promise<BasePptoSelloutResponseDto[]> {
         const basePptoSelloutList = await this.basePptoSelloutRepository.findAll();
-    
+
         for (const base of basePptoSelloutList) {
             const supervisor = await this.employeeRepository.findByCode(base.codeSupervisor);
             if (!supervisor) throw new Error(`El supervisor no existe: ${base.codeSupervisor}`);
-    
+
             const zone = await this.employeeRepository.findByCode(base.codeZone);
             if (!zone) throw new Error(`La zona no existe: ${base.codeZone}`);
-    
-            const store = await this.storeMasterRepository.findByStoreCodeOnly(Number(base.storeCode));
+
+            const store = await this.storeMasterRepository.findByStoreCodeOnly(base.storeCode!.toString());
             if (!store) throw new Error(`El almacén sic no existe: ${base.storeCode}`);
-    
+
             const promotor = await this.employeeRepository.findByCode(base.promotorCode);
             if (!promotor) throw new Error(`El promotor no existe: ${base.promotorCode}`);
-    
+
             let promotorPi = null;
             if (base.codePromotorPi) {
                 promotorPi = await this.employeeRepository.findByCode(base.codePromotorPi);
                 if (!promotorPi) throw new Error(`El promotor PI no existe: ${base.codePromotorPi}`);
             }
-    
+
             let promotorTv = null;
             if (base.codePromotorTv) {
                 promotorTv = await this.employeeRepository.findByCode(base.codePromotorTv);
                 if (!promotorTv) throw new Error(`El promotor TV no existe: ${base.codePromotorTv}`);
             }
-    
+
             const productSic = await this.productSicRepository.findByEquivalentCodeOrId(base.equivalentCode);
             if (!productSic) throw new Error(`El producto sic no existe: ${base.equivalentCode}`);
-    
+
             const webServices = await this.webServicesRepository.findByMaterialCode(base.equivalentCode);
-            if (!webServices) throw new Error(`El producto en web services no existe: ${productSic.jdeCode}`);
-    
+            if (!webServices) throw new Error(`El producto en web services no existe: ${productSic.codigoJde}`);
+
             base.employeeSupervisor = supervisor;
             base.employeeCodeZone = zone;
             base.store = store;
@@ -172,13 +172,13 @@ export class BasePptoSelloutService {
             base.productSic = productSic;
             base.productType = webServices.materialTypeDescription;
         }
-    
+
         return plainToInstance(BasePptoSelloutResponseDto, basePptoSelloutList, {
             excludeExtraneousValues: true,
         });
     }
-    
-    
+
+
     async getFilteredStoresMaster(
         page: number,
         limit: number,

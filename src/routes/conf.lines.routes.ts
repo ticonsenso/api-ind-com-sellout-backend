@@ -185,7 +185,7 @@ router.get('/', authenticateToken, configLinesController.getConfigLines);
 
 /**
  * @swagger
- * /api/conf-lines/paginated:
+ * /api/conf-lines/paginated/all:
  *   get:
  *     summary: Obtener líneas de configuración paginadas con filtros
  *     tags: [Líneas de Configuración]
@@ -237,6 +237,6 @@ router.get('/', authenticateToken, configLinesController.getConfigLines);
  *                 total:
  *                   type: integer
  */
-router.get('/paginated', authenticateToken, configLinesController.getConfigLinesPaginated);
+router.get('/paginated/all', authenticateToken, configLinesController.getConfigLinesPaginated);
 
 export default router;

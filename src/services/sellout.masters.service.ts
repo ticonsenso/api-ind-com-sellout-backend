@@ -143,7 +143,7 @@ export class SelloutMastersService {
                 const storeMaster = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchKey);
 
                 if (storeMaster?.codeStoreSic) {
-                    const storeSic = await this.storesRepository.findByStoreCodeOnly(Number(storeMaster.codeStoreSic));
+                    const storeSic = await this.storesRepository.findByStoreCodeOnly(storeMaster.codeStoreSic);
 
                     const updateData: QueryDeepPartialEntity<ConsolidatedDataStores> = {
                         codeStore: storeMaster.codeStoreSic,
@@ -268,7 +268,7 @@ export class SelloutMastersService {
                             throw new Error('No se encontraron registros que coincidan con el searchStore');
                         }
 
-                        const storeSic = await this.selloutStoreRepository.getDistribuidorAndStoreNameByStoreSic(Number(codeStoreSic));
+                        const storeSic = await this.selloutStoreRepository.getDistribuidorAndStoreNameByStoreSic(codeStoreSic);
                         for (const record of consolidatedRecords) {
                             record.codeStore = codeStoreSic;
                         }
@@ -283,7 +283,7 @@ export class SelloutMastersService {
         }
     }
 
-    async getDistribuidorAndStoreNameByStoreSic(storeSic: number): Promise<StoresSic | null> {
+    async getDistribuidorAndStoreNameByStoreSic(storeSic: string): Promise<StoresSic | null> {
         return await this.selloutStoreRepository.getDistribuidorAndStoreNameByStoreSic(storeSic);
     }
 
