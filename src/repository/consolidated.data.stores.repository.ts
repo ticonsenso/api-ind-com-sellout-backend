@@ -467,6 +467,191 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     return { items, total, totalAll };
   }
 
+  async findByFiltersModStores(
+    page: number = 1,
+    limit: number = 10,
+    filters?: {
+      distributor?: string;
+      codeStoreDistributor?: string;
+      codeProductDistributor?: string;
+      descriptionDistributor?: string;
+    },
+    calculateDate?: Date
+  ): Promise<{
+    items: ConsolidatedDataStoresDto[];
+    total: number;
+    totalAll: number;
+  }> {
+    const qb = this.repository
+      .createQueryBuilder("s")
+      .select([
+        "s.calculate_date AS calculate_date",
+        "s.distributor AS distributor",
+        "s.code_store_distributor AS code_store_distributor",
+        "s.code_product_distributor AS code_product_distributor",
+        "s.description_distributor AS description_distributor",
+        "s.units_sold_distributor AS units_sold_distributor",
+        "s.code_product AS code_product",
+        "s.code_store AS code_store",
+        "s.sale_date AS sale_date",
+        "s.id AS id",
+        "s.status AS status",
+      ]);
+
+    // === Filtro especifico ===
+    qb.andWhere("UPPER(REPLACE(s.code_store, ' ', '')) = 'NOSEVISITA'");
+
+    // === Filtros dinámicos ===
+    if (filters?.distributor) {
+      qb.andWhere("s.distributor ILIKE :d", { d: `%${filters.distributor}%` });
+    }
+    if (filters?.codeStoreDistributor) {
+      qb.andWhere("s.code_store_distributor ILIKE :csd", {
+        csd: `%${filters.codeStoreDistributor}%`,
+      });
+    }
+    if (filters?.codeProductDistributor) {
+      qb.andWhere("s.code_product_distributor ILIKE :cpd", {
+        cpd: `%${filters.codeProductDistributor}%`,
+      });
+    }
+    if (filters?.descriptionDistributor) {
+      qb.andWhere("s.description_distributor ILIKE :desc", {
+        desc: `%${filters.descriptionDistributor}%`,
+      });
+    }
+
+    // === Filtro por año y mes ===
+    if (calculateDate) {
+      const date = calculateDate.toISOString().split("T")[0];
+      qb.andWhere(`s.calculate_date::date = '${date}'`);
+    }
+
+    // === Total sin paginar ===
+    const totalAll = await qb.getCount();
+
+    // === Paginación ===
+    const items = await qb
+      .offset((page - 1) * limit)
+      .limit(limit)
+      .getRawMany();
+
+    // === Mapeo ===
+    const itemsMapped: any = items.map((item: any) => ({
+      calculateDate: item.calculate_date,
+      distributor: item.distributor,
+      codeStoreDistributor: item.code_store_distributor,
+      codeProductDistributor: item.code_product_distributor,
+      descriptionDistributor: item.description_distributor,
+      unitsSoldDistributor: item.units_sold_distributor ? Number(item.units_sold_distributor) : null,
+      codeProduct: item.code_product,
+      codeStore: item.code_store,
+      saleDate: item.sale_date,
+      storeName: null,
+      productModel: null,
+      id: item.id,
+      status: item.status,
+    }));
+
+    // === Total paginado ===
+    const total = itemsMapped.length;
+
+    return { items: itemsMapped, total, totalAll };
+  }
+
+
+  async findByFiltersModProduct(
+    page: number = 1,
+    limit: number = 10,
+    filters?: {
+      distributor?: string;
+      codeStoreDistributor?: string;
+      codeProductDistributor?: string;
+      descriptionDistributor?: string;
+    },
+    calculateDate?: Date
+  ): Promise<{
+    items: ConsolidatedDataStoresDto[];
+    total: number;
+    totalAll: number;
+  }> {
+    const qb = this.repository
+      .createQueryBuilder("s")
+      .select([
+        "s.calculate_date AS calculate_date",
+        "s.distributor AS distributor",
+        "s.code_store_distributor AS code_store_distributor",
+        "s.code_product_distributor AS code_product_distributor",
+        "s.description_distributor AS description_distributor",
+        "s.units_sold_distributor AS units_sold_distributor",
+        "s.code_product AS code_product",
+        "s.code_store AS code_store",
+        "s.sale_date AS sale_date",
+        "s.id AS id",
+        "s.status AS status",
+      ]);
+
+    // === Filtro especifico ===
+    qb.andWhere("UPPER(REPLACE(s.code_product, ' ', '')) = 'OTROS'");
+
+    // === Filtros dinámicos ===
+    if (filters?.distributor) {
+      qb.andWhere("s.distributor ILIKE :d", { d: `%${filters.distributor}%` });
+    }
+    if (filters?.codeStoreDistributor) {
+      qb.andWhere("s.code_store_distributor ILIKE :csd", {
+        csd: `%${filters.codeStoreDistributor}%`,
+      });
+    }
+    if (filters?.codeProductDistributor) {
+      qb.andWhere("s.code_product_distributor ILIKE :cpd", {
+        cpd: `%${filters.codeProductDistributor}%`,
+      });
+    }
+    if (filters?.descriptionDistributor) {
+      qb.andWhere("s.description_distributor ILIKE :desc", {
+        desc: `%${filters.descriptionDistributor}%`,
+      });
+    }
+
+    // === Filtro por año y mes ===
+    if (calculateDate) {
+      const date = calculateDate.toISOString().split("T")[0];
+      qb.andWhere(`s.calculate_date::date = '${date}'`);
+    }
+
+    // === Total sin paginar ===
+    const totalAll = await qb.getCount();
+
+    // === Paginación ===
+    const items = await qb
+      .offset((page - 1) * limit)
+      .limit(limit)
+      .getRawMany();
+
+    // === Mapeo ===
+    const itemsMapped: any = items.map((item: any) => ({
+      calculateDate: item.calculate_date,
+      distributor: item.distributor,
+      codeStoreDistributor: item.code_store_distributor,
+      codeProductDistributor: item.code_product_distributor,
+      descriptionDistributor: item.description_distributor,
+      unitsSoldDistributor: item.units_sold_distributor ? Number(item.units_sold_distributor) : null,
+      codeProduct: item.code_product,
+      codeStore: item.code_store,
+      saleDate: item.sale_date,
+      storeName: null,
+      productModel: null,
+      id: item.id,
+      status: item.status,
+    }));
+
+    // === Total paginado ===
+    const total = itemsMapped.length;
+
+    return { items: itemsMapped, total, totalAll };
+  }
+
   async findByFiltersMod(
     page: number = 1,
     limit: number = 10,

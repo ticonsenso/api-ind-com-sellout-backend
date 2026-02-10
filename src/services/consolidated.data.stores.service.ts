@@ -469,6 +469,34 @@ export class ConsolidatedDataStoresService {
         };
     }
 
+    async getFilteredConsolidatedDataStoresProductIndefinido(
+        page: number,
+        limit: number,
+        search?: {
+            tipo?: string;
+            distributor?: string;
+            codeStoreDistributor?: string;
+            codeProductDistributor?: string;
+            descriptionDistributor?: string;
+        },
+        calculateDate?: Date
+    ): Promise<ConsolidatedDataStoresFiltersResponseDto> {
+        const tipo = search?.tipo || 'stores';
+        if (tipo === 'stores') {
+            const { items, totalAll } = await this.consolidatedDataStoresRepository.findByFiltersModStores(page, limit, search, calculateDate);
+            return {
+                items: items,
+                total: totalAll,
+            };
+        } else {
+            const { items, totalAll } = await this.consolidatedDataStoresRepository.findByFiltersModProduct(page, limit, search, calculateDate);
+            return {
+                items: items,
+                total: totalAll,
+            };
+        }
+    }
+
 
     async getConsolidatedDataStoresDetailNullFields(calculateDate?: Date): Promise<any> {
         return this.consolidatedDataStoresRepository.findDetailNullFields(calculateDate);
