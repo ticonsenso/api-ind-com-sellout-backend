@@ -885,8 +885,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
        SET code_store = t2.code_store_sic
        FROM "db-sellout".sellout_store_master t2
        WHERE UPPER(REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), ' ', '')) = t2.search_store
-       AND cds.code_store IS NULL
-       AND cds.calculate_date = $1`,
+       AND cds.calculate_date = $1
+       AND cds.code_store IS DISTINCT FROM t2.code_store_sic;`,
       [calculateDate]
     );
     return result[1];
@@ -898,8 +898,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
        SET code_product = t2.code_product_sic
        FROM "db-sellout".sellout_product_master t2
        WHERE UPPER(REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), ' ', '')) = t2.search_product_store
-       AND cds.code_product IS NULL
-       AND cds.calculate_date = $1`,
+       AND cds.calculate_date = $1
+       AND cds.code_product IS DISTINCT FROM t2.code_product_sic;`,
       [calculateDate]
     );
     return result[1];
