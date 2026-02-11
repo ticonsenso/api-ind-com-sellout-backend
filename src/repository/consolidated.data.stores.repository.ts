@@ -467,6 +467,191 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     return { items, total, totalAll };
   }
 
+  async findByFiltersModStores(
+    page: number = 1,
+    limit: number = 10,
+    filters?: {
+      distributor?: string;
+      codeStoreDistributor?: string;
+      codeProductDistributor?: string;
+      descriptionDistributor?: string;
+    },
+    calculateDate?: Date
+  ): Promise<{
+    items: ConsolidatedDataStoresDto[];
+    total: number;
+    totalAll: number;
+  }> {
+    const qb = this.repository
+      .createQueryBuilder("s")
+      .select([
+        "s.calculate_date AS calculate_date",
+        "s.distributor AS distributor",
+        "s.code_store_distributor AS code_store_distributor",
+        "s.code_product_distributor AS code_product_distributor",
+        "s.description_distributor AS description_distributor",
+        "s.units_sold_distributor AS units_sold_distributor",
+        "s.code_product AS code_product",
+        "s.code_store AS code_store",
+        "s.sale_date AS sale_date",
+        "s.id AS id",
+        "s.status AS status",
+      ]);
+
+    // === Filtro especifico ===
+    qb.andWhere("UPPER(REPLACE(s.code_store, ' ', '')) = 'NOSEVISITA'");
+
+    // === Filtros dinámicos ===
+    if (filters?.distributor) {
+      qb.andWhere("s.distributor ILIKE :d", { d: `%${filters.distributor}%` });
+    }
+    if (filters?.codeStoreDistributor) {
+      qb.andWhere("s.code_store_distributor ILIKE :csd", {
+        csd: `%${filters.codeStoreDistributor}%`,
+      });
+    }
+    if (filters?.codeProductDistributor) {
+      qb.andWhere("s.code_product_distributor ILIKE :cpd", {
+        cpd: `%${filters.codeProductDistributor}%`,
+      });
+    }
+    if (filters?.descriptionDistributor) {
+      qb.andWhere("s.description_distributor ILIKE :desc", {
+        desc: `%${filters.descriptionDistributor}%`,
+      });
+    }
+
+    // === Filtro por año y mes ===
+    if (calculateDate) {
+      const date = calculateDate.toISOString().split("T")[0];
+      qb.andWhere(`s.calculate_date::date = '${date}'`);
+    }
+
+    // === Total sin paginar ===
+    const totalAll = await qb.getCount();
+
+    // === Paginación ===
+    const items = await qb
+      .offset((page - 1) * limit)
+      .limit(limit)
+      .getRawMany();
+
+    // === Mapeo ===
+    const itemsMapped: any = items.map((item: any) => ({
+      calculateDate: item.calculate_date,
+      distributor: item.distributor,
+      codeStoreDistributor: item.code_store_distributor,
+      codeProductDistributor: item.code_product_distributor,
+      descriptionDistributor: item.description_distributor,
+      unitsSoldDistributor: item.units_sold_distributor ? Number(item.units_sold_distributor) : null,
+      codeProduct: item.code_product,
+      codeStore: item.code_store,
+      saleDate: item.sale_date,
+      storeName: null,
+      productModel: null,
+      id: item.id,
+      status: item.status,
+    }));
+
+    // === Total paginado ===
+    const total = itemsMapped.length;
+
+    return { items: itemsMapped, total, totalAll };
+  }
+
+
+  async findByFiltersModProduct(
+    page: number = 1,
+    limit: number = 10,
+    filters?: {
+      distributor?: string;
+      codeStoreDistributor?: string;
+      codeProductDistributor?: string;
+      descriptionDistributor?: string;
+    },
+    calculateDate?: Date
+  ): Promise<{
+    items: ConsolidatedDataStoresDto[];
+    total: number;
+    totalAll: number;
+  }> {
+    const qb = this.repository
+      .createQueryBuilder("s")
+      .select([
+        "s.calculate_date AS calculate_date",
+        "s.distributor AS distributor",
+        "s.code_store_distributor AS code_store_distributor",
+        "s.code_product_distributor AS code_product_distributor",
+        "s.description_distributor AS description_distributor",
+        "s.units_sold_distributor AS units_sold_distributor",
+        "s.code_product AS code_product",
+        "s.code_store AS code_store",
+        "s.sale_date AS sale_date",
+        "s.id AS id",
+        "s.status AS status",
+      ]);
+
+    // === Filtro especifico ===
+    qb.andWhere("UPPER(REPLACE(s.code_product, ' ', '')) = 'OTROS'");
+
+    // === Filtros dinámicos ===
+    if (filters?.distributor) {
+      qb.andWhere("s.distributor ILIKE :d", { d: `%${filters.distributor}%` });
+    }
+    if (filters?.codeStoreDistributor) {
+      qb.andWhere("s.code_store_distributor ILIKE :csd", {
+        csd: `%${filters.codeStoreDistributor}%`,
+      });
+    }
+    if (filters?.codeProductDistributor) {
+      qb.andWhere("s.code_product_distributor ILIKE :cpd", {
+        cpd: `%${filters.codeProductDistributor}%`,
+      });
+    }
+    if (filters?.descriptionDistributor) {
+      qb.andWhere("s.description_distributor ILIKE :desc", {
+        desc: `%${filters.descriptionDistributor}%`,
+      });
+    }
+
+    // === Filtro por año y mes ===
+    if (calculateDate) {
+      const date = calculateDate.toISOString().split("T")[0];
+      qb.andWhere(`s.calculate_date::date = '${date}'`);
+    }
+
+    // === Total sin paginar ===
+    const totalAll = await qb.getCount();
+
+    // === Paginación ===
+    const items = await qb
+      .offset((page - 1) * limit)
+      .limit(limit)
+      .getRawMany();
+
+    // === Mapeo ===
+    const itemsMapped: any = items.map((item: any) => ({
+      calculateDate: item.calculate_date,
+      distributor: item.distributor,
+      codeStoreDistributor: item.code_store_distributor,
+      codeProductDistributor: item.code_product_distributor,
+      descriptionDistributor: item.description_distributor,
+      unitsSoldDistributor: item.units_sold_distributor ? Number(item.units_sold_distributor) : null,
+      codeProduct: item.code_product,
+      codeStore: item.code_store,
+      saleDate: item.sale_date,
+      storeName: null,
+      productModel: null,
+      id: item.id,
+      status: item.status,
+    }));
+
+    // === Total paginado ===
+    const total = itemsMapped.length;
+
+    return { items: itemsMapped, total, totalAll };
+  }
+
   async findByFiltersMod(
     page: number = 1,
     limit: number = 10,
@@ -490,6 +675,11 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
           return subQuery
             .select("codigo_jde")
             .addSelect("MAX(nombre_sap)", "nombre_sap")
+            .addSelect("MAX(linea_negocio_sap)", "linea_negocio")
+            .addSelect("MAX(mar_desc_grupo_art)", "categoria")
+            .addSelect("MAX(mar_desc_jerarq)", "sub_categoria")
+            .addSelect("MAX(mar_modelo_im)", "modelo")
+            .addSelect("MAX(nombre_ime)", "nombre_ime")
             .from("db-sellout.product_sic", "ps_inner")
             .groupBy("codigo_jde");
         },
@@ -502,6 +692,12 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
           return subQuery
             .select("cod_almacen")
             .addSelect("MAX(nombre_almacen)", "nombre_almacen")
+            .addSelect("MAX(canal)", "canal")
+            .addSelect("MAX(distrib_sap)", "grupo_comercial")
+            .addSelect("MAX(grupo_zona)", "grupo_zona")
+            .addSelect("MAX(zona)", "zona")
+            .addSelect("MAX(categoria)", "categoria_almacen")
+            .addSelect("MAX(supervisor)", "supervisor")
             .from("db-sellout.stores_sic", "ss_inner")
             .groupBy("cod_almacen");
         },
@@ -519,7 +715,21 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "s.code_store AS code_store",
         "s.sale_date AS sale_date",
         "ss.nombre_almacen AS store_name",
+        "ss.nombre_almacen AS nombre_almacen",
         "ps.nombre_sap AS product_model",
+        "s.sale_date AS fecha_venta",
+        "s.observation AS observation",
+        "ps.linea_negocio",
+        "ps.categoria",
+        "ps.sub_categoria",
+        "ps.modelo",
+        "ps.nombre_ime",
+        "ss.canal",
+        "ss.grupo_comercial",
+        "ss.grupo_zona",
+        "ss.zona",
+        "ss.categoria_almacen",
+        "ss.supervisor"
       ]);
 
     // === Filtros dinámicos ===
@@ -575,6 +785,20 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       productModel: item.product_model,
       id: item.id,
       status: item.status,
+      fechaVenta: item.fecha_venta,
+      observation: item.observation,
+      lineaNegocio: item.linea_negocio,
+      categoria: item.categoria,
+      subCategoria: item.sub_categoria,
+      modelo: item.modelo,
+      nombreIme: item.nombre_ime,
+      canal: item.canal,
+      grupoComercial: item.grupo_comercial,
+      nombreAlmacen: item.nombre_almacen,
+      grupoZona: item.grupo_zona,
+      zona: item.zona,
+      categoriaAlmacen: item.categoria_almacen,
+      supervisor: item.supervisor
     }));
 
     // === Total paginado ===

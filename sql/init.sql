@@ -1257,3 +1257,17 @@ CREATE TABLE IF NOT EXISTS config_lines (
 );
 
 
+
+
+CREATE INDEX idx_cds_search_global
+ON "db-sellout".consolidated_data_stores 
+(UPPER(REPLACE(distributor || code_store_distributor, ' ', '')));
+
+
+CREATE INDEX idx_cds_search_product_global
+ON "db-sellout".consolidated_data_stores 
+(UPPER(REPLACE(
+    COALESCE(distributor, '') || 
+    COALESCE(code_product_distributor, '') || 
+    COALESCE(description_distributor, ''), 
+' ', '')));
