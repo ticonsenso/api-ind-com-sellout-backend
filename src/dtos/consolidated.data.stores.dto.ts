@@ -1,6 +1,6 @@
-import {Expose, Type} from 'class-transformer';
-import {IsBoolean, IsNumber, IsOptional, IsString, MaxLength} from 'class-validator';
-import {MatriculationTemplateResponseDto} from './matriculation.templates.dto';
+import { Expose, Type } from 'class-transformer';
+import { IsBoolean, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { MatriculationTemplateResponseDto } from './matriculation.templates.dto';
 
 export class CreateConsolidatedDataStoresDto {
     @IsOptional()
@@ -233,6 +233,45 @@ export class ConsolidatedDataStoresDto {
 
     @Expose()
     observation?: string;
+
+    @Expose()
+    fechaVenta?: string;
+
+    @Expose()
+    lineaNegocio?: string;
+
+    @Expose()
+    categoria?: string;
+
+    @Expose()
+    subCategoria?: string;
+
+    @Expose()
+    modelo?: string;
+
+    @Expose()
+    nombreIme?: string;
+
+    @Expose()
+    canal?: string;
+
+    @Expose()
+    grupoComercial?: string;
+
+    @Expose()
+    nombreAlmacen?: string;
+
+    @Expose()
+    grupoZona?: string;
+
+    @Expose()
+    zona?: string;
+
+    @Expose()
+    categoriaAlmacen?: string;
+
+    @Expose()
+    supervisor?: string;
 }
 
 export class ConsolidatedDataStoresFiltersResponseDto {

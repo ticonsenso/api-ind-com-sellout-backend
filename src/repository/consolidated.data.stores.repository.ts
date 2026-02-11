@@ -675,6 +675,11 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
           return subQuery
             .select("codigo_jde")
             .addSelect("MAX(nombre_sap)", "nombre_sap")
+            .addSelect("MAX(linea_negocio_sap)", "linea_negocio")
+            .addSelect("MAX(mar_desc_grupo_art)", "categoria")
+            .addSelect("MAX(mar_desc_jerarq)", "sub_categoria")
+            .addSelect("MAX(mar_modelo_im)", "modelo")
+            .addSelect("MAX(nombre_ime)", "nombre_ime")
             .from("db-sellout.product_sic", "ps_inner")
             .groupBy("codigo_jde");
         },
@@ -687,6 +692,12 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
           return subQuery
             .select("cod_almacen")
             .addSelect("MAX(nombre_almacen)", "nombre_almacen")
+            .addSelect("MAX(canal)", "canal")
+            .addSelect("MAX(distrib_sap)", "grupo_comercial")
+            .addSelect("MAX(grupo_zona)", "grupo_zona")
+            .addSelect("MAX(zona)", "zona")
+            .addSelect("MAX(categoria)", "categoria_almacen")
+            .addSelect("MAX(supervisor)", "supervisor")
             .from("db-sellout.stores_sic", "ss_inner")
             .groupBy("cod_almacen");
         },
@@ -704,7 +715,21 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "s.code_store AS code_store",
         "s.sale_date AS sale_date",
         "ss.nombre_almacen AS store_name",
+        "ss.nombre_almacen AS nombre_almacen",
         "ps.nombre_sap AS product_model",
+        "s.sale_date AS fecha_venta",
+        "s.observation AS observation",
+        "ps.linea_negocio",
+        "ps.categoria",
+        "ps.sub_categoria",
+        "ps.modelo",
+        "ps.nombre_ime",
+        "ss.canal",
+        "ss.grupo_comercial",
+        "ss.grupo_zona",
+        "ss.zona",
+        "ss.categoria_almacen",
+        "ss.supervisor"
       ]);
 
     // === Filtros dinámicos ===
@@ -760,6 +785,20 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       productModel: item.product_model,
       id: item.id,
       status: item.status,
+      fechaVenta: item.fecha_venta,
+      observation: item.observation,
+      lineaNegocio: item.linea_negocio,
+      categoria: item.categoria,
+      subCategoria: item.sub_categoria,
+      modelo: item.modelo,
+      nombreIme: item.nombre_ime,
+      canal: item.canal,
+      grupoComercial: item.grupo_comercial,
+      nombreAlmacen: item.nombre_almacen,
+      grupoZona: item.grupo_zona,
+      zona: item.zona,
+      categoriaAlmacen: item.categoria_almacen,
+      supervisor: item.supervisor
     }));
 
     // === Total paginado ===
