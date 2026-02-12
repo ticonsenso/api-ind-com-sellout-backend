@@ -60,8 +60,8 @@ export class UpdateSelloutStoreMasterDto {
     status?: boolean;
 
     @IsOptional()
-    @IsDateString()
-    periodo?: Date;
+    @IsString()
+    periodo?: string;
 }
 
 export class SelloutStoreMasterDto {
