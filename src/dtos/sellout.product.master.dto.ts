@@ -69,8 +69,8 @@ export class UpdateSelloutProductMasterDto {
     status?: boolean;
 
     @IsOptional()
-    @IsDateString()
-    periodo?: Date;
+    @IsString()
+    periodo?: string;
 }
 
 export class SelloutProductMasterDto {
