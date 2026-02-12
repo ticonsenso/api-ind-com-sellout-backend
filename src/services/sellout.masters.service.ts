@@ -142,7 +142,7 @@ export class SelloutMastersService {
         let insert = 0;
         let update = 0;
         let errors = '';
-
+        const periodoActivo = createSelloutProductMastersDto[0].periodo;
         for (const dto of createSelloutProductMastersDto) {
             try {
                 let existing: SelloutProductMaster | null = null;
@@ -183,8 +183,22 @@ export class SelloutMastersService {
         if (productsToCreate.length > 0) {
             await this.selloutProductMasterRepository.save(productsToCreate);
         }
-
+        await this.syncAndCleanupByPeriodProduct(productsToCreate, periodoActivo!);
         return { insert, update, errors };
+    }
+
+    async syncAndCleanupByPeriodProduct(
+        currentActiveStores: CreateSelloutProductMasterDto[],
+        periodoActivo: string
+    ): Promise<void> {
+        const activeKeys = currentActiveStores.map(store => {
+            return store.searchProductStore || (cleanString(store.distributor ?? '') + cleanString(store.productDistributor ?? '') + cleanString(store.productStore ?? ''));
+        });
+        if (activeKeys.length > 0) {
+            await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
+        } else {
+            await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, []);
+        }
     }
 
     async updateSelloutStoreMaster(id: number, updateSelloutStoreMasterDto: UpdateSelloutStoreMasterDto): Promise<SelloutStoreMaster> {
@@ -221,7 +235,24 @@ export class SelloutMastersService {
                 errors += error + '\n';
             }
         }
+        const periodoActivo = configs[0].periodo;
+        await this.syncAndCleanupByPeriodStore(configs, periodoActivo!);
         return { insert, update, errors };
+    }
+
+
+    async syncAndCleanupByPeriodStore(
+        currentActiveStores: CreateSelloutStoreMasterDto[],
+        periodoActivo: string
+    ): Promise<void> {
+        const activeKeys = currentActiveStores.map(store => {
+            return store.searchStore || (cleanString(store.distributor ?? '') + cleanString(store.storeDistributor ?? ''));
+        });
+        if (activeKeys.length > 0) {
+            await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
+        } else {
+            await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, []);
+        }
     }
 
     async syncMasterStores(): Promise<void> {

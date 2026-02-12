@@ -99,4 +99,14 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
             }
         });
     }
+
+    async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
+        await this.repository
+            .createQueryBuilder()
+            .delete()
+            .from(SelloutProductMaster)
+            .where("periodo = :periodo", { periodo: periodo }) // Filtro crítico
+            .andWhere("searchProductStore NOT IN (:...keys)", { keys: activeKeys })
+            .execute();
+    }
 }

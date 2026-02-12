@@ -153,4 +153,14 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
             }
         });
     }
+
+    async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
+        await this.repository
+            .createQueryBuilder()
+            .delete()
+            .from(SelloutStoreMaster)
+            .where("periodo = :periodo", { periodo: periodo })
+            .andWhere("searchStore NOT IN (:...keys)", { keys: activeKeys })
+            .execute();
+    }
 }
