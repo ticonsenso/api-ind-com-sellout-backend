@@ -1,5 +1,5 @@
-import {Expose} from 'class-transformer';
-import {IsBoolean, IsOptional, IsString, MaxLength} from 'class-validator';
+import { Expose } from 'class-transformer';
+import { IsBoolean, IsDateString, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateSelloutProductMasterDto {
     @IsOptional()
@@ -30,6 +30,10 @@ export class CreateSelloutProductMasterDto {
     @IsOptional()
     @IsBoolean()
     status!: boolean;
+
+    @IsOptional()
+    @IsDateString()
+    periodo?: Date;
 
 }
 
@@ -63,6 +67,10 @@ export class UpdateSelloutProductMasterDto {
     @IsOptional()
     @IsBoolean()
     status?: boolean;
+
+    @IsOptional()
+    @IsDateString()
+    periodo?: Date;
 }
 
 export class SelloutProductMasterDto {
@@ -83,6 +91,9 @@ export class SelloutProductMasterDto {
 
     @Expose()
     codeProductSic?: string;
+
+    @Expose()
+    periodo?: Date;
 
     @Expose()
     status!: boolean;

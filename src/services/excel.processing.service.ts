@@ -11,6 +11,7 @@ const HEADERS_MAP: Record<string, Record<string, string>> = {
     DISTRIBUIDOR: "distribuidor",
     "ALMACEN DISTRIBUIDOR": "almacenDistribuidor",
     "COD. ALMACEN SIC": "codAlmSic",
+    "PERIODO": "periodo",
   },
 
   noHomologadosProducts: {
@@ -18,21 +19,22 @@ const HEADERS_MAP: Record<string, Record<string, string>> = {
     "PRODUCTO ALMACEN": "productoAlmacen",
     "DESCRIPCIÓN PRODUCTO ALMACEN": "descriptionProduct",
     "COD. PRODUCTO SIC": "codProdSic",
+    "PERIODO": "periodo",
   },
 };
 
 export class ExcelImportService {
 
-    static readonly NOHOMOLOGADOSPRODUCTS = "noHomologadosProducts";
-    static readonly NOHOMOLOGADOSSTORE = "noHomologadosStore";
-    private selloutMastersService:SelloutMastersService;
-    private consolidatedDataStoresRepository:ConsolidatedDataStoresRepository;
+  static readonly NOHOMOLOGADOSPRODUCTS = "noHomologadosProducts";
+  static readonly NOHOMOLOGADOSSTORE = "noHomologadosStore";
+  private selloutMastersService: SelloutMastersService;
+  private consolidatedDataStoresRepository: ConsolidatedDataStoresRepository;
   constructor(dataSource: DataSource) {
     this.selloutMastersService = new SelloutMastersService(dataSource);
     this.consolidatedDataStoresRepository = new ConsolidatedDataStoresRepository(dataSource);
   }
 
-  async processExcel(date: string,type: string, file: Express.Multer.File) {
+  async processExcel(date: string, type: string, file: Express.Multer.File) {
     const workbook = XLSX.read(file.buffer, { type: "buffer" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
@@ -112,51 +114,53 @@ export class ExcelImportService {
     }
   }
 
-async saveValidRows(date:string,type: string, rows: any[]): Promise<void> {
-  const processors: Record<string, () => Promise<void>> = {
-    [ExcelImportService.NOHOMOLOGADOSSTORE]: async () => {
-      const configs: CreateSelloutStoreMasterDto[] = rows
-        .map((row) => ({
-          distributor: row.distribuidor,
-          storeDistributor: row.almacenDistribuidor,
-          codeStoreSic: row.codAlmSic,
-          status: true,
-        }))
-        .filter(cfg => cfg.codeStoreSic && cfg.codeStoreSic.trim() !== "NO SE VISITA");
+  async saveValidRows(date: string, type: string, rows: any[]): Promise<void> {
+    const processors: Record<string, () => Promise<void>> = {
+      [ExcelImportService.NOHOMOLOGADOSSTORE]: async () => {
+        const configs: CreateSelloutStoreMasterDto[] = rows
+          .map((row) => ({
+            distributor: row.distribuidor,
+            storeDistributor: row.almacenDistribuidor,
+            codeStoreSic: row.codAlmSic,
+            periodo: row.periodo,
+            status: true,
+          }))
+          .filter(cfg => cfg.codeStoreSic && cfg.codeStoreSic.trim() !== "NO SE VISITA");
 
-      await Promise.allSettled(
-        configs.map(cfg =>
-          this.selloutMastersService.createSelloutStoreMasterExcel(cfg),
-        ),
-      );
-      //this.updateData(date, configs, undefined);
-    },
-    [ExcelImportService.NOHOMOLOGADOSPRODUCTS]: async () => {
-      const configs: CreateSelloutProductMasterDto[] = rows
-        .map((row) => ({
-          distributor: row.distribuidor,
-          productDistributor: row.descriptionProduct,
-          productStore: row.productoAlmacen,
-          codeProductSic: row.codProdSic,
-          status: true,
-        }))
-        .filter(cfg => cfg.productStore && cfg.productStore !== "OTROS");
+        await Promise.allSettled(
+          configs.map(cfg =>
+            this.selloutMastersService.createSelloutStoreMasterExcel(cfg),
+          ),
+        );
+        //this.updateData(date, configs, undefined);
+      },
+      [ExcelImportService.NOHOMOLOGADOSPRODUCTS]: async () => {
+        const configs: CreateSelloutProductMasterDto[] = rows
+          .map((row) => ({
+            distributor: row.distribuidor,
+            productDistributor: row.descriptionProduct,
+            productStore: row.productoAlmacen,
+            codeProductSic: row.codProdSic,
+            periodo: row.periodo,
+            status: true,
+          }))
+          .filter(cfg => cfg.productStore && cfg.productStore !== "OTROS");
 
-      await Promise.allSettled(
-        configs.map(cfg =>
-          this.selloutMastersService.createSelloutProductMasterExcel(cfg),
-        ),
-      );
-      //this.updateData(date, undefined, configs);
+        await Promise.allSettled(
+          configs.map(cfg =>
+            this.selloutMastersService.createSelloutProductMasterExcel(cfg),
+          ),
+        );
+        //this.updateData(date, undefined, configs);
+      }
+    };
+
+    // Ejecutar según tipo
+    const processor = processors[type];
+    if (processor) {
+      await processor();
     }
-  };
-
-  // Ejecutar según tipo
-  const processor = processors[type];
-  if (processor) {
-    await processor();
   }
-}
 
   buildErrorExcel(rows: any[]): Buffer {
     const worksheet = XLSX.utils.json_to_sheet(rows);
@@ -166,43 +170,43 @@ async saveValidRows(date:string,type: string, rows: any[]): Promise<void> {
   }
 
 
-async updateData(
-  fecha: string,
-  codeStrorage: CreateSelloutStoreMasterDto[] | undefined,
-  codeProd: CreateSelloutProductMasterDto[] | undefined
-): Promise<void> {
+  async updateData(
+    fecha: string,
+    codeStrorage: CreateSelloutStoreMasterDto[] | undefined,
+    codeProd: CreateSelloutProductMasterDto[] | undefined
+  ): Promise<void> {
 
-  if (codeStrorage && codeStrorage.length > 0) {
-    for (const item of codeStrorage) {
-      const registros = await this.consolidatedDataStoresRepository
-        .findBySearchStoreWhichCalculeDate(item.searchStore!, fecha);
-      if (registros.length === 0) continue;
-      await Promise.all(
-        registros.map(reg =>
-          this.consolidatedDataStoresRepository.update(reg.id, {
-            ...reg,
-            codeStore: item.codeStoreSic!
-          })
-        )
-      );
+    if (codeStrorage && codeStrorage.length > 0) {
+      for (const item of codeStrorage) {
+        const registros = await this.consolidatedDataStoresRepository
+          .findBySearchStoreWhichCalculeDate(item.searchStore!, fecha);
+        if (registros.length === 0) continue;
+        await Promise.all(
+          registros.map(reg =>
+            this.consolidatedDataStoresRepository.update(reg.id, {
+              ...reg,
+              codeStore: item.codeStoreSic!
+            })
+          )
+        );
+      }
+    }
+
+    if (codeProd && codeProd.length > 0) {
+      for (const item of codeProd) {
+        const registros = await this.consolidatedDataStoresRepository
+          .findBySearchProductWhichCalculeDate(item.searchProductStore!, fecha);
+        if (registros.length === 0) continue;
+        await Promise.all(
+          registros.map(reg =>
+            this.consolidatedDataStoresRepository.update(reg.id, {
+              ...reg,
+              codeProduct: item.codeProductSic!
+            })
+          )
+        );
+      }
     }
   }
-
-  if (codeProd && codeProd.length > 0) {
-    for (const item of codeProd) {
-      const registros = await this.consolidatedDataStoresRepository
-        .findBySearchProductWhichCalculeDate(item.searchProductStore!, fecha);
-      if (registros.length === 0) continue;
-      await Promise.all(
-        registros.map(reg =>
-          this.consolidatedDataStoresRepository.update(reg.id, {
-            ...reg,
-            codeProduct: item.codeProductSic!
-          })
-        )
-      );
-    }
-  }
-}
 
 }

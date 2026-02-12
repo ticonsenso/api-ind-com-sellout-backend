@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsBoolean, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsDateString, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateSelloutStoreMasterDto {
     @IsString()
@@ -22,6 +22,10 @@ export class CreateSelloutStoreMasterDto {
     @IsOptional()
     @IsBoolean()
     status!: boolean;
+
+    @IsOptional()
+    @IsDateString()
+    periodo?: Date;
 
 }
 
@@ -54,6 +58,10 @@ export class UpdateSelloutStoreMasterDto {
     @IsOptional()
     @IsBoolean()
     status?: boolean;
+
+    @IsOptional()
+    @IsDateString()
+    periodo?: Date;
 }
 
 export class SelloutStoreMasterDto {
@@ -71,6 +79,9 @@ export class SelloutStoreMasterDto {
 
     @Expose()
     codeStoreSic?: string;
+
+    @Expose()
+    periodo?: Date;
 
     @Expose()
     status!: boolean;
@@ -96,6 +107,10 @@ export class SelloutStoreMasterFiltersDto {
     @IsString()
     @MaxLength(255)
     codeStoreSic?: string;
+
+    @IsOptional()
+    @IsDateString()
+    periodo?: Date;
 }
 
 export class SelloutStoreMasterFiltersResponseDto {

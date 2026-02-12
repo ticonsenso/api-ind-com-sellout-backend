@@ -30,4 +30,7 @@ export class SelloutProductMaster {
     @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     updatedAt!: Date;
 
+    @Column({ name: 'periodo', type: 'date', default: () => 'CURRENT_DATE' })
+    periodo!: Date;
+
 }

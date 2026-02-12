@@ -60,10 +60,20 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
         });
     }
 
+    async findBySearchStoreAndPeriodo(searchStore: string, periodo: Date | string): Promise<SelloutStoreMaster | null> {
+        return this.repository.findOne({
+            where: {
+                searchStore: Raw(alias => `UPPER(${alias}) = :searchStore`, { searchStore: searchStore.toUpperCase() }),
+                periodo: periodo as unknown as Date, // Cast to match entity type expectation if needed, or rely on driver
+            },
+        });
+    }
+
     async findByFilters(
         page = 1,
         limit = 10,
         search?: string,
+        periodo?: string,
     ): Promise<{ items: SelloutStoreMaster[]; total: number }> {
         const qb = this.repository.createQueryBuilder('s').orderBy('s.id', 'ASC');
         if (search?.trim()) {
@@ -72,6 +82,10 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
                     .orWhere('s.storeDistributor ILIKE :search', { search: `%${search}%` })
                     .orWhere('s.codeStoreSic ILIKE :search', { search: `%${search}%` });
             }));
+        }
+
+        if (periodo) {
+            qb.andWhere('s.periodo = :periodo', { periodo });
         }
 
         qb.skip((page - 1) * limit).take(limit);
@@ -132,4 +146,11 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     }
 
 
+    async findByPeriodo(periodo: string): Promise<SelloutStoreMaster[]> {
+        return this.repository.find({
+            where: {
+                periodo: periodo as unknown as Date
+            }
+        });
+    }
 }
