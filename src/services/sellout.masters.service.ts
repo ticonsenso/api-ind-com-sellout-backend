@@ -359,7 +359,7 @@ export class SelloutMastersService {
                         const consolidatedRecords = await this.consolidatedDataStoresRepository.findBySearchStore(searchStore);
 
                         if (consolidatedRecords.length === 0) {
-                            throw new Error('No se encontraron registros que coincidan con el searchStore');
+                            console.log('❌ No se encontraron registros que coincidan con el searchStore', searchStore);
                         }
 
                         const storeSic = await this.selloutStoreRepository.getDistribuidorAndStoreNameByStoreSic(codeStoreSic);

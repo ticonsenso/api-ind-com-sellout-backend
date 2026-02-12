@@ -32,8 +32,8 @@ export class CreateSelloutProductMasterDto {
     status!: boolean;
 
     @IsOptional()
-    @IsDateString()
-    periodo?: Date;
+    @IsString()
+    periodo?: string;
 
 }
 
