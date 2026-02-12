@@ -736,9 +736,13 @@ CREATE TABLE IF NOT EXISTS sellout_store_master (
     search_store VARCHAR(255) NULL UNIQUE,
     code_store_sic VARCHAR(255) NULL,
     status BOOLEAN DEFAULT TRUE,
+    periodo DATE NOT NULL DEFAULT CURRENT_DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+--ALTER TABLE sellout_store_master ADD COLUMN periodo DATE NOT NULL DEFAULT CURRENT_DATE;
+
 -- CREATE UNIQUE INDEX unique_search_store ON sellout_store_master(search_store);
 
 -- Tabla: sellout_product_master
@@ -749,10 +753,13 @@ CREATE TABLE IF NOT EXISTS sellout_product_master (
     product_store VARCHAR(255) NULL,
     search_product_store VARCHAR(255) NULL,
     code_product_sic VARCHAR(255) NULL,
-    status BOOLEAN DEFAULT TRUE,
+    status BOOLEAN DEFAULT TRUE,    
+    periodo DATE NOT NULL DEFAULT CURRENT_DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+--ALTER TABLE "db-sellout".sellout_product_master ADD COLUMN periodo DATE NOT NULL DEFAULT CURRENT_DATE;
 
 -- CREATE UNIQUE INDEX unique_search_product_store ON sellout_product_master(search_product_store);
 
@@ -1271,3 +1278,8 @@ ON "db-sellout".consolidated_data_stores
     COALESCE(code_product_distributor, '') || 
     COALESCE(description_distributor, ''), 
 ' ', '')));
+
+
+ALTER TABLE "db-sellout".sellout_store_master DROP CONSTRAINT sellout_store_master_pkey;
+ALTER TABLE "db-sellout".sellout_store_master DROP CONSTRAINT sellout_store_master_search_store_key;
+ALTER TABLE "db-sellout".sellout_product_master DROP CONSTRAINT sellout_product_master_pkey;

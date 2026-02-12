@@ -47,6 +47,10 @@ const selloutMastersController = new SelloutMastersController(AppDataSource);
  *               status:
  *                 type: boolean
  *                 description: Estado de la tienda (ACTIVO, INACTIVO)
+ *               periodo:
+ *                 type: string
+ *                 format: date
+ *                 description: Periodo del reporte (YYYY-MM-DD)
  *     responses:
  *       200:
  *         description: Maestro de almacen creado correctamente
@@ -127,6 +131,10 @@ router.post(
  *               status:
  *                 type: boolean
  *                 description: Estado de la tienda (ACTIVO, INACTIVO)
+ *               periodo:
+ *                 type: string
+ *                 format: date
+ *                 description: Periodo del reporte (YYYY-MM-DD)
  *     responses:
  *       200:
  *         description: Maestro de almacen actualizado correctamente
@@ -190,9 +198,10 @@ router.put(
  *                 storeDistributor:
  *                   type: string
  *                   description: Distribuidor de la tienda
- *                 codeStoreSic:  
- *                   type: number
- *                   description: Código de la tienda
+ *                 periodo:
+ *                   type: string
+ *                   format: date
+ *                   description: Periodo del reporte
  *     responses: 
  *       200:
  *         description: Maestros de almacen actualizados correctamente
@@ -309,6 +318,12 @@ router.delete(
  *         required: false
  *         schema:  
  *           type: string
+ *       - in: query
+ *         name: periodo
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
  *     responses:
  *       200:
  *         description: Maestros de almacen filtrados correctamente
@@ -334,6 +349,9 @@ router.delete(
  *                         type: string
  *                       status:    
  *                         type: boolean
+ *                       periodo:
+ *                         type: string
+ *                         format: date
  *                 total:
  *                   type: integer
  *       400:
@@ -452,6 +470,10 @@ router.get(
  *               status:
  *                 type: boolean
  *                 description: Estado del producto (ACTIVO, INACTIVO)
+ *               periodo:
+ *                 type: string
+ *                 format: date
+ *                 description: Periodo del reporte (YYYY-MM-DD)
  *     responses:
  *       200:
  *         description: Maestro de producto creado correctamente
@@ -538,6 +560,10 @@ router.post(
  *               status:
  *                 type: boolean
  *                 description: Estado del producto (ACTIVO, INACTIVO)
+ *               periodo:
+ *                 type: string
+ *                 format: date
+ *                 description: Periodo del reporte (YYYY-MM-DD)
  *     responses:
  *       200:
  *         description: Maestro de producto actualizado correctamente
@@ -614,6 +640,10 @@ router.put(
  *                 codeProductSic:
  *                   type: string
  *                   description: Código del producto
+ *                 periodo:
+ *                   type: string
+ *                   format: date
+ *                   description: Periodo del reporte
  *     responses: 
  *       200:
  *         description: Maestros de producto actualizados correctamente
@@ -734,6 +764,12 @@ router.delete(
  *         required: false
  *         schema:
  *           type: string
+ *       - in: query
+ *         name: periodo
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
  *     responses:
  *       200:
  *         description: Maestros de producto filtrados correctamente
@@ -761,6 +797,9 @@ router.delete(
  *                         type: string
  *                       status:
  *                         type: boolean
+ *                       periodo:
+ *                         type: string
+ *                         format: date
  *                 total:
  *                   type: integer
  *       400:

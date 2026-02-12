@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn,} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, } from 'typeorm';
 
 @Entity('sellout_store_master')
 export class SelloutStoreMaster {
@@ -26,6 +26,9 @@ export class SelloutStoreMaster {
 
     @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     updatedAt!: Date;
+
+    @Column({ name: 'periodo', type: 'date', default: () => 'CURRENT_DATE' })
+    periodo!: Date;
 
 
 }

@@ -37,20 +37,9 @@ import { ConsolidatedDataStoresService } from '../services/consolidated.data.sto
 import { NullFieldFilters } from '../dtos/consolidated.data.stores.dto';
 import { ExcelImportService } from '../services/excel.processing.service';
 import * as Excel from 'exceljs';
+import { ExportField, ExportFieldAvanced } from '../utils/export.interfaces';
 
-export interface ExportField {
-    key: string;
-    header: string;
-    transform?: (value: any, item: any) => any;
-}
 
-export interface ExportFieldAvanced {
-    key: string;
-    header: string;
-    width?: number;
-    transform?: (value: any, item: any) => any;
-    type?: 'string' | 'number' | 'date' | 'boolean';
-}
 
 export function flattenDataForExport<T>(data: T[], fields: ExportField[]): Record<string, any>[] {
     return data.map((item) => {
@@ -145,11 +134,19 @@ export class ExportDataController {
                 break;
 
             case 'mt prod':
-                rawData = await this.selloutProductMasterRepository.findAll();
+                if (calculateDate) {
+                    rawData = await this.selloutProductMasterRepository.findByPeriodo(req.query.calculate_date as string);
+                } else {
+                    rawData = await this.selloutProductMasterRepository.findAll();
+                }
                 break;
 
             case 'mt. alm':
-                rawData = await this.selloutStoreMasterRepository.findAll();
+                if (calculateDate) {
+                    rawData = await this.selloutStoreMasterRepository.findByPeriodo(req.query.calculate_date as string);
+                } else {
+                    rawData = await this.selloutStoreMasterRepository.findAll();
+                }
                 break;
             case 'valores':
                 rawData = await this.baseValuesSelloutRepository.findAll();
@@ -346,6 +343,11 @@ export class ExportDataController {
             };
 
             const fields = fieldMap[excel_name];
+            console.log(`Exporting ${excel_name}, fields count: ${fields?.length}`);
+            if (fields) {
+                console.log('Fields:', JSON.stringify(fields));
+            }
+
             if (!fields) {
                 res.status(400).json({ message: 'Nombre de archivo no válido' });
                 return;

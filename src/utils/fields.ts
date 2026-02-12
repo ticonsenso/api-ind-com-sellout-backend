@@ -1,4 +1,4 @@
-import { ExportField, ExportFieldAvanced } from "../controllers/export.data.controller";
+import { ExportField, ExportFieldAvanced } from "./export.interfaces";
 
 export const fieldsProductSic: ExportField[] = [
     { key: 'idProductSic', header: 'ID' },
@@ -65,6 +65,7 @@ export const fieldsSelloutProductMaster: ExportField[] = [
         header: 'ACTIVO',
         transform: (value) => value === true ? 'ACTIVO' : 'INACTIVO',
     },
+    { key: 'periodo', header: 'PERIODO' },
 ];
 
 export const fieldsSelloutStoreMaster: ExportField[] = [
@@ -75,6 +76,7 @@ export const fieldsSelloutStoreMaster: ExportField[] = [
         key: 'status', header: 'ESTADO',
         transform: (value) => value === true ? 'ACTIVO' : 'INACTIVO',
     },
+    { key: 'periodo', header: 'PERIODO' },
 ];
 
 export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [

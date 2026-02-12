@@ -1,7 +1,7 @@
 import { CreateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
 import { SelloutProductMaster } from '../models/sellout.product.master.model';
 import { BaseRepository } from './base.respository';
-import { Brackets, DataSource } from 'typeorm';
+import { Brackets, DataSource, Raw } from 'typeorm';
 
 interface ModelProductSic {
     codeProductSic: string;
@@ -57,10 +57,20 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
         }
     }
 
+    async findBySearchProductStoreAndPeriodo(searchProductStore: string, periodo: Date | string): Promise<SelloutProductMaster | null> {
+        return this.repository.findOne({
+            where: {
+                searchProductStore: Raw(alias => `UPPER(${alias}) = :searchProductStore`, { searchProductStore: searchProductStore.toUpperCase() }),
+                periodo: periodo as unknown as Date,
+            },
+        });
+    }
+
     async findByFilters(
         page = 1,
         limit = 10,
         search?: string,
+        periodo?: string,
     ): Promise<{ items: SelloutProductMaster[]; total: number }> {
         const qb = this.repository.createQueryBuilder('p').orderBy('p.id', 'ASC');
         if (search?.trim()) {
@@ -72,9 +82,21 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
             }));
         }
 
+        if (periodo) {
+            qb.andWhere('p.periodo = :periodo', { periodo });
+        }
+
         qb.skip((page - 1) * limit).take(limit);
 
         const [items, total] = await qb.getManyAndCount();
         return { items, total };
+    }
+
+    async findByPeriodo(periodo: string): Promise<SelloutProductMaster[]> {
+        return this.repository.find({
+            where: {
+                periodo: periodo as unknown as Date
+            }
+        });
     }
 }
