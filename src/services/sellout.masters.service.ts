@@ -207,6 +207,9 @@ export class SelloutMastersService {
         periodoActivo: string
     ): Promise<void> {
         const activeKeys = currentActiveStores.map(store => {
+            if (store.searchProductStore) {
+                return store.searchProductStore;
+            }
             const distributor = cleanString(store.distributor ?? '');
             const productDistributor = cleanString(store.productDistributor ?? '');
             const productStore = cleanString(store.productStore ?? '');
