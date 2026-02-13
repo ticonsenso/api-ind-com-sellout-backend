@@ -179,12 +179,20 @@ export class SelloutMastersService {
         console.log('productsToUpdate', productsToUpdate.length);
         console.log('productsToCreate', productsToCreate.length);
         if (productsToUpdate.length > 0) {
-            await this.selloutProductMasterRepository.save(productsToUpdate);
+            const chunks = chunkArray(productsToUpdate, 500);
+            for (const chunk of chunks) {
+                await this.selloutProductMasterRepository.save(chunk);
+            }
         }
         if (productsToCreate.length > 0) {
-            await this.selloutProductMasterRepository.save(productsToCreate);
+            const chunks = chunkArray(productsToCreate, 500);
+            for (const chunk of chunks) {
+                await this.selloutProductMasterRepository.save(chunk);
+            }
         }
+        console.log("Ya los creo")
         await this.syncAndCleanupByPeriodProduct(createSelloutProductMastersDto, periodoActivo!);
+        console.log("Ya los sincronizo")
         return { insert, update, errors };
     }
 
