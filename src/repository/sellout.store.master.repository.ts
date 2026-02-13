@@ -156,16 +156,26 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     }
 
     async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
-        const query = this.repository
-            .createQueryBuilder()
-            .delete()
-            .from(SelloutStoreMaster)
-            .where("periodo = :periodo", { periodo: periodo });
+        const existingRecords = await this.repository.createQueryBuilder('s')
+            .select(['s.id', 's.searchStore'])
+            .where('s.periodo = :periodo', { periodo })
+            .getMany();
 
-        if (activeKeys.length > 0) {
-            query.andWhere("searchStore NOT IN (:...keys)", { keys: activeKeys });
+        const activeKeysSet = new Set(activeKeys);
+        const idsToDelete: number[] = [];
+
+        for (const record of existingRecords) {
+            if (record.searchStore && !activeKeysSet.has(record.searchStore)) {
+                idsToDelete.push(record.id);
+            }
         }
 
-        await query.execute();
+        if (idsToDelete.length === 0) return;
+
+        const batchSize = 1000;
+        for (let i = 0; i < idsToDelete.length; i += batchSize) {
+            const batchIds = idsToDelete.slice(i, i + batchSize);
+            await this.repository.delete(batchIds);
+        }
     }
 }
