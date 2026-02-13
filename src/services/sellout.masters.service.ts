@@ -182,7 +182,7 @@ export class SelloutMastersService {
         if (productsToCreate.length > 0) {
             await this.selloutProductMasterRepository.save(productsToCreate);
         }
-        await this.syncAndCleanupByPeriodProduct(productsToCreate, periodoActivo!);
+        await this.syncAndCleanupByPeriodProduct(createSelloutProductMastersDto, periodoActivo!);
         return { insert, update, errors };
     }
 
@@ -191,7 +191,10 @@ export class SelloutMastersService {
         periodoActivo: string
     ): Promise<void> {
         const activeKeys = currentActiveStores.map(store => {
-            return store.searchProductStore || (cleanString(store.distributor ?? '') + cleanString(store.productDistributor ?? '') + cleanString(store.productStore ?? ''));
+            const distributor = cleanString(store.distributor ?? '');
+            const productDistributor = cleanString(store.productDistributor ?? '');
+            const productStore = cleanString(store.productStore ?? '');
+            return (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
         });
         if (activeKeys.length > 0) {
             await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
