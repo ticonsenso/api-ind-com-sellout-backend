@@ -195,8 +195,6 @@ export class SelloutMastersService {
         });
         if (activeKeys.length > 0) {
             await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
-        } else {
-            await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, []);
         }
     }
 

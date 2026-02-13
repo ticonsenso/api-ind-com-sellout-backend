@@ -102,28 +102,15 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
     }
 
     async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
-        console.log(`[deleteByPeriod] Periodo: ${periodo}, ActiveKeys Length: ${activeKeys ? activeKeys.length : 'undefined'}`);
-        try {
-            const query = this.repository
-                .createQueryBuilder()
-                .delete()
-                .from(SelloutProductMaster)
-                .where("periodo = :periodo", { periodo: periodo });
-
-            if (activeKeys && activeKeys.length > 0) {
-                console.log(`[deleteByPeriod] Adding NOT IN clause with ${activeKeys.length} keys`);
-                query.andWhere("searchProductStore NOT IN (:...keys)", { keys: activeKeys });
-            } else {
-                console.log(`[deleteByPeriod] Skipping NOT IN clause (empty activeKeys)`);
-            }
-
-            // Log generated query
-            console.log(`[deleteByPeriod] SQL: ${query.getSql()}`);
-
-            await query.execute();
-        } catch (error) {
-            console.error('[deleteByPeriod] Error executing delete:', error);
-            throw error;
+        if (!activeKeys || activeKeys.length === 0) {
+            return;
         }
+        await this.repository
+            .createQueryBuilder()
+            .delete()
+            .from(SelloutProductMaster)
+            .where("periodo = :periodo", { periodo })
+            .andWhere("searchProductStore NOT IN (:...keys)", { keys: activeKeys })
+            .execute();
     }
 }
