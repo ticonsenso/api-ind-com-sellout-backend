@@ -25,6 +25,7 @@ export const fieldsProductSic: ExportField[] = [
     { key: 'equivalentProId', header: 'PRO ID EQUIVALENCIA' },
     { key: 'equivalent', header: 'EQUIVALENCIA' },
     { key: 'validity', header: 'VIGENCIA' },
+    { key: 'prodId', header: 'PROD ID' },
     { key: 'repeatedNumbers', header: 'NUM REPETIDOS ACTIVOS' },
 ];
 

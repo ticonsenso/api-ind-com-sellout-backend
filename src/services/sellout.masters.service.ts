@@ -176,7 +176,6 @@ export class SelloutMastersService {
                 errors += `Error processing ${dto.searchProductStore}: ${error}\n`;
             }
         }
-
         if (productsToUpdate.length > 0) {
             await this.selloutProductMasterRepository.save(productsToUpdate);
         }

@@ -33,6 +33,7 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
     }
 
     async findBySearchProductStore(searchProductStore: string[]): Promise<SelloutProductMaster[]> {
+        if (!searchProductStore || searchProductStore.length === 0) return [];
         return this.repository.createQueryBuilder('selloutProductMaster')
             .select(['selloutProductMaster.id', 'selloutProductMaster.searchProductStore'])
             .where('selloutProductMaster.searchProductStore IN (:...searchProductStore)', { searchProductStore })
@@ -101,12 +102,28 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
     }
 
     async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
-        await this.repository
-            .createQueryBuilder()
-            .delete()
-            .from(SelloutProductMaster)
-            .where("periodo = :periodo", { periodo: periodo }) // Filtro crítico
-            .andWhere("searchProductStore NOT IN (:...keys)", { keys: activeKeys })
-            .execute();
+        console.log(`[deleteByPeriod] Periodo: ${periodo}, ActiveKeys Length: ${activeKeys ? activeKeys.length : 'undefined'}`);
+        try {
+            const query = this.repository
+                .createQueryBuilder()
+                .delete()
+                .from(SelloutProductMaster)
+                .where("periodo = :periodo", { periodo: periodo });
+
+            if (activeKeys && activeKeys.length > 0) {
+                console.log(`[deleteByPeriod] Adding NOT IN clause with ${activeKeys.length} keys`);
+                query.andWhere("searchProductStore NOT IN (:...keys)", { keys: activeKeys });
+            } else {
+                console.log(`[deleteByPeriod] Skipping NOT IN clause (empty activeKeys)`);
+            }
+
+            // Log generated query
+            console.log(`[deleteByPeriod] SQL: ${query.getSql()}`);
+
+            await query.execute();
+        } catch (error) {
+            console.error('[deleteByPeriod] Error executing delete:', error);
+            throw error;
+        }
     }
 }

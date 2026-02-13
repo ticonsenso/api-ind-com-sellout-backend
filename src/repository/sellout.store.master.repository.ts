@@ -13,6 +13,7 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     }
 
     async findBySearchStore(searchStore: string[]): Promise<SelloutStoreMaster[]> {
+        if (!searchStore || searchStore.length === 0) return [];
         const upperSearchStore = searchStore.map(s => s.toUpperCase());
         return this.repository.createQueryBuilder('selloutStoreMaster')
             .select(['selloutStoreMaster.id', 'selloutStoreMaster.searchStore'])
@@ -155,12 +156,16 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     }
 
     async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
-        await this.repository
+        const query = this.repository
             .createQueryBuilder()
             .delete()
             .from(SelloutStoreMaster)
-            .where("periodo = :periodo", { periodo: periodo })
-            .andWhere("searchStore NOT IN (:...keys)", { keys: activeKeys })
-            .execute();
+            .where("periodo = :periodo", { periodo: periodo });
+
+        if (activeKeys.length > 0) {
+            query.andWhere("searchStore NOT IN (:...keys)", { keys: activeKeys });
+        }
+
+        await query.execute();
     }
 }
