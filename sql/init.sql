@@ -947,11 +947,13 @@ CREATE TABLE IF NOT EXISTS product_sic (
     validity VARCHAR(255)  NULL,
     repeated_numbers VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    prod_id INT NOT NULL default 0,
 );
-ALTER TABLE product_sic ADD COLUMN model VARCHAR(255) NULL;
-
+--ALTER TABLE product_sic ADD COLUMN model VARCHAR(255) NULL;
 -- CREATE UNIQUE INDEX unique_id_product_sic ON product_sic(id_product_sic);
+
+ALTER TABLE product_sic ADD COLUMN prod_id INT NOT NULL default 0;
 
 
 CREATE TABLE IF NOT EXISTS base_ppto_sellout (
