@@ -182,7 +182,7 @@ export class SelloutMastersService {
         if (productsToCreate.length > 0) {
             await this.selloutProductMasterRepository.save(productsToCreate);
         }
-        await this.syncAndCleanupByPeriodProduct(createSelloutProductMastersDto, periodoActivo!);
+        //await this.syncAndCleanupByPeriodProduct(createSelloutProductMastersDto, periodoActivo!);
         return { insert, update, errors };
     }
 
