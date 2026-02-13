@@ -67,6 +67,7 @@ export class ProductSicRepository extends BaseRepository<ProductSic> {
                     .orWhere('s.nombreSap ILIKE :search', { search: `%${search}%` })
                     .orWhere('s.lineaNegocioSap ILIKE :search', { search: `%${search}%` })
                     .orWhere('s.marDescGrupoArt ILIKE :search', { search: `%${search}%` })
+                    .orWhere('s.prodId ILIKE :search', { search: `%${search}%` });
 
             }));
         }

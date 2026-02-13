@@ -25,6 +25,7 @@ export const fieldsProductSic: ExportField[] = [
     { key: 'equivalentProId', header: 'PRO ID EQUIVALENCIA' },
     { key: 'equivalent', header: 'EQUIVALENCIA' },
     { key: 'validity', header: 'VIGENCIA' },
+    { key: 'prodId', header: 'PROD ID' },
     { key: 'repeatedNumbers', header: 'NUM REPETIDOS ACTIVOS' },
 ];
 
@@ -97,6 +98,7 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     { key: 'subcategoria', header: 'SUB CATEGORIA', width: 25, type: 'string' },
     { key: 'marmodeloim', header: 'MODELO', width: 25, type: 'string' },
     { key: 'nombreime', header: 'NOMBRE IM', width: 25, type: 'string' },
+    { key: 'prod_id', header: 'PROD ID', width: 25, type: 'string' },
 
     // --- Nuevos Datos: Información de la Tienda (Stores SIC) ---
     { key: 'canal', header: 'CANAL', width: 25, type: 'string' },

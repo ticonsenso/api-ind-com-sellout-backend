@@ -139,10 +139,11 @@ export class SelloutMastersService {
     async createSelloutProductMastersBatch(createSelloutProductMastersDto: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string }> {
         const productsToUpdate: SelloutProductMaster[] = [];
         const productsToCreate: CreateSelloutProductMasterDto[] = [];
+        const processedKeys = new Set<string>();
         let insert = 0;
         let update = 0;
         let errors = '';
-
+        const periodoActivo = createSelloutProductMastersDto[0].periodo;
         for (const dto of createSelloutProductMastersDto) {
             try {
                 let existing: SelloutProductMaster | null = null;
@@ -153,6 +154,11 @@ export class SelloutMastersService {
                     const productStore = cleanString(dto.productStore ?? '');
                     dto.searchProductStore = (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
                 }
+
+                if (processedKeys.has(dto.searchProductStore)) {
+                    continue;
+                }
+                processedKeys.add(dto.searchProductStore);
 
                 if (dto.searchProductStore && dto.periodo) {
                     existing = await this.selloutProductMasterRepository.findBySearchProductStoreAndPeriodo(dto.searchProductStore, dto.periodo);
@@ -176,15 +182,43 @@ export class SelloutMastersService {
                 errors += `Error processing ${dto.searchProductStore}: ${error}\n`;
             }
         }
-
+        console.log('productsToUpdate', productsToUpdate.length);
+        console.log('productsToCreate', productsToCreate.length);
         if (productsToUpdate.length > 0) {
-            await this.selloutProductMasterRepository.save(productsToUpdate);
+            const chunks = chunkArray(productsToUpdate, 500);
+            for (const chunk of chunks) {
+                await this.selloutProductMasterRepository.save(chunk);
+            }
         }
         if (productsToCreate.length > 0) {
-            await this.selloutProductMasterRepository.save(productsToCreate);
+            const chunks = chunkArray(productsToCreate, 500);
+            for (const chunk of chunks) {
+                await this.selloutProductMasterRepository.save(chunk);
+            }
         }
-
+        console.log("Ya los creo")
+        await this.syncAndCleanupByPeriodProduct(createSelloutProductMastersDto, periodoActivo!);
+        console.log("Ya los sincronizo")
         return { insert, update, errors };
+    }
+
+    async syncAndCleanupByPeriodProduct(
+        currentActiveStores: CreateSelloutProductMasterDto[],
+        periodoActivo: string
+    ): Promise<void> {
+        const activeKeys = currentActiveStores.map(store => {
+            if (store.searchProductStore) {
+                return store.searchProductStore;
+            }
+            const distributor = cleanString(store.distributor ?? '');
+            const productDistributor = cleanString(store.productDistributor ?? '');
+            const productStore = cleanString(store.productStore ?? '');
+            return (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
+        });
+        console.log('activeKeys', activeKeys);
+        if (activeKeys.length > 0) {
+            await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
+        }
     }
 
     async updateSelloutStoreMaster(id: number, updateSelloutStoreMasterDto: UpdateSelloutStoreMasterDto): Promise<SelloutStoreMaster> {
@@ -221,7 +255,24 @@ export class SelloutMastersService {
                 errors += error + '\n';
             }
         }
+        const periodoActivo = configs[0].periodo;
+        await this.syncAndCleanupByPeriodStore(configs, periodoActivo!);
         return { insert, update, errors };
+    }
+
+
+    async syncAndCleanupByPeriodStore(
+        currentActiveStores: CreateSelloutStoreMasterDto[],
+        periodoActivo: string
+    ): Promise<void> {
+        const activeKeys = currentActiveStores.map(store => {
+            return store.searchStore || (cleanString(store.distributor ?? '') + cleanString(store.storeDistributor ?? ''));
+        });
+        if (activeKeys.length > 0) {
+            await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
+        } else {
+            await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, []);
+        }
     }
 
     async syncMasterStores(): Promise<void> {
@@ -359,7 +410,7 @@ export class SelloutMastersService {
                         const consolidatedRecords = await this.consolidatedDataStoresRepository.findBySearchStore(searchStore);
 
                         if (consolidatedRecords.length === 0) {
-                            throw new Error('No se encontraron registros que coincidan con el searchStore');
+                            console.log('❌ No se encontraron registros que coincidan con el searchStore', searchStore);
                         }
 
                         const storeSic = await this.selloutStoreRepository.getDistribuidorAndStoreNameByStoreSic(codeStoreSic);

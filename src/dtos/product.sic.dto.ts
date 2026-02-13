@@ -78,6 +78,10 @@ export class CreateProductSicDto {
     @IsOptional()
     @IsString({ message: "Vigencia debe ser una cadena de texto" })
     vigencia?: string | null;
+
+    @IsOptional()
+    @IsString({ message: "El Prod ID debe ser una cadena de texto" })
+    prodId?: string;
 }
 
 export class UpdateProductSicDto extends CreateProductSicDto { }
@@ -142,6 +146,9 @@ export class ProductSicResponseDto {
 
     @Expose()
     vigencia!: string | null;
+
+    @Expose()
+    prodId?: string;
 }
 
 export class ProductSicResponsePptoDto {

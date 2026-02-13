@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { primerDiaDelMesString } from "../utils/utils";
 import { ReadStream } from "fs";
+import { MAX } from "class-validator";
 
 export class ConsolidatedDataStoresRepository extends BaseRepository<ConsolidatedDataStores> {
   constructor(dataSource: TypeORMDataSource) {
@@ -674,6 +675,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         (subQuery) => {
           return subQuery
             .select("codigo_jde")
+            .addSelect("MAX(prod_id)", "prod_id")
             .addSelect("MAX(nombre_sap)", "nombre_sap")
             .addSelect("MAX(linea_negocio_sap)", "linea_negocio")
             .addSelect("MAX(mar_desc_grupo_art)", "categoria")
@@ -724,6 +726,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "ps.sub_categoria",
         "ps.modelo",
         "ps.nombre_ime",
+        "ps.prod_id AS prod_id",
         "ss.canal",
         "ss.grupo_comercial",
         "ss.grupo_zona",
@@ -792,6 +795,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       subCategoria: item.sub_categoria,
       modelo: item.modelo,
       nombreIme: item.nombre_ime,
+      prodId: item.prod_id,
       canal: item.canal,
       grupoComercial: item.grupo_comercial,
       nombreAlmacen: item.nombre_almacen,
@@ -1000,6 +1004,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         (subQuery) => {
           return subQuery
             .select("codigo_jde") // Campo de agrupación (sin MAX)
+            .addSelect("MAX(prod_id)", "prod_id")
             .addSelect("MAX(linea_negocio_sap)", "lineanegociosap")
             .addSelect("MAX(mar_desc_grupo_art)", "categoria")
             .addSelect("MAX(mar_desc_jerarq)", "subcategoria")
@@ -1051,6 +1056,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "ps.subcategoria",
         "ps.marmodeloim",
         "ps.nombreime",
+        "ps.prod_id",
 
         // --- Datos de Tienda (Alias definidos en subquery ss) ---
         "ss.canal",

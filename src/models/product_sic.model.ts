@@ -63,6 +63,9 @@ export class ProductSic {
     @Column({ name: 'vigencia', type: 'varchar', length: 255, nullable: true })
     vigencia?: string | null;
 
+    @Column({ name: 'prod_id', type: 'varchar', length: 255, nullable: true })
+    prodId?: string;
+
     @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: true })
     createdAt?: Date;
 

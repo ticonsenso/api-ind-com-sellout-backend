@@ -13,6 +13,7 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
     }
 
     async findBySearchStore(searchStore: string[]): Promise<SelloutStoreMaster[]> {
+        if (!searchStore || searchStore.length === 0) return [];
         const upperSearchStore = searchStore.map(s => s.toUpperCase());
         return this.repository.createQueryBuilder('selloutStoreMaster')
             .select(['selloutStoreMaster.id', 'selloutStoreMaster.searchStore'])
@@ -152,5 +153,29 @@ export class SelloutStoreMasterRepository extends BaseRepository<SelloutStoreMas
                 periodo: periodo as unknown as Date
             }
         });
+    }
+
+    async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
+        const existingRecords = await this.repository.createQueryBuilder('s')
+            .select(['s.id', 's.searchStore'])
+            .where('s.periodo = :periodo', { periodo })
+            .getMany();
+
+        const activeKeysSet = new Set(activeKeys);
+        const idsToDelete: number[] = [];
+
+        for (const record of existingRecords) {
+            if (record.searchStore && !activeKeysSet.has(record.searchStore)) {
+                idsToDelete.push(record.id);
+            }
+        }
+
+        if (idsToDelete.length === 0) return;
+
+        const batchSize = 1000;
+        for (let i = 0; i < idsToDelete.length; i += batchSize) {
+            const batchIds = idsToDelete.slice(i, i + batchSize);
+            await this.repository.delete(batchIds);
+        }
     }
 }

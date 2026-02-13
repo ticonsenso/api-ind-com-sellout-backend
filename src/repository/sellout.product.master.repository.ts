@@ -33,6 +33,7 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
     }
 
     async findBySearchProductStore(searchProductStore: string[]): Promise<SelloutProductMaster[]> {
+        if (!searchProductStore || searchProductStore.length === 0) return [];
         return this.repository.createQueryBuilder('selloutProductMaster')
             .select(['selloutProductMaster.id', 'selloutProductMaster.searchProductStore'])
             .where('selloutProductMaster.searchProductStore IN (:...searchProductStore)', { searchProductStore })
@@ -98,5 +99,31 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
                 periodo: periodo as unknown as Date
             }
         });
+    }
+
+    async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
+        if (!activeKeys || activeKeys.length === 0) return;
+
+        const existingRecords = await this.repository.createQueryBuilder('p')
+            .select(['p.id', 'p.searchProductStore'])
+            .where('p.periodo = :periodo', { periodo })
+            .getMany();
+
+        const activeKeysSet = new Set(activeKeys);
+        const idsToDelete: number[] = [];
+
+        for (const record of existingRecords) {
+            if (record.searchProductStore && !activeKeysSet.has(record.searchProductStore)) {
+                idsToDelete.push(record.id);
+            }
+        }
+
+        if (idsToDelete.length === 0) return;
+
+        const batchSize = 1000;
+        for (let i = 0; i < idsToDelete.length; i += batchSize) {
+            const batchIds = idsToDelete.slice(i, i + batchSize);
+            await this.repository.delete(batchIds);
+        }
     }
 }
