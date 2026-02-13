@@ -176,13 +176,15 @@ export class SelloutMastersService {
                 errors += `Error processing ${dto.searchProductStore}: ${error}\n`;
             }
         }
+        console.log('productsToUpdate', productsToUpdate.length);
+        console.log('productsToCreate', productsToCreate.length);
         if (productsToUpdate.length > 0) {
             await this.selloutProductMasterRepository.save(productsToUpdate);
         }
         if (productsToCreate.length > 0) {
             await this.selloutProductMasterRepository.save(productsToCreate);
         }
-        //await this.syncAndCleanupByPeriodProduct(createSelloutProductMastersDto, periodoActivo!);
+        await this.syncAndCleanupByPeriodProduct(createSelloutProductMastersDto, periodoActivo!);
         return { insert, update, errors };
     }
 
@@ -196,6 +198,7 @@ export class SelloutMastersService {
             const productStore = cleanString(store.productStore ?? '');
             return (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
         });
+        console.log('activeKeys', activeKeys);
         if (activeKeys.length > 0) {
             await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
         }
