@@ -139,6 +139,7 @@ export class SelloutMastersService {
     async createSelloutProductMastersBatch(createSelloutProductMastersDto: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string }> {
         const productsToUpdate: SelloutProductMaster[] = [];
         const productsToCreate: CreateSelloutProductMasterDto[] = [];
+        const processedKeys = new Set<string>();
         let insert = 0;
         let update = 0;
         let errors = '';
@@ -153,6 +154,11 @@ export class SelloutMastersService {
                     const productStore = cleanString(dto.productStore ?? '');
                     dto.searchProductStore = (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
                 }
+
+                if (processedKeys.has(dto.searchProductStore)) {
+                    continue;
+                }
+                processedKeys.add(dto.searchProductStore);
 
                 if (dto.searchProductStore && dto.periodo) {
                     existing = await this.selloutProductMasterRepository.findBySearchProductStoreAndPeriodo(dto.searchProductStore, dto.periodo);
