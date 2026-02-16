@@ -8,6 +8,7 @@ import {
     fieldsBaseValuesSellout,
     fieldsCalculationComissionStoreManager,
     fieldsConsolidatedDataStores,
+    fieldsConsolidatedDataStoresBasicInfo,
     fieldsEmployee,
     fieldsMatriculacion,
     fieldsMatriculacionLogs,
@@ -114,6 +115,7 @@ export class ExportDataController {
         this.excelService = new ExcelImportService(dataSource);
         this.importDataHandler = this.importDataHandler.bind(this);
         this.exportDataAvancedHandler = this.exportDataAvancedHandler.bind(this);
+        this.exportDataBasicInfoHandler = this.exportDataBasicInfoHandler.bind(this);
     }
 
     async exportGenericHandler(
@@ -418,6 +420,54 @@ export class ExportDataController {
 
         // 3. Definir columnas (mapeo con tus alias del SELECT)
         worksheet.columns = fieldsConsolidatedDataStores;
+
+        // 4. Obtener el stream de la base de datos
+        const dbStream = await this.consolidatedDataStoresRepository.findByCalculateDateDataAgrupacion(calculateDate);
+
+        // 5. "Pipear" los datos: Leer DB -> Escribir Excel
+        for await (const row of dbStream) {
+            // Procesamiento de tipos
+            const processedRow: any = { ...row };
+
+            fieldsConsolidatedDataStores.forEach(field => {
+                if (field.type === 'number' && processedRow[field.key] !== null && processedRow[field.key] !== undefined) {
+                    // Convertir a string y reemplazar punto por coma
+                    processedRow[field.key] = Number(processedRow[field.key]).toString().replace('.', ',');
+                }
+            });
+
+            // Agregamos la fila y hacemos COMMIT inmediato.
+            // .commit() libera la fila de la memoria una vez escrita.
+            worksheet.addRow(processedRow).commit();
+        }
+
+        // 6. Finalizar
+        await worksheet.commit(); // Finalizar hoja
+        await workbook.commit();  // Finalizar libro y cerrar stream de respuesta
+    }
+
+    async exportDataBasicInfoHandler(req: Request, res: Response): Promise<void> {
+        console.log(req.query);
+        const { calculate_date } = req.query as { calculate_date: string };
+        const calculateDate = new Date(calculate_date);
+
+        // 1. Configurar headers para descarga inmediata
+        const excelName = `sellou_mercado_basicInfo_${calculate_date}`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename=${excelName}.xlsx`);
+
+        // 2. Crear el WorkbookWriter conectado directamente al Response
+        // Esto escribe en la red a medida que genera las filas. ¡Cero memoria acumulada!
+        const workbook = new Excel.stream.xlsx.WorkbookWriter({
+            stream: res,
+            useStyles: true,
+            useSharedStrings: true
+        });
+
+        const worksheet = workbook.addWorksheet('Reporte');
+
+        // 3. Definir columnas (mapeo con tus alias del SELECT)
+        worksheet.columns = fieldsConsolidatedDataStoresBasicInfo;
 
         // 4. Obtener el stream de la base de datos
         const dbStream = await this.consolidatedDataStoresRepository.findByCalculateDateDataAgrupacion(calculateDate);
