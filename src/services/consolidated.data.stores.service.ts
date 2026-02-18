@@ -416,10 +416,8 @@ export class ConsolidatedDataStoresService {
 
     async syncConsolidatedDataStores(year: number, month: number): Promise<any> {
         const monthDate = `${year}-${String(month).padStart(2, '0')}-01`;
-        console.log(monthDate)
         const syncStores = await this.consolidatedDataStoresRepository.syncDataStores(monthDate);
         const syncProducts = await this.consolidatedDataStoresRepository.syncDataProducts(monthDate);
-        console.log(syncStores, syncProducts)
         return {
             syncStores,
             syncProducts,
