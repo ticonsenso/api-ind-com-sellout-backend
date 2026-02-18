@@ -45,6 +45,41 @@ router.get('/avanced', authenticateToken, exportDataController.exportDataAvanced
 
 /**
  * @swagger
+ * /api/export/data/basic/info:
+ *   get:
+ *     tags:
+ *       - Export Data
+ *     summary: Exportación de información básica en Excel (Streaming)
+ *     description: |
+ *       Genera y descarga un reporte con información básica en formato Excel utilizando un flujo de datos (streaming).
+ *       El archivo se genera dinámicamente basándose en la fecha de cálculo proporcionada.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: calculate_date
+ *         in: query
+ *         description: Fecha de corte para el cálculo de datos (Formato YYYY-MM-DD).
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *     responses:
+ *       200:
+ *         description: Archivo Excel generado exitosamente.
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: Petición incorrecta o parámetros faltantes.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.get('/basic/info', authenticateToken, exportDataController.exportDataBasicInfoHandler);
+
+/**
+ * @swagger
  * /api/export/data/{excel_name}:
  *   get:
  *     tags:
