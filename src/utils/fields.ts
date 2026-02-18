@@ -108,6 +108,10 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     { key: 'zona', header: 'ZONA', width: 25, type: 'string' },
     { key: 'categoriaalmacen', header: 'CATEGORIA ALMACEN', width: 25, type: 'string' },
     { key: 'supervisor', header: 'SUPERVISOR', width: 25, type: 'string' },
+
+    // --- Nuevos Datos: Información de la Tienda (Maestros) ---
+    { key: 'maestroalmacen', header: 'MAESTRO_ALMACEN', width: 25, type: 'string' },
+    { key: 'maestroproductos', header: 'MAESTRO_PRODUCTOS', width: 25, type: 'string' },
 ];
 
 export const fieldsConsolidatedDataStoresBasicInfo: ExportFieldAvanced[] = [

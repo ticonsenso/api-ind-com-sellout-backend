@@ -1066,6 +1066,9 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "ss.zona",
         "ss.categoriaalmacen",
         "ss.supervisor",
+        // --- Datos de Maestro ---
+        "UPPER(REPLACE(REPLACE(REPLACE(CONCAT(s.distributor, s.code_store_distributor), ' ', ''), '\t', ''), '\n', '')) as maestroalmacen",
+        "UPPER(REPLACE(REPLACE(REPLACE(CONCAT(s.distributor, s.code_product_distributor, s.description_distributor), ' ', ''), '\t', ''), '\n', '')) as maestroproductos"
       ])
       // 4. Filtros
       .where(`s.calculate_date::date = '${date}'`)
