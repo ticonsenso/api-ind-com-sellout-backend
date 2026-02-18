@@ -1110,28 +1110,32 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   }
 
   async syncDataStores(calculateDate: string): Promise<number> {
-    const result = await this.repository.query(
-      `UPDATE "db-sellout".consolidated_data_stores cds
-       SET code_store = t2.code_store_sic
-       FROM "db-sellout".sellout_store_master t2
-       WHERE UPPER(REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), ' ', '')) = t2.search_store
-       AND cds.calculate_date = $1
-       AND cds.code_store IS DISTINCT FROM t2.code_store_sic;`,
-      [calculateDate]
-    );
-    return result[1];
+    const query = `
+      UPDATE "db-sellout".consolidated_data_stores cds
+      SET code_store = t2.code_store_sic
+      FROM "db-sellout".sellout_store_master t2
+      WHERE 
+        UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), '\\s+', '', 'g')) = 
+        UPPER(REGEXP_REPLACE(t2.search_store, '\\s+', '', 'g'))
+      AND cds.calculate_date = $1
+      AND cds.code_store IS DISTINCT FROM t2.code_store_sic;
+    `;
+    const result = await this.repository.query(query, [calculateDate]);
+    return result[1] || 0;
   }
 
   async syncDataProducts(calculateDate: string): Promise<number> {
-    const result = await this.repository.query(
-      `UPDATE "db-sellout".consolidated_data_stores cds
-       SET code_product = t2.code_product_sic
-       FROM "db-sellout".sellout_product_master t2
-       WHERE UPPER(REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), ' ', '')) = t2.search_product_store
-       AND cds.calculate_date = $1
-       AND cds.code_product IS DISTINCT FROM t2.code_product_sic;`,
-      [calculateDate]
-    );
-    return result[1];
+    const query = `
+      UPDATE "db-sellout".consolidated_data_stores cds
+      SET code_product = t2.code_product_sic
+      FROM "db-sellout".sellout_product_master t2
+      WHERE 
+        UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), '\\s+', '', 'g')) = 
+        UPPER(REGEXP_REPLACE(t2.search_product_store, '\\s+', '', 'g'))
+      AND cds.calculate_date = $1
+      AND cds.code_product IS DISTINCT FROM t2.code_product_sic;
+    `;
+    const result = await this.repository.query(query, [calculateDate]);
+    return result[1] || 0;
   }
 }
