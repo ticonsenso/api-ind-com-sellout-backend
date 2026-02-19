@@ -470,7 +470,7 @@ export class ExportDataController {
         worksheet.columns = fieldsConsolidatedDataStoresBasicInfo;
 
         // 4. Obtener el stream de la base de datos
-        const dbStream = await this.consolidatedDataStoresRepository.findByCalculateDateDataAgrupacion(calculateDate);
+        const dbStream = await this.consolidatedDataStoresRepository.findByCalculateDateDataAgrupacionBasic(calculateDate);
 
         // 5. "Pipear" los datos: Leer DB -> Escribir Excel
         for await (const row of dbStream) {
