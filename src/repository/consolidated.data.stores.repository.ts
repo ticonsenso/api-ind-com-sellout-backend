@@ -1079,6 +1079,29 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     return qb.stream();
   }
 
+  async findByCalculateDateDataAgrupacionBasic(calculateDate: Date): Promise<ReadStream> {
+    const date = calculateDate.toISOString().split("T")[0];
+    const qb = this.repository
+      .createQueryBuilder("cds")
+      .select("cds.calculateDate", "periodo")
+      .addSelect("cds.saleDate", "fecha_venta")
+      .addSelect("cds.codeProduct", "cod_prod")
+      .addSelect("cds.codeStore", "cod_almacen")
+      .addSelect("SUM(cds.unitsSoldDistributor)", "cantidad_venta")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("MAX(ps.prod_id)")
+          .from("db-sellout.product_sic", "ps")
+          .where("ps.codigo_jde = cds.code_product");
+      }, "prod_id")
+      .where("cds.calculateDate = :date", { date })
+      .groupBy("cds.calculateDate")
+      .addGroupBy("cds.saleDate")
+      .addGroupBy("cds.codeProduct")
+      .addGroupBy("cds.codeStore");
+    return qb.stream();
+  }
+
   async deleteDataByDistributorAndCodeStoreDistributor(
     distributor: string,
     codeStoreDistributor: string,

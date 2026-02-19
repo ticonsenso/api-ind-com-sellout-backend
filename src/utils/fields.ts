@@ -116,11 +116,11 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
 
 export const fieldsConsolidatedDataStoresBasicInfo: ExportFieldAvanced[] = [
     // --- Datos Originales ---
-    { key: 'calculate_date', header: 'PERIODO', width: 25, type: 'string' },
-    { key: 'sale_date', header: 'FECHA_VENTA', width: 25, type: 'string' },
+    { key: 'periodo', header: 'PERIODO', width: 25, type: 'string' },
+    { key: 'fecha_venta', header: 'FECHA_VENTA', width: 25, type: 'string' },
     { key: 'prod_id', header: 'COD_PRODUCTO', width: 25, type: 'string' },
-    { key: 'code_store', header: 'COD_ALMACEN', width: 25, type: 'string' },
-    { key: 'units_sold_distributor', header: 'VENTA', width: 25, type: 'number' },
+    { key: 'cod_almacen', header: 'COD_ALMACEN', width: 25, type: 'string' },
+    { key: 'cantidad_venta', header: 'VENTA', width: 25, type: 'number' },
 ];
 
 export const fieldsBaseValuesSellout = [
