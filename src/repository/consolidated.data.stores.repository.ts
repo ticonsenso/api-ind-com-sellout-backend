@@ -1136,13 +1136,17 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   async syncDataStores(calculateDate: string): Promise<number> {
     const query = `
       UPDATE "db-sellout".consolidated_data_stores cds
-      SET code_store = t2.code_store_sic
-      FROM "db-sellout".sellout_store_master t2
-      WHERE 
-        UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), '\\s+', '', 'g')) = 
-        UPPER(REGEXP_REPLACE(t2.search_store, '\\s+', '', 'g'))
-      AND cds.calculate_date = $1
-      AND cds.code_store IS DISTINCT FROM t2.code_store_sic;
+      SET code_store = NULL
+      WHERE cds.calculate_date = $1
+        AND cds.code_store IS NOT NULL
+        AND NOT EXISTS (
+            SELECT 1 
+            FROM "db-sellout".sellout_store_master t2
+            WHERE 
+              UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), '\\s+', '', 'g')) = 
+              UPPER(REGEXP_REPLACE(t2.search_store, '\\s+', '', 'g'))
+              AND t2.periodo = $1
+        );
     `;
     const result = await this.repository.query(query, [calculateDate]);
     return result[1] || 0;
@@ -1151,13 +1155,17 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   async syncDataProducts(calculateDate: string): Promise<number> {
     const query = `
       UPDATE "db-sellout".consolidated_data_stores cds
-      SET code_product = t2.code_product_sic
-      FROM "db-sellout".sellout_product_master t2
-      WHERE 
-        UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), '\\s+', '', 'g')) = 
-        UPPER(REGEXP_REPLACE(t2.search_product_store, '\\s+', '', 'g'))
-      AND cds.calculate_date = $1
-      AND cds.code_product IS DISTINCT FROM t2.code_product_sic;
+      SET code_product = NULL
+      WHERE cds.calculate_date = $1
+        AND cds.code_product IS NOT NULL
+        AND NOT EXISTS (
+            SELECT 1 
+            FROM "db-sellout".sellout_product_master t2
+            WHERE 
+              UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), '\\s+', '', 'g')) = 
+              UPPER(REGEXP_REPLACE(t2.search_product_store, '\\s+', '', 'g'))
+              AND t2.periodo = $1
+        );
     `;
     const result = await this.repository.query(query, [calculateDate]);
     return result[1] || 0;
