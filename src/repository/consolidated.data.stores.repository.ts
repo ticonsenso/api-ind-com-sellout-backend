@@ -1088,12 +1088,10 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addSelect("cds.codeProduct", "cod_prod")
       .addSelect("cds.codeStore", "cod_almacen")
       .addSelect("SUM(cds.unitsSoldDistributor)", "cantidad_venta")
-      .addSelect((subQuery) => {
-        return subQuery
-          .select("MAX(ps.prod_id)")
-          .from("db-sellout.product_sic", "ps")
-          .where("ps.codigo_jde = cds.code_product");
-      }, "prod_id")
+      .addSelect(`COALESCE(
+        (SELECT CAST(MAX(ps.prod_id) AS VARCHAR) FROM "db-sellout".product_sic ps WHERE ps.codigo_jde = cds.code_product),
+        cds.code_product
+      )`, "prod_id")
       .where("cds.calculateDate = :date", { date })
       .groupBy("cds.calculateDate")
       .addGroupBy("cds.saleDate")
