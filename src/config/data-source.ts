@@ -29,6 +29,10 @@ const AppDataSource = new DataSource({
       ? path.join(__dirname, "../subscriber/**/*.{js,ts}")
       : path.join(__dirname, "../subscriber/**/*.{ts,js}"),
   ],
+  extra: {
+    max: 50,
+    idleTimeoutMillis: 30000,
+  },
 });
 
 // Verificar la conexión

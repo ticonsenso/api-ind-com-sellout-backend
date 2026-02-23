@@ -379,7 +379,7 @@ export class SelloutMastersService {
                 if (dto.storeDistributor !== undefined) entity.storeDistributor = dto.storeDistributor;
                 if (dto.codeStoreSic !== undefined) entity.codeStoreSic = dto.codeStoreSic;
 
-                const saved = await this.selloutStoreMasterRepository.update(entity.id, entity);
+                const saved = await manager.save(SelloutStoreMaster, entity);
                 await this.syncConsolidatedDataStoresOnUpdateStores([saved]);
 
                 responses.push(
@@ -552,7 +552,7 @@ export class SelloutMastersService {
                 const searchProductKey = distributor + productStore + productDistributor;
                 dto.searchProductStore = searchProductKey;
 
-                const entity = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(dto.searchProductStore);
+                const entity = await this.selloutProductMasterRepository.findBySearchProductStoreOnlyManager(dto.searchProductStore, manager);
                 if (!entity) throw new Error(`No existe producto con id ${dto.searchProductStore}`);
 
                 if (dto.searchProductStore !== undefined) entity.searchProductStore = dto.searchProductStore;
@@ -561,7 +561,7 @@ export class SelloutMastersService {
                 if (dto.productStore !== undefined) entity.productStore = dto.productStore;
                 if (dto.codeProductSic !== undefined) entity.codeProductSic = dto.codeProductSic;
 
-                const saved = await this.selloutProductMasterRepository.update(entity.id, entity);
+                const saved = await manager.save(SelloutProductMaster, entity);
                 await this.syncConsolidatedDataStoresOnUpdateProduct([saved]);
 
                 responses.push(

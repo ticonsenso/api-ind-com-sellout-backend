@@ -1,6 +1,6 @@
-import {plainToClass, plainToInstance} from 'class-transformer';
-import {DataSource} from 'typeorm';
-import {SalesRotationConfigurationsRepository} from '../repository/sales.rotation.configurations.repository';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { DataSource } from 'typeorm';
+import { SalesRotationConfigurationsRepository } from '../repository/sales.rotation.configurations.repository';
 import {
     CreateSalesRotationConfigurationDto,
     SalesRotationConfigurationListResponseSearchDto,
@@ -8,8 +8,8 @@ import {
     SalesRotationConfigurationSearchDto,
     UpdateSalesRotationConfigurationDto
 } from '../dtos/sales.rotation.configurations.dto';
-import {SalesRotationConfiguration} from '../models/sales.rotation.configurations.model';
-import {CommissionConfigurationsRepository} from '../repository/commission.configurations.repository';
+import { SalesRotationConfiguration } from '../models/sales.rotation.configurations.model';
+import { CommissionConfigurationsRepository } from '../repository/commission.configurations.repository';
 
 export class SalesRotationConfigurationsService {
     private salesRotationConfigurationsRepository: SalesRotationConfigurationsRepository;
@@ -98,13 +98,18 @@ export class SalesRotationConfigurationsService {
             for (const dto of updates) {
                 if (!dto.id) throw new Error('El campo "id" es obligatorio para actualizar.');
 
+                // 1. Usar el manager para buscar
                 const entity = await this.salesRotationConfigurationsRepository.findOneByIdWithManager(dto.id, manager);
                 if (!entity) throw new Error(`No existe configuración con id ${dto.id}`);
 
                 const newMonth = dto.month ?? entity.month;
                 const newCommId = dto.commissionConfigurationId ?? entity.commissionConfiguration.id;
 
-                const dup = await this.salesRotationConfigurationsRepository.findByMonthAndCommissionConfigurationId(newMonth, newCommId);
+                // 2. Usar el manager para la validación de duplicados (evita pedir conexión fuera)
+                const dup = await manager.findOne(SalesRotationConfiguration, {
+                    where: { month: newMonth, commissionConfiguration: { id: newCommId } }
+                });
+
                 if (dup && dup.id !== entity.id) {
                     throw new Error(`Ya existe otra configuración para mes ${newMonth} y comisión ${newCommId}`);
                 }
@@ -122,7 +127,8 @@ export class SalesRotationConfigurationsService {
                     entity.commissionConfiguration = newComm;
                 }
 
-                const saved = await this.salesRotationConfigurationsRepository.update(entity.id, entity);
+                // 3. Usar el manager para guardar, en lugar de the repository.update
+                const saved = await manager.save(SalesRotationConfiguration, entity);
 
                 responses.push(
                     plainToClass(SalesRotationConfigurationResponseDto, saved, { excludeExtraneousValues: true })
