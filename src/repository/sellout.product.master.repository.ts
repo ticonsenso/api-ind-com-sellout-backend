@@ -24,6 +24,12 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
             .getOne();
     }
 
+    async findBySearchProductStoreOnlyManager(searchProductStore: string, manager: import("typeorm").EntityManager): Promise<SelloutProductMaster | null> {
+        return manager.findOne(SelloutProductMaster, {
+            where: { searchProductStore }
+        });
+    }
+
     async findBySearchProductDistributorOnly(distributor: string): Promise<SelloutProductMaster | null> {
         return this.repository.findOne({
             where: {

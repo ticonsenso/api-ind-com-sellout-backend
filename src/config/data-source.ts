@@ -1,6 +1,6 @@
 import path from "path";
-import {DataSource, EntityManager} from "typeorm";
-import {env} from "./env";
+import { DataSource, EntityManager } from "typeorm";
+import { env } from "./env";
 
 export let statusConeccion = { status: false, message: "" };
 
@@ -29,6 +29,10 @@ const AppDataSource = new DataSource({
       ? path.join(__dirname, "../subscriber/**/*.{js,ts}")
       : path.join(__dirname, "../subscriber/**/*.{ts,js}"),
   ],
+  extra: {
+    max: 50,
+    idleTimeoutMillis: 30000,
+  },
 });
 
 // Verificar la conexión
