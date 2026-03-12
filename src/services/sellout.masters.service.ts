@@ -53,68 +53,167 @@ export class SelloutMastersService {
         this.productSicRepository = new ProductSicRepository(dataSource);
     }
 
-    async createSelloutStoreMaster(createSelloutStoreMasterDto: CreateSelloutStoreMasterDto): Promise<SelloutStoreMaster> {
-        const { searchStore, periodo } = createSelloutStoreMasterDto;
+    async createSelloutStoreMaster(createSelloutStoreMasterDtos: CreateSelloutStoreMasterDto[]): Promise<{ insert: number; update: number; errors: string; insertsDetails: SelloutStoreMaster[], updateDetails: SelloutStoreMaster[] }> {
+        let insert = 0;
+        let update = 0;
+        let errors = '';
 
-        let existingStore: SelloutStoreMaster | null = null;
-        if (searchStore && periodo) {
-            existingStore = await this.selloutStoreMasterRepository.findBySearchStoreAndPeriodo(searchStore, periodo);
-        } else if (searchStore) {
-            existingStore = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchStore);
+        if (!createSelloutStoreMasterDtos || createSelloutStoreMasterDtos.length === 0) {
+            return { insert, update, errors: 'No se enviaron datos para procesar\n', insertsDetails: [], updateDetails: [] };
         }
 
-        if (existingStore) {
-            existingStore.codeStoreSic = createSelloutStoreMasterDto.codeStoreSic!;
-            existingStore.distributor = createSelloutStoreMasterDto.distributor;
-            existingStore.storeDistributor = createSelloutStoreMasterDto.storeDistributor;
-            existingStore.status = createSelloutStoreMasterDto.status;
+        const storesToUpdate: SelloutStoreMaster[] = [];
+        const storesToCreate: SelloutStoreMaster[] = [];
+        const processedKeys = new Set<string>();
 
-            await this.selloutStoreMasterRepository.save([existingStore]);
-            await this.syncConsolidatedDataStoresOnUpdateStores([existingStore]);
-            return existingStore;
+        for (const dto of createSelloutStoreMasterDtos) {
+            const distributor = cleanString(dto.distributor ?? '');
+            const storeDistributor = cleanString(dto.storeDistributor ?? '');
+
+            // Generar clave quitando todos los espacios y a mayúsculas
+            const searchStoreKey = `${distributor}${storeDistributor}`.replace(/\s/g, '').toUpperCase();
+            dto.searchStore = searchStoreKey;
+
+            // Evitar procesar duplicados exactos en la misma petición
+            const duplicateKey = `${searchStoreKey}-${dto.codeStoreSic}-${dto.periodo}`;
+            if (processedKeys.has(duplicateKey)) {
+                errors += `Advertencia: Registro duplicado detectado en el envío para la llave ${searchStoreKey}\n`;
+                continue;
+            }
+            processedKeys.add(duplicateKey);
+
+            try {
+                let existingStore: SelloutStoreMaster | null = null;
+                if (dto.searchStore && dto.periodo) {
+                    existingStore = await this.selloutStoreMasterRepository.findBySearchStoreAndPeriodo(dto.searchStore, dto.periodo);
+                } else if (dto.searchStore) {
+                    existingStore = await this.selloutStoreMasterRepository.findBySearchStoreOnly(dto.searchStore);
+                }
+
+                if (existingStore) {
+                    // Actualizar
+                    existingStore.codeStoreSic = dto.codeStoreSic!;
+                    existingStore.distributor = dto.distributor;
+                    existingStore.storeDistributor = dto.storeDistributor;
+                    existingStore.status = dto.status ?? existingStore.status;
+                    storesToUpdate.push(existingStore);
+                    update++;
+                } else {
+                    // Crear
+                    const newStore = plainToInstance(SelloutStoreMaster, dto);
+                    storesToCreate.push(newStore);
+                    insert++;
+                }
+            } catch (error) {
+                errors += `Error processing ${dto.searchStore}: ${error}\n`;
+            }
         }
 
-        const newStore = plainToInstance(SelloutStoreMaster, createSelloutStoreMasterDto);
-        if (!newStore.searchStore) {
-            const distributor = cleanString(newStore.distributor ?? '');
-            const storeDistributor = cleanString(newStore.storeDistributor ?? '');
-            newStore.searchStore = distributor + storeDistributor;
+        if (storesToUpdate.length > 0) {
+            const chunks = chunkArray(storesToUpdate, 500);
+            for (const chunk of chunks) {
+                await this.selloutStoreMasterRepository.save(chunk);
+                await this.syncConsolidatedDataStoresOnUpdateStores(chunk);
+            }
         }
 
-        await this.selloutStoreMasterRepository.save([newStore]);
-        await this.syncConsolidatedDataStoresOnUpdateStores([newStore]);
-        return newStore;
+        if (storesToCreate.length > 0) {
+            const chunks = chunkArray(storesToCreate, 500);
+            for (const chunk of chunks) {
+                await this.selloutStoreMasterRepository.save(chunk);
+                await this.syncConsolidatedDataStoresOnUpdateStores(chunk);
+            }
+        }
+
+        return {
+            insert,
+            update,
+            errors,
+            insertsDetails: storesToCreate,
+            updateDetails: storesToUpdate
+        };
     }
 
-    async createSelloutProductMaster(createSelloutProductMasterDto: CreateSelloutProductMasterDto): Promise<SelloutProductMaster> {
-        const { searchProductStore, periodo } = createSelloutProductMasterDto;
+    async createSelloutProductMaster(createSelloutProductMasterDtos: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string; insertsDetails: SelloutProductMaster[], updateDetails: SelloutProductMaster[] }> {
+        let insert = 0;
+        let update = 0;
+        let errors = '';
 
-        let existingProduct: SelloutProductMaster | null = null;
-        if (searchProductStore && periodo) {
-            existingProduct = await this.selloutProductMasterRepository.findBySearchProductStoreAndPeriodo(searchProductStore, periodo);
-        } else if (searchProductStore) {
-            existingProduct = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(searchProductStore);
+        if (!createSelloutProductMasterDtos || createSelloutProductMasterDtos.length === 0) {
+            return { insert, update, errors: 'No se enviaron datos para procesar\n', insertsDetails: [], updateDetails: [] };
         }
 
-        if (existingProduct) {
-            existingProduct.codeProductSic = createSelloutProductMasterDto.codeProductSic!;
-            existingProduct.distributor = createSelloutProductMasterDto.distributor;
-            existingProduct.productDistributor = createSelloutProductMasterDto.productDistributor;
-            existingProduct.productStore = createSelloutProductMasterDto.productStore;
-            existingProduct.status = createSelloutProductMasterDto.status;
+        const productsToUpdate: SelloutProductMaster[] = [];
+        const productsToCreate: SelloutProductMaster[] = [];
+        const processedKeys = new Set<string>();
 
-            await this.selloutProductMasterRepository.save([existingProduct]);
-            await this.syncConsolidatedDataStoresOnUpdateProduct([existingProduct]);
-            return existingProduct;
+        for (const dto of createSelloutProductMasterDtos) {
+            const distributor = cleanString(dto.distributor ?? '');
+            const productDistributor = cleanString(dto.productDistributor ?? '');
+            const productStore = cleanString(dto.productStore ?? '');
+
+            // Generar clave única sin espacios y mayúsculas
+            const searchProductKey = (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
+            dto.searchProductStore = searchProductKey;
+
+            // Evitar procesar duplicados exactos en el mismo payload
+            const duplicateKey = `${searchProductKey}-${dto.codeProductSic}-${dto.periodo}`;
+            if (processedKeys.has(duplicateKey)) {
+                errors += `Advertencia: Registro duplicado detectado en el envío para la llave ${searchProductKey}\n`;
+                continue;
+            }
+            processedKeys.add(duplicateKey);
+
+            try {
+                let existingProduct: SelloutProductMaster | null = null;
+                if (dto.searchProductStore && dto.periodo) {
+                    existingProduct = await this.selloutProductMasterRepository.findBySearchProductStoreAndPeriodo(dto.searchProductStore, dto.periodo);
+                } else if (dto.searchProductStore) {
+                    existingProduct = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(dto.searchProductStore);
+                }
+
+                if (existingProduct) {
+                    existingProduct.codeProductSic = dto.codeProductSic!;
+                    existingProduct.distributor = dto.distributor;
+                    existingProduct.productDistributor = dto.productDistributor;
+                    existingProduct.productStore = dto.productStore;
+                    existingProduct.status = dto.status ?? existingProduct.status;
+
+                    productsToUpdate.push(existingProduct);
+                    update++;
+                } else {
+                    const newProduct = plainToInstance(SelloutProductMaster, dto);
+                    productsToCreate.push(newProduct);
+                    insert++;
+                }
+            } catch (error) {
+                errors += `Error processing ${dto.searchProductStore}: ${error}\n`;
+            }
         }
 
-        const newProduct = plainToInstance(SelloutProductMaster, createSelloutProductMasterDto);
-        if (!newProduct.searchProductStore) {
-            newProduct.searchProductStore = cleanString(newProduct.distributor ?? '') + cleanString(newProduct.productDistributor ?? '') + cleanString(newProduct.productStore ?? '');
+        if (productsToUpdate.length > 0) {
+            const chunks = chunkArray(productsToUpdate, 500);
+            for (const chunk of chunks) {
+                await this.selloutProductMasterRepository.save(chunk);
+                await this.syncConsolidatedDataStoresOnUpdateProduct(chunk);
+            }
         }
-        await this.selloutProductMasterRepository.save([newProduct]);
-        await this.syncConsolidatedDataStoresOnUpdateProduct([newProduct]);
-        return newProduct;
+
+        if (productsToCreate.length > 0) {
+            const chunks = chunkArray(productsToCreate, 500);
+            for (const chunk of chunks) {
+                await this.selloutProductMasterRepository.save(chunk);
+                await this.syncConsolidatedDataStoresOnUpdateProduct(chunk);
+            }
+        }
+
+        return {
+            insert,
+            update,
+            errors,
+            insertsDetails: productsToCreate,
+            updateDetails: productsToUpdate
+        };
     }
 
     async updateSelloutProductMaster(id: number, updateSelloutProductMasterDto: UpdateSelloutProductMasterDto): Promise<SelloutProductMaster> {
