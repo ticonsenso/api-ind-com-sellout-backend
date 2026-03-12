@@ -147,13 +147,8 @@ export class SelloutMastersService {
 
         const periodoActivo = createSelloutProductMastersDto[0].periodo;
         if (periodoActivo) {
-            const existingRecords = await this.selloutProductMasterRepository.findByPeriodo(periodoActivo);
-            const existingCount = existingRecords.length;
-
-            if (createSelloutProductMastersDto.length < existingCount) {
-                // Si llegaron menos registros que los existentes, eliminamos todo el periodo para recrearlo
-                await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, []);
-            }
+            // Siempre eliminamos los registros del periodo activo para recrearlos
+            await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, []);
         }
 
         const productsToUpdate: SelloutProductMaster[] = [];
@@ -263,14 +258,8 @@ export class SelloutMastersService {
 
         const periodoActivo = configs[0].periodo;
         if (periodoActivo) {
-            // Contamos los registros existentes en el periodo para evaluar si el batch es menor o mayor
-            const existingRecords = await this.selloutStoreMasterRepository.findByPeriodo(periodoActivo);
-            const existingCount = existingRecords.length;
-
-            if (configs.length < existingCount) {
-                // Llegaron menos registros, lo mejor es eliminarlos todos en este periodo para volver a subir
-                await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, []);
-            }
+            // Siempre eliminamos todos en este periodo para volver a subir
+            await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, []);
         }
 
         const processedKeys = new Set<string>();

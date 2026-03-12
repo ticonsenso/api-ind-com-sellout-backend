@@ -1285,3 +1285,19 @@ ON "db-sellout".consolidated_data_stores
 ALTER TABLE "db-sellout".sellout_store_master DROP CONSTRAINT sellout_store_master_pkey;
 ALTER TABLE "db-sellout".sellout_store_master DROP CONSTRAINT sellout_store_master_search_store_key;
 ALTER TABLE "db-sellout".sellout_product_master DROP CONSTRAINT sellout_product_master_pkey;
+
+
+-- 1. Eliminar el índice actual que es demasiado restrictivo
+DROP INDEX "db-sellout".unique_search_store;
+
+-- 2. Crear un nuevo índice único compuesto por 'search_store' y 'periodo'
+CREATE UNIQUE INDEX unique_search_store_per_periodo 
+ON "db-sellout".sellout_store_master USING btree (search_store, periodo);
+
+
+-- 1. Eliminar el índice restrictivo actual
+DROP INDEX "db-sellout".unique_search_product_store;
+
+-- 2. Crear el nuevo índice compuesto por 'search_product_store' y 'periodo'
+CREATE UNIQUE INDEX unique_search_product_per_periodo 
+ON "db-sellout".sellout_product_master USING btree (search_product_store, periodo);
