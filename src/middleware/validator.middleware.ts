@@ -11,35 +11,47 @@ import {plainToInstance} from 'class-transformer';
 export function validatorMiddleware(dto: any, skipMissingProperties = false) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const dtoObject = plainToInstance(dto, req.body, {
+      const isArray = Array.isArray(req.body);
+      const dataToValidate = isArray ? req.body : [req.body];
+      
+      const dtoObjects = plainToInstance(dto, dataToValidate, {
         excludeExtraneousValues: false,
         enableImplicitConversion: true,
       });
-      // Validar el objeto según las reglas definidas en el DTO
-      const errors: ValidationError[] = await validate(dtoObject, {
-        skipMissingProperties,
-        whitelist: true,
-        forbidNonWhitelisted: true,
-      });
 
-      // Si hay errores de validación, devolver respuesta con errores
-      if (errors.length > 0) {
-        const mensajes = errors.map((error) => {
-          return {
-            propiedad: error.property,
-            restricciones: error.constraints ? Object.values(error.constraints) : ['Error de validación'],
-          };
+      let allErrors: any[] = [];
+
+      for (let i = 0; i < (dtoObjects as any[]).length; i++) {
+        const item = (dtoObjects as any[])[i];
+        const errors: ValidationError[] = await validate(item, {
+          skipMissingProperties,
+          whitelist: true,
+          forbidNonWhitelisted: true,
         });
 
+        if (errors.length > 0) {
+          const mensajes = errors.map((error) => {
+            return {
+              index: isArray ? i : undefined,
+              propiedad: error.property,
+              restricciones: error.constraints ? Object.values(error.constraints) : ['Error de validación'],
+            };
+          });
+          allErrors = allErrors.concat(mensajes);
+        }
+      }
+
+      // Si hay errores de validación, devolver respuesta con errores
+      if (allErrors.length > 0) {
         return res.status(400).json({
           status: 'error',
           message: 'Error de validación en los datos de entrada',
-          errores: mensajes,
+          errores: allErrors,
         });
       }
 
       // Si no hay errores, continuar con la siguiente función
-      req.body = dtoObject;
+      req.body = isArray ? dtoObjects : (dtoObjects as any[])[0];
       next();
     } catch (error) {
       console.error('Error en la validación:', error);

@@ -486,18 +486,19 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     const qb = this.repository
       .createQueryBuilder("s")
       .select([
-        "s.calculate_date AS calculate_date",
         "s.distributor AS distributor",
         "s.code_store_distributor AS code_store_distributor",
-        "s.code_product_distributor AS code_product_distributor",
-        "s.description_distributor AS description_distributor",
-        "s.units_sold_distributor AS units_sold_distributor",
-        "s.code_product AS code_product",
-        "s.code_store AS code_store",
-        "s.sale_date AS sale_date",
-        "s.id AS id",
-        "s.status AS status",
-      ]);
+        "MAX(s.calculate_date) AS calculate_date",
+        "MAX(s.code_product_distributor) AS code_product_distributor",
+        "MAX(s.description_distributor) AS description_distributor",
+        "MAX(s.units_sold_distributor) AS units_sold_distributor",
+        "MAX(s.code_product) AS code_product",
+        "MAX(s.code_store) AS code_store",
+        "MAX(s.sale_date) AS sale_date",
+        "MAX(s.id) AS id"
+      ])
+      .groupBy("s.distributor")
+      .addGroupBy("s.code_store_distributor");
 
     // === Filtro especifico ===
     qb.andWhere("UPPER(REPLACE(s.code_store, ' ', '')) = 'NOSEVISITA'");
@@ -542,16 +543,16 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       calculateDate: item.calculate_date,
       distributor: item.distributor,
       codeStoreDistributor: item.code_store_distributor,
-      codeProductDistributor: item.code_product_distributor,
-      descriptionDistributor: item.description_distributor,
-      unitsSoldDistributor: item.units_sold_distributor ? Number(item.units_sold_distributor) : null,
+      codeProductDistributor: null,
+      descriptionDistributor: null,
+      unitsSoldDistributor: null,
       codeProduct: item.code_product,
-      codeStore: item.code_store,
-      saleDate: item.sale_date,
+      codeStore: null,
+      saleDate: null,
       storeName: null,
       productModel: null,
       id: item.id,
-      status: item.status,
+      status: null,
     }));
 
     // === Total paginado ===
@@ -579,18 +580,20 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     const qb = this.repository
       .createQueryBuilder("s")
       .select([
-        "s.calculate_date AS calculate_date",
         "s.distributor AS distributor",
         "s.code_store_distributor AS code_store_distributor",
         "s.code_product_distributor AS code_product_distributor",
-        "s.description_distributor AS description_distributor",
-        "s.units_sold_distributor AS units_sold_distributor",
-        "s.code_product AS code_product",
-        "s.code_store AS code_store",
-        "s.sale_date AS sale_date",
-        "s.id AS id",
-        "s.status AS status",
-      ]);
+        "MAX(s.calculate_date) AS calculate_date",
+        "MAX(s.description_distributor) AS description_distributor",
+        "SUM(CAST(COALESCE(s.units_sold_distributor, '0') AS NUMERIC)) AS units_sold_distributor",
+        "MAX(s.code_product) AS code_product",
+        "MAX(s.code_store) AS code_store",
+        "MAX(s.sale_date) AS sale_date",
+        "MAX(s.id) AS id"
+      ])
+      .groupBy("s.distributor")
+      .addGroupBy("s.code_store_distributor")
+      .addGroupBy("s.code_product_distributor");
 
     // === Filtro especifico ===
     qb.andWhere("UPPER(REPLACE(s.code_product, ' ', '')) = 'OTROS'");
@@ -636,15 +639,15 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       distributor: item.distributor,
       codeStoreDistributor: item.code_store_distributor,
       codeProductDistributor: item.code_product_distributor,
-      descriptionDistributor: item.description_distributor,
+      descriptionDistributor: null,
       unitsSoldDistributor: item.units_sold_distributor ? Number(item.units_sold_distributor) : null,
       codeProduct: item.code_product,
-      codeStore: item.code_store,
-      saleDate: item.sale_date,
+      codeStore: null,
+      saleDate: null,
       storeName: null,
       productModel: null,
       id: item.id,
-      status: item.status,
+      status: null,
     }));
 
     // === Total paginado ===

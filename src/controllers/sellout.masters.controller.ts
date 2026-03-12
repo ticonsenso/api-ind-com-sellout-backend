@@ -32,9 +32,16 @@ export class SelloutMastersController {
 
     async createSelloutStoreMaster(req: Request, res: Response) {
         try {
-            const createSelloutStoreMasterDto: CreateSelloutStoreMasterDto = plainToClass(CreateSelloutStoreMasterDto, req.body);
-            const selloutStoreMaster = await this.selloutMastersService.createSelloutStoreMaster(createSelloutStoreMasterDto);
-            res.status(StatusCodes.CREATED).json({ message: 'Maestro almacen creado correctamente', selloutStoreMaster });
+            // Asegurarse de que el input es un array
+            const bodyArray = Array.isArray(req.body) ? req.body : [req.body];
+            const createSelloutStoreMasterDtos = plainToInstance(CreateSelloutStoreMasterDto, bodyArray);
+            
+            const result = await this.selloutMastersService.createSelloutStoreMaster(createSelloutStoreMasterDtos);
+            
+            res.status(StatusCodes.CREATED).json({ 
+                message: `Maestros almacenes procesados correctamente: ${result.insert} creados, ${result.update} actualizados.`, 
+                ...result 
+            });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -135,9 +142,16 @@ export class SelloutMastersController {
 
     async createSelloutProductMaster(req: Request, res: Response) {
         try {
-            const createSelloutProductMasterDto: CreateSelloutProductMasterDto = plainToClass(CreateSelloutProductMasterDto, req.body);
-            const selloutProductMaster = await this.selloutMastersService.createSelloutProductMaster(createSelloutProductMasterDto);
-            res.status(StatusCodes.CREATED).json({ message: 'Maestro producto creado correctamente', selloutProductMaster });
+            // Asegurarse de que el input es un array
+            const bodyArray = Array.isArray(req.body) ? req.body : [req.body];
+            const createSelloutProductMasterDtos = plainToInstance(CreateSelloutProductMasterDto, bodyArray);
+            
+            const result = await this.selloutMastersService.createSelloutProductMaster(createSelloutProductMasterDtos);
+            
+            res.status(StatusCodes.CREATED).json({ 
+                message: `Maestros productos procesados correctamente: ${result.insert} creados, ${result.update} actualizados.`, 
+                ...result 
+            });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)

@@ -24,53 +24,80 @@ const selloutMastersController = new SelloutMastersController(AppDataSource);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - distributor
- *               - storeDistributor
- *               - searchStore
- *               - codeStoreSic
- *               - status
- *             properties:
- *               distributor:
- *                 type: string
- *                 description: Distribuidor
- *               storeDistributor:
- *                 type: string
- *                 description: Distribuidor de la tienda
- *               searchStore:
- *                 type: string
- *                 description: Nombre de la tienda
- *               codeStoreSic:
- *                 type: string
- *                 description: Código de la tienda
- *               status:
- *                 type: boolean
- *                 description: Estado de la tienda (ACTIVO, INACTIVO)
- *               periodo:
- *                 type: string
- *                 format: date
- *                 description: Periodo del reporte (YYYY-MM-DD)
+ *             type: array
+ *             items:
+ *               type: object
+ *               required:
+ *                 - distributor
+ *                 - storeDistributor
+ *                 - codeStoreSic
+ *               properties:
+ *                 distributor:
+ *                   type: string
+ *                   description: Distribuidor
+ *                 storeDistributor:
+ *                   type: string
+ *                   description: Distribuidor de la tienda
+ *                 codeStoreSic:
+ *                   type: string
+ *                   description: Código de la tienda
+ *                 status:
+ *                   type: boolean
+ *                   description: Estado de la tienda (ACTIVO, INACTIVO)
+ *                 periodo:
+ *                   type: string
+ *                   format: date
+ *                   description: Periodo del reporte (YYYY-MM-DD)
  *     responses:
- *       200:
- *         description: Maestro de almacen creado correctamente
+ *       201:
+ *         description: Maestros de almacen procesados correctamente
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
+ *                 message:
+ *                   type: string
+ *                 insert:
  *                   type: integer
- *                 distributor:
+ *                 update:
+ *                   type: integer
+ *                 errors:
  *                   type: string
- *                 storeDistributor:
- *                   type: string
- *                 searchStore:
- *                   type: string
- *                 codeStoreSic:
- *                   type: string
- *                 status:
- *                   type: boolean
+ *                 insertsDetails:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       distributor:
+ *                         type: string
+ *                       storeDistributor:
+ *                         type: string
+ *                       searchStore:
+ *                         type: string
+ *                       codeStoreSic:
+ *                         type: string
+ *                       status:
+ *                         type: boolean
+ *                 updateDetails:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       distributor:
+ *                         type: string
+ *                       storeDistributor:
+ *                         type: string
+ *                       searchStore:
+ *                         type: string
+ *                       codeStoreSic:
+ *                         type: string
+ *                       status:
+ *                         type: boolean
 
  *       400:
  *         description: Datos de entrada inválidos.
@@ -443,59 +470,88 @@ router.get(
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - distributor
- *               - productDistributor
- *               - productStore
- *               - searchProductStore
- *               - codeProductSic
- *               - status
- *             properties:
- *               distributor:
- *                 type: string
- *                 description: Distribuidor
- *               productDistributor:
- *                 type: string
- *                 description: Distribuidor del producto
- *               productStore:
- *                 type: string
- *                 description: Tienda del producto
- *               searchProductStore:
- *                 type: string
- *                 description: Nombre de la tienda del producto
- *               codeProductSic:
- *                 type: string
- *                 description: Código del producto
- *               status:
- *                 type: boolean
- *                 description: Estado del producto (ACTIVO, INACTIVO)
- *               periodo:
- *                 type: string
- *                 format: date
- *                 description: Periodo del reporte (YYYY-MM-DD)
+ *             type: array
+ *             items:
+ *               type: object
+ *               required:
+ *                 - distributor
+ *                 - productDistributor
+ *                 - productStore
+ *                 - codeProductSic
+ *               properties:
+ *                 distributor:
+ *                   type: string
+ *                   description: Distribuidor
+ *                 productDistributor:
+ *                   type: string
+ *                   description: Distribuidor del producto
+ *                 productStore:
+ *                   type: string
+ *                   description: Tienda del producto
+ *                 codeProductSic:
+ *                   type: string
+ *                   description: Código del producto
+ *                 status:
+ *                   type: boolean
+ *                   description: Estado del producto (ACTIVO, INACTIVO)
+ *                 periodo:
+ *                   type: string
+ *                   format: date
+ *                   description: Periodo del reporte (YYYY-MM-DD)
  *     responses:
- *       200:
- *         description: Maestro de producto creado correctamente
+ *       201:
+ *         description: Maestros de producto procesados correctamente
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
+ *                 message:
+ *                   type: string
+ *                 insert:
  *                   type: integer
- *                 distributor:
+ *                 update:
+ *                   type: integer
+ *                 errors:
  *                   type: string
- *                 productDistributor:
- *                   type: string
- *                 productStore:
- *                   type: string
- *                 searchProductStore:
- *                   type: string
- *                 codeProductSic:
- *                   type: string
- *                 status:
- *                   type: boolean
+ *                 insertsDetails:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       distributor:
+ *                         type: string
+ *                       productDistributor:
+ *                         type: string
+ *                       productStore:
+ *                         type: string
+ *                       searchProductStore:
+ *                         type: string
+ *                       codeProductSic:
+ *                         type: string
+ *                       status:
+ *                         type: boolean
+ *                 updateDetails:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       distributor:
+ *                         type: string
+ *                       productDistributor:
+ *                         type: string
+ *                       productStore:
+ *                         type: string
+ *                       searchProductStore:
+ *                         type: string
+ *                       codeProductSic:
+ *                         type: string
+ *                       status:
+ *                         type: boolean
 
  *       400:
  *         description: Datos de entrada inválidos.
@@ -847,7 +903,7 @@ router.get(
  *             type: string
  *             format: binary
  *     responses:   
- *       200:
+ *       201:
  *         description: Maestros de almacen creados correctamente
  *         content:
  *           application/json:
@@ -856,23 +912,8 @@ router.get(
  *               properties:
  *                 message: 
  *                   type: string
- *                 results:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer    
- *                       distributor:
- *                         type: string
- *                       storeDistributor:
- *                         type: string
- *                       searchStore:
- *                         type: string
- *                       codeStoreSic:
- *                         type: string 
- *                       status:
- *                         type: boolean
+ *                 errors:
+ *                   type: string
  *       400:
  *         description: Datos de entrada inválidos.
  *       401:
@@ -923,7 +964,7 @@ router.post(
  *             type: string
  *             format: binary
  *     responses:   
- *       200:
+ *       201:
  *         description: Maestros de producto creados correctamente
  *         content:
  *           application/json:
@@ -932,25 +973,8 @@ router.post(
  *               properties:
  *                 message: 
  *                   type: string
- *                 results:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer    
- *                       distributor:
- *                         type: string
- *                       productDistributor:
- *                         type: string
- *                       productStore:
- *                         type: string
- *                       searchProductStore:
- *                         type: string 
- *                       codeProductSic:
- *                         type: string
- *                       status:
- *                         type: boolean
+ *                 errors:
+ *                   type: string
  *       400:
  *         description: Datos de entrada inválidos.
  *       401:
