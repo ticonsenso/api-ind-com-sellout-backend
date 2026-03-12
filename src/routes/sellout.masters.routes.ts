@@ -24,53 +24,30 @@ const selloutMastersController = new SelloutMastersController(AppDataSource);
  *       content:
  *         application/json:
  *           schema:
- *             oneOf:
- *               - type: object
- *                 required:
- *                   - distributor
- *                   - storeDistributor
- *                   - codeStoreSic
- *                 properties:
- *                   distributor:
- *                     type: string
- *                     description: Distribuidor
- *                   storeDistributor:
- *                     type: string
- *                     description: Distribuidor de la tienda
- *                   codeStoreSic:
- *                     type: string
- *                     description: Código de la tienda
- *                   status:
- *                     type: boolean
- *                     description: Estado de la tienda (ACTIVO, INACTIVO)
- *                   periodo:
- *                     type: string
- *                     format: date
- *                     description: Periodo del reporte (YYYY-MM-DD)
- *               - type: array
- *                 items:
- *                   type: object
- *                   required:
- *                     - distributor
- *                     - storeDistributor
- *                     - codeStoreSic
- *                   properties:
- *                     distributor:
- *                       type: string
- *                       description: Distribuidor
- *                     storeDistributor:
- *                       type: string
- *                       description: Distribuidor de la tienda
- *                     codeStoreSic:
- *                       type: string
- *                       description: Código de la tienda
- *                     status:
- *                       type: boolean
- *                       description: Estado de la tienda (ACTIVO, INACTIVO)
- *                     periodo:
- *                       type: string
- *                       format: date
- *                       description: Periodo del reporte (YYYY-MM-DD)
+ *             type: array
+ *             items:
+ *               type: object
+ *               required:
+ *                 - distributor
+ *                 - storeDistributor
+ *                 - codeStoreSic
+ *               properties:
+ *                 distributor:
+ *                   type: string
+ *                   description: Distribuidor
+ *                 storeDistributor:
+ *                   type: string
+ *                   description: Distribuidor de la tienda
+ *                 codeStoreSic:
+ *                   type: string
+ *                   description: Código de la tienda
+ *                 status:
+ *                   type: boolean
+ *                   description: Estado de la tienda (ACTIVO, INACTIVO)
+ *                 periodo:
+ *                   type: string
+ *                   format: date
+ *                   description: Periodo del reporte (YYYY-MM-DD)
  *     responses:
  *       201:
  *         description: Maestros de almacen procesados correctamente
@@ -493,61 +470,34 @@ router.get(
  *       content:
  *         application/json:
  *           schema:
- *             oneOf:
- *               - type: object
- *                 required:
- *                   - distributor
- *                   - productDistributor
- *                   - productStore
- *                   - codeProductSic
- *                 properties:
- *                   distributor:
- *                     type: string
- *                     description: Distribuidor
- *                   productDistributor:
- *                     type: string
- *                     description: Distribuidor del producto
- *                   productStore:
- *                     type: string
- *                     description: Tienda del producto
- *                   codeProductSic:
- *                     type: string
- *                     description: Código del producto
- *                   status:
- *                     type: boolean
- *                     description: Estado del producto (ACTIVO, INACTIVO)
- *                   periodo:
- *                     type: string
- *                     format: date
- *                     description: Periodo del reporte (YYYY-MM-DD)
- *               - type: array
- *                 items:
- *                   type: object
- *                   required:
- *                     - distributor
- *                     - productDistributor
- *                     - productStore
- *                     - codeProductSic
- *                   properties:
- *                     distributor:
- *                       type: string
- *                       description: Distribuidor
- *                     productDistributor:
- *                       type: string
- *                       description: Distribuidor del producto
- *                     productStore:
- *                       type: string
- *                       description: Tienda del producto
- *                     codeProductSic:
- *                       type: string
- *                       description: Código del producto
- *                     status:
- *                       type: boolean
- *                       description: Estado del producto (ACTIVO, INACTIVO)
- *                     periodo:
- *                       type: string
- *                       format: date
- *                       description: Periodo del reporte (YYYY-MM-DD)
+ *             type: array
+ *             items:
+ *               type: object
+ *               required:
+ *                 - distributor
+ *                 - productDistributor
+ *                 - productStore
+ *                 - codeProductSic
+ *               properties:
+ *                 distributor:
+ *                   type: string
+ *                   description: Distribuidor
+ *                 productDistributor:
+ *                   type: string
+ *                   description: Distribuidor del producto
+ *                 productStore:
+ *                   type: string
+ *                   description: Tienda del producto
+ *                 codeProductSic:
+ *                   type: string
+ *                   description: Código del producto
+ *                 status:
+ *                   type: boolean
+ *                   description: Estado del producto (ACTIVO, INACTIVO)
+ *                 periodo:
+ *                   type: string
+ *                   format: date
+ *                   description: Periodo del reporte (YYYY-MM-DD)
  *     responses:
  *       201:
  *         description: Maestros de producto procesados correctamente
