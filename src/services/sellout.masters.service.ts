@@ -137,28 +137,48 @@ export class SelloutMastersService {
     }
 
     async createSelloutProductMastersBatch(createSelloutProductMastersDto: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string }> {
-        const productsToUpdate: SelloutProductMaster[] = [];
-        const productsToCreate: CreateSelloutProductMasterDto[] = [];
-        const processedKeys = new Set<string>();
         let insert = 0;
         let update = 0;
         let errors = '';
+
+        if (!createSelloutProductMastersDto || createSelloutProductMastersDto.length === 0) {
+            return { insert, update, errors: 'No llegaron registros para procesar\n' };
+        }
+
         const periodoActivo = createSelloutProductMastersDto[0].periodo;
+        if (periodoActivo) {
+            const existingRecords = await this.selloutProductMasterRepository.findByPeriodo(periodoActivo);
+            const existingCount = existingRecords.length;
+
+            if (createSelloutProductMastersDto.length < existingCount) {
+                // Si llegaron menos registros que los existentes, eliminamos todo el periodo para recrearlo
+                await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, []);
+            }
+        }
+
+        const productsToUpdate: SelloutProductMaster[] = [];
+        const productsToCreate: CreateSelloutProductMasterDto[] = [];
+        const processedKeys = new Set<string>();
+
         for (const dto of createSelloutProductMastersDto) {
+            const distributor = cleanString(dto.distributor ?? '');
+            const productDistributor = cleanString(dto.productDistributor ?? '');
+            const productStore = cleanString(dto.productStore ?? '');
+
+            // Generar clave única sin espacios y mayúsculas
+            const searchProductKey = (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
+            dto.searchProductStore = searchProductKey;
+
+            // Evitar procesar duplicados exactos en el mismo payload usando searchProductKey y codeProductSic
+            const duplicateKey = `${searchProductKey}-${dto.codeProductSic}`;
+            if (processedKeys.has(duplicateKey)) {
+                errors += `Advertencia: Registro duplicado detectado en el envío para la llave ${searchProductKey} y código ${dto.codeProductSic}\n`;
+                continue;
+            }
+            processedKeys.add(duplicateKey);
+
             try {
                 let existing: SelloutProductMaster | null = null;
-
-                if (!dto.searchProductStore) {
-                    const distributor = cleanString(dto.distributor ?? '');
-                    const productDistributor = cleanString(dto.productDistributor ?? '');
-                    const productStore = cleanString(dto.productStore ?? '');
-                    dto.searchProductStore = (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
-                }
-
-                if (processedKeys.has(dto.searchProductStore)) {
-                    continue;
-                }
-                processedKeys.add(dto.searchProductStore);
 
                 if (dto.searchProductStore && dto.periodo) {
                     existing = await this.selloutProductMasterRepository.findBySearchProductStoreAndPeriodo(dto.searchProductStore, dto.periodo);
@@ -171,7 +191,7 @@ export class SelloutMastersService {
                     existing.distributor = dto.distributor;
                     existing.productDistributor = dto.productDistributor;
                     existing.productStore = dto.productStore;
-                    existing.status = dto.status;
+                    existing.status = dto.status ?? existing.status;
                     productsToUpdate.push(existing);
                     update++;
                 } else {
@@ -182,23 +202,22 @@ export class SelloutMastersService {
                 errors += `Error processing ${dto.searchProductStore}: ${error}\n`;
             }
         }
-        console.log('productsToUpdate', productsToUpdate.length);
-        console.log('productsToCreate', productsToCreate.length);
+
         if (productsToUpdate.length > 0) {
             const chunks = chunkArray(productsToUpdate, 500);
             for (const chunk of chunks) {
                 await this.selloutProductMasterRepository.save(chunk);
             }
         }
+
         if (productsToCreate.length > 0) {
             const chunks = chunkArray(productsToCreate, 500);
             for (const chunk of chunks) {
-                await this.selloutProductMasterRepository.save(chunk);
+                const newProducts = chunk.map(dto => plainToInstance(SelloutProductMaster, dto));
+                await this.selloutProductMasterRepository.save(newProducts);
             }
         }
-        console.log("Ya los creo")
-        await this.syncAndCleanupByPeriodProduct(createSelloutProductMastersDto, periodoActivo!);
-        console.log("Ya los sincronizo")
+
         return { insert, update, errors };
     }
 
@@ -237,26 +256,87 @@ export class SelloutMastersService {
         let insert = 0;
         let update = 0;
         let errors = '';
+
+        if (!configs || configs.length === 0) {
+            return { insert, update, errors: 'No llegaron registros para procesar\n' };
+        }
+
+        const periodoActivo = configs[0].periodo;
+        if (periodoActivo) {
+            // Contamos los registros existentes en el periodo para evaluar si el batch es menor o mayor
+            const existingRecords = await this.selloutStoreMasterRepository.findByPeriodo(periodoActivo);
+            const existingCount = existingRecords.length;
+
+            if (configs.length < existingCount) {
+                // Llegaron menos registros, lo mejor es eliminarlos todos en este periodo para volver a subir
+                await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, []);
+            }
+        }
+
+        const processedKeys = new Set<string>();
+        const storesToUpdate: SelloutStoreMaster[] = [];
+        const storesToCreate: CreateSelloutStoreMasterDto[] = [];
+
         for (const config of configs) {
             const distributor = cleanString(config.distributor ?? '');
             const storeDistributor = cleanString(config.storeDistributor ?? '');
-            const searchStoreKey = `${distributor}${storeDistributor}`.replace(/\s/g, '');
-            config.searchStore = searchStoreKey.toUpperCase();
+            // La key se forma sin espacios y en mayúscula
+            const searchStoreKey = `${distributor}${storeDistributor}`.replace(/\s/g, '').toUpperCase();
+            config.searchStore = searchStoreKey;
+
+            // Validar si hay repetidos en la misma solicitud
+            const duplicateKey = `${searchStoreKey}-${config.codeStoreSic}`;
+            if (processedKeys.has(duplicateKey)) {
+                errors += `Advertencia: Registro duplicado detectado en el envío para la llave ${searchStoreKey} y código ${config.codeStoreSic}\n`;
+                continue; // No insertamos este duplicado
+            }
+            processedKeys.add(duplicateKey);
+
             try {
-                const existing = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchStoreKey.toUpperCase());
+                let existing: SelloutStoreMaster | null = null;
+                if (config.searchStore && config.periodo) {
+                    existing = await this.selloutStoreMasterRepository.findBySearchStoreAndPeriodo(config.searchStore, config.periodo);
+                } else if (config.searchStore) {
+                    existing = await this.selloutStoreMasterRepository.findBySearchStoreOnly(config.searchStore);
+                }
+
                 if (existing) {
+                    // Solo actualizar
+                    existing.codeStoreSic = config.codeStoreSic!;
+                    existing.distributor = config.distributor;
+                    existing.storeDistributor = config.storeDistributor;
+                    existing.status = config.status ?? existing.status;
+                    storesToUpdate.push(existing);
                     update++;
-                    await this.selloutStoreMasterRepository.update(existing.id, config);
                 } else {
+                    // Preparar para insertar
+                    storesToCreate.push(config);
                     insert++;
-                    await this.selloutStoreMasterRepository.create(config);
                 }
             } catch (error) {
                 errors += error + '\n';
             }
         }
-        const periodoActivo = configs[0].periodo;
-        await this.syncAndCleanupByPeriodStore(configs, periodoActivo!);
+
+        // Ejecutar las actualizaciones masivamente
+        if (storesToUpdate.length > 0) {
+            const chunks = chunkArray(storesToUpdate, 500);
+            for (const chunk of chunks) {
+                await this.selloutStoreMasterRepository.save(chunk);
+            }
+        }
+
+        // Ejecutar las creaciones masivamente
+        if (storesToCreate.length > 0) {
+            const chunks = chunkArray(storesToCreate, 500);
+            for (const chunk of chunks) {
+                const newStores = chunk.map(dto => plainToInstance(SelloutStoreMaster, dto));
+                await this.selloutStoreMasterRepository.save(newStores);
+            }
+        }
+
+        // Ya no llamamos a 'syncAndCleanupByPeriodStore' al final, 
+        // ya que si venían MÁS, solo procedemos a actualizar/crear y dejamos lo demás en pie.
         return { insert, update, errors };
     }
 

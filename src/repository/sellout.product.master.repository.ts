@@ -108,7 +108,10 @@ export class SelloutProductMasterRepository extends BaseRepository<SelloutProduc
     }
 
     async deleteByPeriod(periodo: string, activeKeys: string[]): Promise<void> {
-        if (!activeKeys || activeKeys.length === 0) return;
+        if (!activeKeys || activeKeys.length === 0) {
+            await this.repository.delete({ periodo: periodo as unknown as Date });
+            return;
+        }
 
         const existingRecords = await this.repository.createQueryBuilder('p')
             .select(['p.id', 'p.searchProductStore'])
