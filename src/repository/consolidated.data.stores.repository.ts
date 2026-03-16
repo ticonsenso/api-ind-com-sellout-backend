@@ -1108,15 +1108,25 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     codeStoreDistributor: string,
     calculateDate: string
   ): Promise<any> {
+    // Normalizar parámetros de entrada: sin espacios en blanco y en mayúsculas
+    const normalizedDistributor = distributor.replace(/\s+/g, "").toUpperCase();
+    const normalizedCode = codeStoreDistributor.replace(/\s+/g, "").toUpperCase();
+
     return await this.repository
       .createQueryBuilder()
       .delete()
       .from("consolidated_data_stores")
-      .where("distributor = :distributor", { distributor })
-      .andWhere("code_store_distributor = :code", {
-        code: codeStoreDistributor,
+      .where(
+        "UPPER(REGEXP_REPLACE(distributor, '\\s+', '', 'g')) = :distributor",
+        { distributor: normalizedDistributor }
+      )
+      .andWhere(
+        "UPPER(REGEXP_REPLACE(code_store_distributor, '\\s+', '', 'g')) = :code",
+        { code: normalizedCode }
+      )
+      .andWhere("calculate_date = :calculateDate", {
+        calculateDate: primerDiaDelMesString(calculateDate),
       })
-      .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
       .execute();
   }
   async deleteDataByDistributor(

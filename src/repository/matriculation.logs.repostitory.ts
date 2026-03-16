@@ -187,15 +187,25 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
     storeName: string,
     calculateDate: string
   ): Promise<any> {
+    // Normalizar parámetros de entrada: sin espacios en blanco y en mayúsculas
+    const normalizedDistributor = distributor.replace(/\s+/g, "").toUpperCase();
+    const normalizedStoreName = storeName.replace(/\s+/g, "").toUpperCase();
+
     return await this.repository
       .createQueryBuilder()
       .delete()
       .from("matriculation_logs")
-      .where("distributor = :distributor", { distributor })
-      .andWhere("store_name = :code", {
-        code: storeName,
+      .where(
+        "UPPER(REGEXP_REPLACE(distributor, '\\s+', '', 'g')) = :distributor",
+        { distributor: normalizedDistributor }
+      )
+      .andWhere(
+        "UPPER(REGEXP_REPLACE(store_name, '\\s+', '', 'g')) = :code",
+        { code: normalizedStoreName }
+      )
+      .andWhere("calculate_date = :calculateDate", {
+        calculateDate: primerDiaDelMesString(calculateDate),
       })
-      .andWhere("calculate_date = :calculateDate", { calculateDate: primerDiaDelMesString(calculateDate) })
       .execute();
   }
 
