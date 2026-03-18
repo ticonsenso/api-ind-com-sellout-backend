@@ -16,9 +16,12 @@ const hashPassword = async (password: string): Promise<string> => {
 const cleanString = (input: unknown): string => {
   const str = typeof input === 'string' ? input : String(input ?? '');
   return str
+    .replace(/ñ/g, 'n')
+    .replace(/Ñ/g, 'N')
     .normalize('NFD') // descompone los caracteres (ej. 'á' -> 'a' + '´')
     .replace(/[\u0300-\u036f]/g, '') // elimina los acentos/diacríticos (tildes, diéresis, etc.)
-    .replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g, '') // elimina todos los espacios y caracteres invisibles
+    .replace(/(^|\D)0+(?=\d)/g, '$1') // Novedad: elimina los ceros a la izquierda de un bloque de números
+    .replace(/[^a-zA-Z0-9]/g, '') // Novedad: elimina todos los símbolos, puntos, vacíos, guiones y caracteres raros
     .trim();
 };
 
