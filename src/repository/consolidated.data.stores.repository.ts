@@ -1158,8 +1158,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       SET code_store = t2.code_store_sic
       FROM "db-sellout".sellout_store_master t2
       WHERE 
-        UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), '\\s+', '', 'g')) = 
-        UPPER(REGEXP_REPLACE(t2.search_store, '\\s+', '', 'g'))
+        TRANSLATE(UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), '\\s+', '', 'g')), 'ÁÉÍÓÚÄËÏÖÜ', 'AEIOUAEIOU') = 
+        TRANSLATE(UPPER(REGEXP_REPLACE(t2.search_store, '\\s+', '', 'g')), 'ÁÉÍÓÚÄËÏÖÜ', 'AEIOUAEIOU')
       AND cds.calculate_date = $1
       AND t2.periodo = $1;
     `;
@@ -1168,6 +1168,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     const resultMatches = await this.repository.query(queryUpdateMatches, [calculateDate]);
     return resultMatches[1] || 0;
   }
+
   async syncDataProducts(calculateDate: string): Promise<number> {
     const queryWipeAll = `
       UPDATE "db-sellout".consolidated_data_stores 
@@ -1180,8 +1181,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       SET code_product = t2.code_product_sic
       FROM "db-sellout".sellout_product_master t2
       WHERE 
-        UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), '\\s+', '', 'g')) = 
-        UPPER(REGEXP_REPLACE(t2.search_product_store, '\\s+', '', 'g'))
+        TRANSLATE(UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), '\\s+', '', 'g')), 'ÁÉÍÓÚÄËÏÖÜ', 'AEIOUAEIOU') = 
+        TRANSLATE(UPPER(REGEXP_REPLACE(t2.search_product_store, '\\s+', '', 'g')), 'ÁÉÍÓÚÄËÏÖÜ', 'AEIOUAEIOU')
       AND cds.calculate_date = $1
       AND t2.periodo = $1;
     `;

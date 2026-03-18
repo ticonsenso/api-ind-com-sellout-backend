@@ -16,9 +16,10 @@ const hashPassword = async (password: string): Promise<string> => {
 const cleanString = (input: unknown): string => {
   const str = typeof input === 'string' ? input : String(input ?? '');
   return str
+    .normalize('NFD') // descompone los caracteres (ej. 'á' -> 'a' + '´')
+    .replace(/[\u0300-\u036f]/g, '') // elimina los acentos/diacríticos (tildes, diéresis, etc.)
     .replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g, '') // elimina todos los espacios y caracteres invisibles
     .trim();
-
 };
 
 const verifyPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
