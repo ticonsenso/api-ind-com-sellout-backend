@@ -501,7 +501,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addGroupBy("s.code_store_distributor");
 
     // === Filtro especifico ===
-    qb.andWhere("UPPER(REPLACE(s.code_store, ' ', '')) = 'NOSEVISITA'");
+    qb.andWhere("REGEXP_REPLACE(TRANSLATE(UPPER(s.code_store), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = 'NOSEVISITA'");
 
     // === Filtros dinámicos ===
     if (filters?.distributor) {
@@ -596,7 +596,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addGroupBy("s.code_product_distributor");
 
     // === Filtro especifico ===
-    qb.andWhere("UPPER(REPLACE(s.code_product, ' ', '')) = 'OTROS'");
+    qb.andWhere("REGEXP_REPLACE(TRANSLATE(UPPER(s.code_product), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = 'OTROS'");
 
     // === Filtros dinámicos ===
     if (filters?.distributor) {
@@ -1070,8 +1070,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "ss.categoriaalmacen",
         "ss.supervisor",
         // --- Datos de Maestro ---
-        "UPPER(REPLACE(REPLACE(REPLACE(CONCAT(s.distributor, s.code_store_distributor), ' ', ''), '\t', ''), '\n', '')) as maestroalmacen",
-        "UPPER(REPLACE(REPLACE(REPLACE(CONCAT(s.distributor, s.code_product_distributor, s.description_distributor), ' ', ''), '\t', ''), '\n', '')) as maestroproductos"
+        "REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(s.distributor, s.code_store_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') as maestroalmacen",
+        "REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(s.distributor, s.code_product_distributor, s.description_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') as maestroproductos"
       ])
       // 4. Filtros
       .where(`s.calculate_date::date = '${date}'`)
@@ -1109,19 +1109,19 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     calculateDate: string
   ): Promise<any> {
     // Normalizar parámetros de entrada: sin espacios en blanco y en mayúsculas
-    const normalizedDistributor = distributor.replace(/\s+/g, "").toUpperCase();
-    const normalizedCode = codeStoreDistributor.replace(/\s+/g, "").toUpperCase();
+    const normalizedDistributor = distributor.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+    const normalizedCode = codeStoreDistributor.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]/g, "").toUpperCase();
 
     return await this.repository
       .createQueryBuilder()
       .delete()
       .from("consolidated_data_stores")
       .where(
-        "UPPER(REGEXP_REPLACE(distributor, '\\s+', '', 'g')) = :distributor",
+        "REGEXP_REPLACE(TRANSLATE(UPPER(distributor), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = :distributor",
         { distributor: normalizedDistributor }
       )
       .andWhere(
-        "UPPER(REGEXP_REPLACE(code_store_distributor, '\\s+', '', 'g')) = :code",
+        "REGEXP_REPLACE(TRANSLATE(UPPER(code_store_distributor), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = :code",
         { code: normalizedCode }
       )
       .andWhere("calculate_date = :calculateDate", {
@@ -1158,8 +1158,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       SET code_store = t2.code_store_sic
       FROM "db-sellout".sellout_store_master t2
       WHERE 
-        TRANSLATE(UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_store_distributor), '\\s+', '', 'g')), 'ÁÉÍÓÚÄËÏÖÜ', 'AEIOUAEIOU') = 
-        TRANSLATE(UPPER(REGEXP_REPLACE(t2.search_store, '\\s+', '', 'g')), 'ÁÉÍÓÚÄËÏÖÜ', 'AEIOUAEIOU')
+        REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(cds.distributor, cds.code_store_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = 
+        REGEXP_REPLACE(TRANSLATE(UPPER(t2.search_store), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g')
       AND cds.calculate_date = $1
       AND t2.periodo = $1;
     `;
@@ -1181,8 +1181,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       SET code_product = t2.code_product_sic
       FROM "db-sellout".sellout_product_master t2
       WHERE 
-        TRANSLATE(UPPER(REGEXP_REPLACE(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor), '\\s+', '', 'g')), 'ÁÉÍÓÚÄËÏÖÜ', 'AEIOUAEIOU') = 
-        TRANSLATE(UPPER(REGEXP_REPLACE(t2.search_product_store, '\\s+', '', 'g')), 'ÁÉÍÓÚÄËÏÖÜ', 'AEIOUAEIOU')
+        REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = 
+        REGEXP_REPLACE(TRANSLATE(UPPER(t2.search_product_store), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g')
       AND cds.calculate_date = $1
       AND t2.periodo = $1;
     `;
