@@ -235,24 +235,35 @@ export class SelloutMastersService {
         return updatedProduct;
     }
 
-    async createSelloutProductMastersBatch(createSelloutProductMastersDto: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string }> {
+    async createSelloutProductMastersBatch(createSelloutProductMastersDto: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string; duplicates: any[] }> {
         let insert = 0;
         let update = 0;
         let errors = '';
+        const duplicates: any[] = [];
 
         if (!createSelloutProductMastersDto || createSelloutProductMastersDto.length === 0) {
-            return { insert, update, errors: 'No llegaron registros para procesar\n' };
+            return { insert, update, errors: 'No llegaron registros para procesar\n', duplicates: [] };
         }
 
         const periodoActivo = createSelloutProductMastersDto[0].periodo;
+
+        // Obtenemos registros existentes antes de procesar para identificar duplicados
+        let existingRecords: SelloutProductMaster[] = [];
         if (periodoActivo) {
-            // Siempre eliminamos los registros del periodo activo para recrearlos
-            await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, []);
+            existingRecords = await this.selloutProductMasterRepository.findByPeriodo(periodoActivo);
         }
+
+        const existingMap = new Map<string, SelloutProductMaster>();
+        existingRecords.forEach(r => {
+            if (r.searchProductStore) {
+                existingMap.set(r.searchProductStore.toUpperCase(), r);
+            }
+        });
 
         const productsToUpdate: SelloutProductMaster[] = [];
         const productsToCreate: CreateSelloutProductMasterDto[] = [];
-        const processedKeys = new Set<string>();
+        const processedKeysInBatch = new Set<string>();
+        const activeKeys: string[] = [];
 
         for (const dto of createSelloutProductMastersDto) {
             const distributor = cleanString(dto.distributor ?? '');
@@ -262,25 +273,29 @@ export class SelloutMastersService {
             // Generar clave única sin espacios y mayúsculas
             const searchProductKey = (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
             dto.searchProductStore = searchProductKey;
+            activeKeys.push(searchProductKey);
 
             // Evitar procesar duplicados exactos en el mismo payload usando searchProductKey y codeProductSic
-            const duplicateKey = `${searchProductKey}-${dto.codeProductSic}`;
-            if (processedKeys.has(duplicateKey)) {
-                errors += `Advertencia: Registro duplicado detectado en el envío para la llave ${searchProductKey} y código ${dto.codeProductSic}\n`;
+            const batchKey = `${searchProductKey}-${dto.codeProductSic}`;
+            if (processedKeysInBatch.has(batchKey)) {
+                duplicates.push({
+                    ...dto,
+                    reason: 'Registro duplicado en el mismo envío'
+                });
                 continue;
             }
-            processedKeys.add(duplicateKey);
+            processedKeysInBatch.add(batchKey);
 
             try {
-                let existing: SelloutProductMaster | null = null;
-
-                if (dto.searchProductStore && dto.periodo) {
-                    existing = await this.selloutProductMasterRepository.findBySearchProductStoreAndPeriodo(dto.searchProductStore, dto.periodo);
-                } else if (dto.searchProductStore) {
-                    existing = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(dto.searchProductStore);
-                }
+                // Verificar si ya existe en la base de datos
+                const existing = existingMap.get(searchProductKey);
 
                 if (existing) {
+                    duplicates.push({
+                        ...dto,
+                        reason: 'El registro ya se encuentra registrado'
+                    });
+
                     existing.codeProductSic = dto.codeProductSic!;
                     existing.distributor = dto.distributor;
                     existing.productDistributor = dto.productDistributor;
@@ -295,6 +310,11 @@ export class SelloutMastersService {
             } catch (error) {
                 errors += `Error processing ${dto.searchProductStore}: ${error}\n`;
             }
+        }
+
+        // Limpiar registros del periodo que no vienen en este batch
+        if (periodoActivo) {
+            await this.selloutProductMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
         }
 
         if (productsToUpdate.length > 0) {
@@ -312,8 +332,9 @@ export class SelloutMastersService {
             }
         }
 
-        return { insert, update, errors };
+        return { insert, update, errors, duplicates };
     }
+
 
     async syncAndCleanupByPeriodProduct(
         currentActiveStores: CreateSelloutProductMasterDto[],
@@ -346,24 +367,35 @@ export class SelloutMastersService {
 
 
 
-    async createSelloutStoreMastersBatch(configs: CreateSelloutStoreMasterDto[]): Promise<{ insert: number; update: number; errors: string }> {
+    async createSelloutStoreMastersBatch(configs: CreateSelloutStoreMasterDto[]): Promise<{ insert: number; update: number; errors: string; duplicates: any[] }> {
         let insert = 0;
         let update = 0;
         let errors = '';
+        const duplicates: any[] = [];
 
         if (!configs || configs.length === 0) {
-            return { insert, update, errors: 'No llegaron registros para procesar\n' };
+            return { insert, update, errors: 'No llegaron registros para procesar\n', duplicates: [] };
         }
 
         const periodoActivo = configs[0].periodo;
+
+        // Obtenemos registros existentes antes de procesar para identificar duplicados
+        let existingRecords: SelloutStoreMaster[] = [];
         if (periodoActivo) {
-            // Siempre eliminamos todos en este periodo para volver a subir
-            await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, []);
+            existingRecords = await this.selloutStoreMasterRepository.findByPeriodo(periodoActivo);
         }
 
-        const processedKeys = new Set<string>();
+        const existingMap = new Map<string, SelloutStoreMaster>();
+        existingRecords.forEach(r => {
+            if (r.searchStore) {
+                existingMap.set(r.searchStore.toUpperCase(), r);
+            }
+        });
+
+        const processedKeysInBatch = new Set<string>();
         const storesToUpdate: SelloutStoreMaster[] = [];
         const storesToCreate: CreateSelloutStoreMasterDto[] = [];
+        const activeKeys: string[] = [];
 
         for (const config of configs) {
             const distributor = cleanString(config.distributor ?? '');
@@ -371,24 +403,29 @@ export class SelloutMastersService {
             // La key se forma sin espacios y en mayúscula
             const searchStoreKey = `${distributor}${storeDistributor}`.replace(/\s/g, '').toUpperCase();
             config.searchStore = searchStoreKey;
+            activeKeys.push(searchStoreKey);
 
             // Validar si hay repetidos en la misma solicitud
-            const duplicateKey = `${searchStoreKey}-${config.codeStoreSic}`;
-            if (processedKeys.has(duplicateKey)) {
-                errors += `Advertencia: Registro duplicado detectado en el envío para la llave ${searchStoreKey} y código ${config.codeStoreSic}\n`;
-                continue; // No insertamos este duplicado
+            const batchKey = `${searchStoreKey}-${config.codeStoreSic}`;
+            if (processedKeysInBatch.has(batchKey)) {
+                duplicates.push({
+                    ...config,
+                    reason: 'Registro duplicado en el mismo envío'
+                });
+                continue; // No procesamos este duplicado
             }
-            processedKeys.add(duplicateKey);
+            processedKeysInBatch.add(batchKey);
 
             try {
-                let existing: SelloutStoreMaster | null = null;
-                if (config.searchStore && config.periodo) {
-                    existing = await this.selloutStoreMasterRepository.findBySearchStoreAndPeriodo(config.searchStore, config.periodo);
-                } else if (config.searchStore) {
-                    existing = await this.selloutStoreMasterRepository.findBySearchStoreOnly(config.searchStore);
-                }
+                // Verificar si ya existe en la base de datos
+                const existing = existingMap.get(searchStoreKey);
 
                 if (existing) {
+                    duplicates.push({
+                        ...config,
+                        reason: 'El registro ya se encuentra registrado'
+                    });
+
                     // Solo actualizar
                     existing.codeStoreSic = config.codeStoreSic!;
                     existing.distributor = config.distributor;
@@ -404,6 +441,11 @@ export class SelloutMastersService {
             } catch (error) {
                 errors += error + '\n';
             }
+        }
+
+        // Limpiar registros del periodo que no vienen en este batch
+        if (periodoActivo) {
+            await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
         }
 
         // Ejecutar las actualizaciones masivamente
@@ -423,10 +465,9 @@ export class SelloutMastersService {
             }
         }
 
-        // Ya no llamamos a 'syncAndCleanupByPeriodStore' al final, 
-        // ya que si venían MÁS, solo procedemos a actualizar/crear y dejamos lo demás en pie.
-        return { insert, update, errors };
+        return { insert, update, errors, duplicates };
     }
+
 
 
     async syncAndCleanupByPeriodStore(
