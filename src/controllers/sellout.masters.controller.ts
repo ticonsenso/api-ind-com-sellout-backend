@@ -245,7 +245,11 @@ export class SelloutMastersController {
                 return;
             }
             const result = await this.selloutMastersService.createSelloutStoreMastersBatch(createSelloutStoreMasterDto);
-            res.status(StatusCodes.CREATED).json({ message: `Maestros almacenes creados correctamente: ${result.insert} insertados y ${result.update} actualizados`, errors: result.errors });
+            res.status(StatusCodes.CREATED).json({ 
+                message: `Maestros almacenes creados correctamente: ${result.insert} insertados y ${result.update} actualizados`, 
+                errors: result.errors,
+                duplicates: result.duplicates 
+            });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -261,7 +265,11 @@ export class SelloutMastersController {
                 return;
             }
             const result = await this.selloutMastersService.createSelloutProductMastersBatch(createSelloutProductMasterDto);
-            res.status(StatusCodes.CREATED).json({ message: `Maestros productos creados correctamente: ${result.insert} insertados y ${result.update} actualizados`, errors: result.errors });
+            res.status(StatusCodes.CREATED).json({ 
+                message: `Maestros productos creados correctamente: ${result.insert} insertados y ${result.update} actualizados`, 
+                errors: result.errors,
+                duplicates: result.duplicates 
+            });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
