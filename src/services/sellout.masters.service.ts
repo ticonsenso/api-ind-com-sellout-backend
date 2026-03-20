@@ -1,5 +1,5 @@
 import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import { Brackets, DataSource } from 'typeorm';
 import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
 import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
 import { SelloutStoreMaster } from '../models/sellout.store.master.model';
@@ -16,7 +16,7 @@ import {
     UpdateSelloutStoreMasterDto
 } from '../dtos/sellout.store.master.dto';
 import { SelloutProductMaster } from '../models/sellout.product.master.model';
-import { chunkArray, cleanString } from '../utils/utils';
+import { chunkArray, cleanString, generateSearchProductKey, generateSearchStoreKey } from '../utils/utils';
 import { ProductSicRepository } from '../repository/product.sic.repository';
 import { StoresSicRepository } from '../repository/stores.repository';
 import { StoresSic } from '../models/stores.sic.model';
@@ -24,6 +24,7 @@ import { ConsolidatedDataStoresRepository } from '../repository/consolidated.dat
 import { ConsolidatedDataStoresService } from './consolidated.data.stores.service';
 import { ConsolidatedDataStores } from '../models/consolidated.data.stores.model';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { SelectQueryBuilder } from 'typeorm';
 
 interface ModelProductSic {
     productSic: string;
@@ -53,167 +54,160 @@ export class SelloutMastersService {
         this.productSicRepository = new ProductSicRepository(dataSource);
     }
 
-    async createSelloutStoreMaster(createSelloutStoreMasterDtos: CreateSelloutStoreMasterDto[]): Promise<{ insert: number; update: number; errors: string; insertsDetails: SelloutStoreMaster[], updateDetails: SelloutStoreMaster[] }> {
-        let insert = 0;
-        let update = 0;
-        let errors = '';
-
-        if (!createSelloutStoreMasterDtos || createSelloutStoreMasterDtos.length === 0) {
-            return { insert, update, errors: 'No se enviaron datos para procesar\n', insertsDetails: [], updateDetails: [] };
-        }
-
-        const storesToUpdate: SelloutStoreMaster[] = [];
-        const storesToCreate: SelloutStoreMaster[] = [];
-        const processedKeys = new Set<string>();
-
-        for (const dto of createSelloutStoreMasterDtos) {
-            const distributor = cleanString(dto.distributor ?? '');
-            const storeDistributor = cleanString(dto.storeDistributor ?? '');
-
-            // Generar clave quitando todos los espacios y a mayúsculas
-            const searchStoreKey = `${distributor}${storeDistributor}`.replace(/\s/g, '').toUpperCase();
-            dto.searchStore = searchStoreKey;
-
-            // Evitar procesar duplicados exactos en la misma petición
-            const duplicateKey = `${searchStoreKey}-${dto.codeStoreSic}-${dto.periodo}`;
-            if (processedKeys.has(duplicateKey)) {
-                errors += `Advertencia: Registro duplicado detectado en el envío para la llave ${searchStoreKey}\n`;
-                continue;
-            }
-            processedKeys.add(duplicateKey);
-
-            try {
-                let existingStore: SelloutStoreMaster | null = null;
-                if (dto.searchStore && dto.periodo) {
-                    existingStore = await this.selloutStoreMasterRepository.findBySearchStoreAndPeriodo(dto.searchStore, dto.periodo);
-                } else if (dto.searchStore) {
-                    existingStore = await this.selloutStoreMasterRepository.findBySearchStoreOnly(dto.searchStore);
-                }
-
-                if (existingStore) {
-                    // Actualizar
-                    existingStore.codeStoreSic = dto.codeStoreSic!;
-                    existingStore.distributor = dto.distributor;
-                    existingStore.storeDistributor = dto.storeDistributor;
-                    existingStore.status = dto.status ?? existingStore.status;
-                    storesToUpdate.push(existingStore);
-                    update++;
-                } else {
-                    // Crear
-                    const newStore = plainToInstance(SelloutStoreMaster, dto);
-                    storesToCreate.push(newStore);
-                    insert++;
-                }
-            } catch (error) {
-                errors += `Error processing ${dto.searchStore}: ${error}\n`;
-            }
-        }
-
-        if (storesToUpdate.length > 0) {
-            const chunks = chunkArray(storesToUpdate, 500);
-            for (const chunk of chunks) {
-                await this.selloutStoreMasterRepository.save(chunk);
-                await this.syncConsolidatedDataStoresOnUpdateStores(chunk);
-            }
-        }
-
-        if (storesToCreate.length > 0) {
-            const chunks = chunkArray(storesToCreate, 500);
-            for (const chunk of chunks) {
-                await this.selloutStoreMasterRepository.save(chunk);
-                await this.syncConsolidatedDataStoresOnUpdateStores(chunk);
-            }
-        }
-
-        return {
-            insert,
-            update,
-            errors,
-            insertsDetails: storesToCreate,
-            updateDetails: storesToUpdate
-        };
+    private normalizePeriodo(periodo: any): string {
+        if (!periodo) return '';
+        const d = new Date(periodo);
+        if (isNaN(d.getTime())) return '';
+        const year = d.getUTCFullYear();
+        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(d.getUTCDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
-    async createSelloutProductMaster(createSelloutProductMasterDtos: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string; insertsDetails: SelloutProductMaster[], updateDetails: SelloutProductMaster[] }> {
+    async createSelloutStoreMaster(createSelloutStoreMasterDtos: CreateSelloutStoreMasterDto[]): Promise<{ insert: number; update: number; errors: string; duplicates: any[] }> {
         let insert = 0;
         let update = 0;
         let errors = '';
+        const duplicates: any[] = [];
+
+        if (!createSelloutStoreMasterDtos || createSelloutStoreMasterDtos.length === 0) {
+            return { insert, update, errors: 'No se enviaron datos para procesar\n', duplicates: [] };
+        }
+
+        // Normalizar periodos en los DTOs para evitar desfases de zona horaria o formato
+        for (const dto of createSelloutStoreMasterDtos) {
+            dto.periodo = this.normalizePeriodo(dto.periodo) as any;
+        }
+
+        const uniquePeriods = [...new Set(createSelloutStoreMasterDtos.map(d => d.periodo?.toString()).filter(Boolean))];
+
+        return this.selloutStoreMasterRepository.dataSource.transaction(async (manager) => {
+            // "Al insertar elimine": Borramos TODOS los registros de los periodos seleccionados antes de insertar
+            for (const p of uniquePeriods) {
+                await manager.createQueryBuilder()
+                    .delete()
+                    .from(SelloutStoreMaster)
+                    .where('periodo = :periodo', { periodo: p })
+                    .execute();
+            }
+
+            const storesToInsert: any[] = [];
+            const processedKeysInBatch = new Set<string>();
+
+            for (const dto of createSelloutStoreMasterDtos) {
+                const searchStoreKey = generateSearchStoreKey(
+                    dto.distributor ?? '',
+                    dto.storeDistributor ?? ''
+                );
+                dto.searchStore = searchStoreKey;
+
+                const periodoKey = dto.periodo ? dto.periodo.toString() : 'no-p';
+                const batchKey = `${searchStoreKey}-${periodoKey}`;
+
+                if (processedKeysInBatch.has(batchKey)) {
+                    duplicates.push({ ...dto, reason: 'Duplicate search key for this period in payload' });
+                    continue;
+                }
+                processedKeysInBatch.add(batchKey);
+
+                storesToInsert.push({
+                    distributor: dto.distributor,
+                    storeDistributor: dto.storeDistributor,
+                    searchStore: dto.searchStore,
+                    codeStoreSic: dto.codeStoreSic,
+                    status: dto.status ?? true,
+                    periodo: dto.periodo
+                });
+                insert++;
+            }
+
+            if (storesToInsert.length > 0) {
+                const chunks = chunkArray(storesToInsert, 500);
+                for (const chunk of chunks) {
+                    await manager.createQueryBuilder()
+                        .insert()
+                        .into(SelloutStoreMaster)
+                        .values(chunk)
+                        .execute();
+                }
+            }
+
+            return { insert, update, errors, duplicates };
+        });
+    }
+
+    async createSelloutProductMaster(createSelloutProductMasterDtos: CreateSelloutProductMasterDto[]): Promise<{ insert: number; update: number; errors: string; duplicates: any[] }> {
+        let insert = 0;
+        let update = 0;
+        let errors = '';
+        const duplicates: any[] = [];
 
         if (!createSelloutProductMasterDtos || createSelloutProductMasterDtos.length === 0) {
-            return { insert, update, errors: 'No se enviaron datos para procesar\n', insertsDetails: [], updateDetails: [] };
+            return { insert, update, errors: 'No se enviaron datos para procesar\n', duplicates: [] };
         }
 
-        const productsToUpdate: SelloutProductMaster[] = [];
-        const productsToCreate: SelloutProductMaster[] = [];
-        const processedKeys = new Set<string>();
-
+        // Normalizar periodos en los DTOs
         for (const dto of createSelloutProductMasterDtos) {
-            const distributor = cleanString(dto.distributor ?? '');
-            const productDistributor = cleanString(dto.productDistributor ?? '');
-            const productStore = cleanString(dto.productStore ?? '');
+            dto.periodo = this.normalizePeriodo(dto.periodo) as any;
+        }
 
-            // Generar clave única sin espacios y mayúsculas
-            const searchProductKey = (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
-            dto.searchProductStore = searchProductKey;
+        const uniquePeriods = [...new Set(createSelloutProductMasterDtos.map(d => d.periodo?.toString()).filter(Boolean))];
 
-            // Evitar procesar duplicados exactos en el mismo payload
-            const duplicateKey = `${searchProductKey}-${dto.codeProductSic}-${dto.periodo}`;
-            if (processedKeys.has(duplicateKey)) {
-                errors += `Advertencia: Registro duplicado detectado en el envío para la llave ${searchProductKey}\n`;
-                continue;
+        return this.selloutProductMasterRepository.dataSource.transaction(async (manager) => {
+            // "Al insertar elimine": Borramos TODO por periodo antes de insertar
+            for (const p of uniquePeriods) {
+                await manager.createQueryBuilder()
+                    .delete()
+                    .from(SelloutProductMaster)
+                    .where('periodo = :periodo', { periodo: p })
+                    .execute();
             }
-            processedKeys.add(duplicateKey);
 
-            try {
-                let existingProduct: SelloutProductMaster | null = null;
-                if (dto.searchProductStore && dto.periodo) {
-                    existingProduct = await this.selloutProductMasterRepository.findBySearchProductStoreAndPeriodo(dto.searchProductStore, dto.periodo);
-                } else if (dto.searchProductStore) {
-                    existingProduct = await this.selloutProductMasterRepository.findBySearchProductStoreOnly(dto.searchProductStore);
+            const productsToInsert: any[] = [];
+            const processedKeysInBatch = new Set<string>();
+
+            for (const dto of createSelloutProductMasterDtos) {
+                const searchProductKey = generateSearchProductKey(
+                    dto.distributor ?? '',
+                    dto.productStore ?? '',
+                    dto.productDistributor ?? ''
+                );
+                dto.searchProductStore = searchProductKey;
+
+                const periodoKey = dto.periodo ? dto.periodo.toString() : 'no-p';
+                const batchKey = `${searchProductKey}-${periodoKey}`;
+
+                if (processedKeysInBatch.has(batchKey)) {
+                    duplicates.push({ ...dto, reason: 'Duplicate search key for this period in payload' });
+                    continue;
                 }
+                processedKeysInBatch.add(batchKey);
 
-                if (existingProduct) {
-                    existingProduct.codeProductSic = dto.codeProductSic!;
-                    existingProduct.distributor = dto.distributor;
-                    existingProduct.productDistributor = dto.productDistributor;
-                    existingProduct.productStore = dto.productStore;
-                    existingProduct.status = dto.status ?? existingProduct.status;
+                productsToInsert.push({
+                    distributor: dto.distributor,
+                    productDistributor: dto.productDistributor,
+                    productStore: dto.productStore,
+                    searchProductStore: dto.searchProductStore,
+                    codeProductSic: dto.codeProductSic,
+                    status: dto.status ?? true,
+                    periodo: dto.periodo
+                });
+                insert++;
+            }
 
-                    productsToUpdate.push(existingProduct);
-                    update++;
-                } else {
-                    const newProduct = plainToInstance(SelloutProductMaster, dto);
-                    productsToCreate.push(newProduct);
-                    insert++;
+            if (productsToInsert.length > 0) {
+                const chunks = chunkArray(productsToInsert, 500);
+                for (const chunk of chunks) {
+                    await manager.createQueryBuilder()
+                        .insert()
+                        .into(SelloutProductMaster)
+                        .values(chunk)
+                        .execute();
                 }
-            } catch (error) {
-                errors += `Error processing ${dto.searchProductStore}: ${error}\n`;
             }
-        }
 
-        if (productsToUpdate.length > 0) {
-            const chunks = chunkArray(productsToUpdate, 500);
-            for (const chunk of chunks) {
-                await this.selloutProductMasterRepository.save(chunk);
-                await this.syncConsolidatedDataStoresOnUpdateProduct(chunk);
-            }
-        }
-
-        if (productsToCreate.length > 0) {
-            const chunks = chunkArray(productsToCreate, 500);
-            for (const chunk of chunks) {
-                await this.selloutProductMasterRepository.save(chunk);
-                await this.syncConsolidatedDataStoresOnUpdateProduct(chunk);
-            }
-        }
-
-        return {
-            insert,
-            update,
-            errors,
-            insertsDetails: productsToCreate,
-            updateDetails: productsToUpdate
-        };
+            return { insert, update, errors, duplicates };
+        });
     }
 
     async updateSelloutProductMaster(id: number, updateSelloutProductMasterDto: UpdateSelloutProductMasterDto): Promise<SelloutProductMaster> {
@@ -223,10 +217,11 @@ export class SelloutMastersService {
         }
 
         if (updateSelloutProductMasterDto.distributor || updateSelloutProductMasterDto.productDistributor || updateSelloutProductMasterDto.productStore) {
-            const distributor = cleanString(updateSelloutProductMasterDto.distributor ?? product.distributor ?? '');
-            const productDistributor = cleanString(updateSelloutProductMasterDto.productDistributor ?? product.productDistributor ?? '');
-            const productStore = cleanString(updateSelloutProductMasterDto.productStore ?? product.productStore ?? '');
-            updateSelloutProductMasterDto.searchProductStore = distributor + productStore + productDistributor;
+            updateSelloutProductMasterDto.searchProductStore = generateSearchProductKey(
+                updateSelloutProductMasterDto.distributor ?? product.distributor ?? '',
+                updateSelloutProductMasterDto.productStore ?? product.productStore ?? '',
+                updateSelloutProductMasterDto.productDistributor ?? product.productDistributor ?? ''
+            );
         }
 
         const updatedProduct = plainToInstance(SelloutProductMaster, { ...product, ...updateSelloutProductMasterDto });
@@ -245,40 +240,44 @@ export class SelloutMastersService {
             return { insert, update, errors: 'No llegaron registros para procesar\n', duplicates: [] };
         }
 
-        const periodoActivo = createSelloutProductMastersDto[0].periodo;
+        // Normalizar periodos en los DTOs
+        for (const dto of createSelloutProductMastersDto) {
+            dto.periodo = this.normalizePeriodo(dto.periodo) as any;
+        }
+
+        const uniquePeriods = [...new Set(createSelloutProductMastersDto.map(d => d.periodo?.toString()).filter(Boolean))];
 
         return this.selloutProductMasterRepository.dataSource.transaction(async (manager) => {
-            // Siempre eliminamos todos en este periodo para volver a subir (Reemplazo total)
-            if (periodoActivo) {
-                 await manager.createQueryBuilder()
+            // "Al insertar elimine": Borramos TODO antes de insertar
+            for (const p of uniquePeriods) {
+                await manager.createQueryBuilder()
                     .delete()
                     .from(SelloutProductMaster)
-                    .where('periodo = :periodo', { periodo: periodoActivo })
+                    .where('periodo = :periodo', { periodo: p })
                     .execute();
             }
 
-            const productsToCreate: any[] = [];
+            const productsToInsert: any[] = [];
             const processedKeysInBatch = new Set<string>();
 
             for (const dto of createSelloutProductMastersDto) {
-                const distributor = cleanString(dto.distributor ?? '');
-                const productDistributor = cleanString(dto.productDistributor ?? '');
-                const productStore = cleanString(dto.productStore ?? '');
-
-                const searchProductKey = (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
+                const searchProductKey = generateSearchProductKey(
+                    dto.distributor ?? '',
+                    dto.productStore ?? '',
+                    dto.productDistributor ?? ''
+                );
                 dto.searchProductStore = searchProductKey;
 
-                const batchKey = `${searchProductKey}-${dto.codeProductSic}`;
+                const periodoKey = dto.periodo ? dto.periodo.toString() : 'no-p';
+                const batchKey = `${searchProductKey}-${periodoKey}`;
+
                 if (processedKeysInBatch.has(batchKey)) {
-                    duplicates.push({
-                        ...dto,
-                        reason: 'Registro duplicado detectado en el archivo de carga'
-                    });
+                    duplicates.push({ ...dto, reason: 'Duplicate search key for this period in payload' });
                     continue;
                 }
                 processedKeysInBatch.add(batchKey);
 
-                productsToCreate.push({
+                productsToInsert.push({
                     distributor: dto.distributor,
                     productDistributor: dto.productDistributor,
                     productStore: dto.productStore,
@@ -290,8 +289,8 @@ export class SelloutMastersService {
                 insert++;
             }
 
-            if (productsToCreate.length > 0) {
-                const chunks = chunkArray(productsToCreate, 500);
+            if (productsToInsert.length > 0) {
+                const chunks = chunkArray(productsToInsert, 500);
                 for (const chunk of chunks) {
                     await manager.createQueryBuilder()
                         .insert()
@@ -311,13 +310,11 @@ export class SelloutMastersService {
         periodoActivo: string
     ): Promise<void> {
         const activeKeys = currentActiveStores.map(store => {
-            if (store.searchProductStore) {
-                return store.searchProductStore;
-            }
-            const distributor = cleanString(store.distributor ?? '');
-            const productDistributor = cleanString(store.productDistributor ?? '');
-            const productStore = cleanString(store.productStore ?? '');
-            return (distributor + productStore + productDistributor).replace(/\s/g, '').toUpperCase();
+            return store.searchProductStore || generateSearchProductKey(
+                store.distributor ?? '',
+                store.productStore ?? '',
+                store.productDistributor ?? ''
+            );
         });
         console.log('activeKeys', activeKeys);
         if (activeKeys.length > 0) {
@@ -347,38 +344,43 @@ export class SelloutMastersService {
             return { insert, update, errors: 'No llegaron registros para procesar\n', duplicates: [] };
         }
 
-        const periodoActivo = configs[0].periodo;
+        // Normalizar periodos en los DTOs
+        for (const dto of configs) {
+            dto.periodo = this.normalizePeriodo(dto.periodo) as any;
+        }
+
+        const uniquePeriods = [...new Set(configs.map(d => d.periodo?.toString()).filter(Boolean))];
 
         return this.selloutStoreMasterRepository.dataSource.transaction(async (manager) => {
-            // Siempre eliminamos todos en este periodo para volver a subir (Reemplazo total)
-            if (periodoActivo) {
-                 await manager.createQueryBuilder()
+            // "Al insertar elimine": Borramos TODO antes de insertar
+            for (const p of uniquePeriods) {
+                await manager.createQueryBuilder()
                     .delete()
                     .from(SelloutStoreMaster)
-                    .where('periodo = :periodo', { periodo: periodoActivo })
+                    .where('periodo = :periodo', { periodo: p })
                     .execute();
             }
 
             const processedKeysInBatch = new Set<string>();
-            const storesToCreate: any[] = [];
+            const storesToInsert: any[] = [];
 
             for (const config of configs) {
-                const distributor = cleanString(config.distributor ?? '');
-                const storeDistributor = cleanString(config.storeDistributor ?? '');
-                const searchStoreKey = `${distributor}${storeDistributor}`.replace(/\s/g, '').toUpperCase();
+                const searchStoreKey = generateSearchStoreKey(
+                    config.distributor ?? '',
+                    config.storeDistributor ?? ''
+                );
                 config.searchStore = searchStoreKey;
 
-                const batchKey = `${searchStoreKey}-${config.codeStoreSic}`;
+                const periodoKey = config.periodo ? config.periodo.toString() : 'no-p';
+                const batchKey = `${searchStoreKey}-${periodoKey}`;
+
                 if (processedKeysInBatch.has(batchKey)) {
-                    duplicates.push({
-                        ...config,
-                        reason: 'Registro duplicado detectado en el archivo de carga'
-                    });
+                    duplicates.push({ ...config, reason: 'Duplicate search key for this period in payload' });
                     continue;
                 }
                 processedKeysInBatch.add(batchKey);
 
-                storesToCreate.push({
+                storesToInsert.push({
                     distributor: config.distributor,
                     storeDistributor: config.storeDistributor,
                     searchStore: config.searchStore,
@@ -389,9 +391,8 @@ export class SelloutMastersService {
                 insert++;
             }
 
-            // Ejecutar las creaciones masivamente
-            if (storesToCreate.length > 0) {
-                const chunks = chunkArray(storesToCreate, 500);
+            if (storesToInsert.length > 0) {
+                const chunks = chunkArray(storesToInsert, 500);
                 for (const chunk of chunks) {
                     await manager.createQueryBuilder()
                         .insert()
@@ -412,7 +413,10 @@ export class SelloutMastersService {
         periodoActivo: string
     ): Promise<void> {
         const activeKeys = currentActiveStores.map(store => {
-            return store.searchStore || (cleanString(store.distributor ?? '') + cleanString(store.storeDistributor ?? ''));
+            return store.searchStore || generateSearchStoreKey(
+                store.distributor ?? '',
+                store.storeDistributor ?? ''
+            );
         });
         if (activeKeys.length > 0) {
             await this.selloutStoreMasterRepository.deleteByPeriod(periodoActivo, activeKeys);
@@ -430,11 +434,14 @@ export class SelloutMastersService {
 
         for (const chunk of chunkedStores) {
             const results = await Promise.allSettled(chunk.map(async (store) => {
-                const searchKey = cleanString(store.distributor + store.code_store_distributor);
+                const searchKey = generateSearchStoreKey(
+                    store.distributor ?? '',
+                    store.code_store_distributor ?? ''
+                );
                 const storeMaster = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchKey);
 
                 if (storeMaster?.codeStoreSic) {
-                    const storeSic = await this.storesRepository.findByStoreCodeOnly(storeMaster.codeStoreSic);
+                    const storeSic = await this.storesRepository.findByStoreCodeOnly(storeMaster.codeStoreSic.toString());
 
                     const updateData: QueryDeepPartialEntity<ConsolidatedDataStores> = {
                         codeStore: storeMaster.codeStoreSic,
@@ -470,7 +477,11 @@ export class SelloutMastersService {
 
         for (const chunk of chunkedProducts) {
             const results = await Promise.allSettled(chunk.map(async (product) => {
-                const searchKey = cleanString(product.distributor + product.code_product_distributor + product.description_distributor);
+                const searchKey = generateSearchProductKey(
+                    product.distributor ?? '',
+                    product.description_distributor ?? '',
+                    product.code_product_distributor ?? ''
+                );
                 const productStore = await this.productStoreRepository.findBySearchProductStoreOnly(searchKey);
 
                 if (productStore?.codeProductSic) {
@@ -512,9 +523,10 @@ export class SelloutMastersService {
         return this.selloutStoreMasterRepository.dataSource.transaction(async (manager) => {
             const responses: SelloutStoreMasterDto[] = [];
             for (const dto of updates) {
-                const distributor = cleanString(dto.distributor ?? '');
-                const storeDistributor = cleanString(dto.storeDistributor ?? '');
-                const searchStoreKey = distributor + storeDistributor;
+                const searchStoreKey = generateSearchStoreKey(
+                    dto.distributor ?? '',
+                    dto.storeDistributor ?? ''
+                );
                 dto.searchStore = searchStoreKey;
 
                 const entity = await this.selloutStoreMasterRepository.findBySearchStoreOnlyManager(dto.searchStore, manager);
@@ -535,42 +547,38 @@ export class SelloutMastersService {
 
             return responses;
         });
-
     }
 
     async syncConsolidatedDataStoresOnUpdateStores(data: SelloutStoreMaster[]): Promise<void> {
-        const batchSize = 50;
+        if (!data || data.length === 0) return;
 
-        for (let i = 0; i < data.length; i += batchSize) {
-            const batch = data.slice(i, i + batchSize);
+        // Agrupamos por codeStoreSic para hacer menos queries a la base de datos
+        const grouped = data.reduce((acc, curr) => {
+            const code = curr.codeStoreSic?.toString();
+            if (code && curr.searchStore) {
+                if (!acc[code]) acc[code] = [];
+                acc[code].push(curr.searchStore);
+            }
+            return acc;
+        }, {} as Record<string, string[]>);
 
-            await Promise.allSettled(
-                batch.map(async (storeMaster) => {
-                    try {
-                        const { searchStore, codeStoreSic } = storeMaster;
-
-                        if (!searchStore || !codeStoreSic) {
-                            throw new Error('Datos incompletos para storeMaster');
-                        }
-
-                        const consolidatedRecords = await this.consolidatedDataStoresRepository.findBySearchStore(searchStore);
-
-                        if (consolidatedRecords.length === 0) {
-                            console.log('❌ No se encontraron registros que coincidan con el searchStore', searchStore);
-                        }
-
-                        const storeSic = await this.selloutStoreRepository.getDistribuidorAndStoreNameByStoreSic(codeStoreSic);
-                        for (const record of consolidatedRecords) {
-                            record.codeStore = codeStoreSic;
-                        }
-
-                        await this.consolidatedDataStoresRepository.save(consolidatedRecords);
-
-                    } catch (error) {
-                        console.error(error);
-                    }
+        for (const [code, keys] of Object.entries(grouped)) {
+            // Actualización masiva de todos los registros que coincidan con estas llaves
+            await this.consolidatedDataStoresRepository.repository.createQueryBuilder()
+                .update(ConsolidatedDataStores)
+                .set({ 
+                    codeStore: code, 
+                    updatedAt: new Date() 
                 })
-            );
+                .where(`
+                    REPLACE(distributor, ' ', '') || 
+                    REPLACE(code_store_distributor, ' ', '') IN (:...keys)
+                `, { keys })
+                .andWhere(new Brackets((qb: any) => {
+                    qb.where("code_store IS NULL OR code_store = ''")
+                      .orWhere("store_name IS NULL OR store_name = ''");
+                }))
+                .execute();
         }
     }
 
@@ -620,9 +628,10 @@ export class SelloutMastersService {
     async createSelloutStoreMasterExcel(selloutStoreMaster: CreateSelloutStoreMasterDto): Promise<SelloutStoreMaster | undefined> {
         try {
             if (!selloutStoreMaster.searchStore) {
-                const distributor = cleanString(selloutStoreMaster.distributor ?? '');
-                const storeDistributor = cleanString(selloutStoreMaster.storeDistributor ?? '');
-                selloutStoreMaster.searchStore = distributor + storeDistributor;
+                selloutStoreMaster.searchStore = generateSearchStoreKey(
+                    selloutStoreMaster.distributor ?? '',
+                    selloutStoreMaster.storeDistributor ?? ''
+                );
             }
 
             let existing: SelloutStoreMaster | null = null;
@@ -650,10 +659,11 @@ export class SelloutMastersService {
     async createSelloutProductMasterExcel(selloutProductMaster: CreateSelloutProductMasterDto): Promise<SelloutProductMaster | undefined> {
         try {
             if (!selloutProductMaster.searchProductStore) {
-                const distributor = cleanString(selloutProductMaster.distributor ?? '');
-                const productDistributor = cleanString(selloutProductMaster.productDistributor ?? '');
-                const productStore = cleanString(selloutProductMaster.productStore ?? '');
-                selloutProductMaster.searchProductStore = distributor + productStore + productDistributor;
+                selloutProductMaster.searchProductStore = generateSearchProductKey(
+                    selloutProductMaster.distributor ?? '',
+                    selloutProductMaster.productStore ?? '',
+                    selloutProductMaster.productDistributor ?? ''
+                );
             }
 
             let existing: SelloutProductMaster | null = null;
@@ -692,10 +702,11 @@ export class SelloutMastersService {
             const responses: SelloutProductMaster[] = [];
 
             for (const dto of updates) {
-                const distributor = cleanString(dto.distributor ?? '');
-                const productDistributor = cleanString(dto.productDistributor ?? '');
-                const productStore = cleanString(dto.productStore ?? '');
-                const searchProductKey = distributor + productStore + productDistributor;
+                const searchProductKey = generateSearchProductKey(
+                    dto.distributor ?? '',
+                    dto.productStore ?? '',
+                    dto.productDistributor ?? ''
+                );
                 dto.searchProductStore = searchProductKey;
 
                 const entity = await this.selloutProductMasterRepository.findBySearchProductStoreOnlyManager(dto.searchProductStore, manager);
@@ -717,40 +728,39 @@ export class SelloutMastersService {
 
             return responses;
         });
-
     }
 
     async syncConsolidatedDataStoresOnUpdateProduct(data: SelloutProductMaster[]): Promise<void> {
-        const batchSize = 50;
+        if (!data || data.length === 0) return;
 
-        for (let i = 0; i < data.length; i += batchSize) {
-            const batch = data.slice(i, i + batchSize);
+        // Agrupamos por codeProductSic para optimizar el proceso en la base de datos
+        const grouped = data.reduce((acc, curr) => {
+            const code = curr.codeProductSic?.toString();
+            if (code && curr.searchProductStore) {
+                if (!acc[code]) acc[code] = [];
+                acc[code].push(curr.searchProductStore);
+            }
+            return acc;
+        }, {} as Record<string, string[]>);
 
-            await Promise.allSettled(
-                batch.map(async (storeMaster) => {
-                    try {
-                        const { searchProductStore, codeProductSic } = storeMaster;
-
-                        if (!searchProductStore || !codeProductSic) {
-                            throw new Error('Datos incompletos para storeMaster');
-                        }
-
-                        const consolidatedRecords = await this.consolidatedDataStoresRepository.findBySearchProduct(searchProductStore);
-
-                        if (consolidatedRecords.length === 0) {
-                            throw new Error('No se encontraron registros que coincidan con el searchStore');
-                        }
-                        for (const record of consolidatedRecords) {
-                            record.codeProduct = codeProductSic;
-                        }
-
-                        await this.consolidatedDataStoresRepository.save(consolidatedRecords);
-
-                    } catch (error) {
-                        console.error(error);
-                    }
+        for (const [code, keys] of Object.entries(grouped)) {
+            // Actualización masiva por cada código SIC único
+            await this.consolidatedDataStoresRepository.repository.createQueryBuilder()
+                .update(ConsolidatedDataStores)
+                .set({ 
+                    codeProduct: code, 
+                    updatedAt: new Date() 
                 })
-            );
+                .where(`
+                    REPLACE(distributor, ' ', '') || 
+                    REPLACE(code_product_distributor, ' ', '') || 
+                    REPLACE(description_distributor, ' ', '') IN (:...keys)
+                `, { keys })
+                .andWhere(new Brackets((qb: any) => {
+                    qb.where("code_product IS NULL OR code_product = ''")
+                      .orWhere("product_model IS NULL OR product_model = ''");
+                }))
+                .execute();
         }
     }
 

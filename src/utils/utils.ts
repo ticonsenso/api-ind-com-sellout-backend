@@ -25,6 +25,14 @@ const cleanString = (input: unknown): string => {
     .trim();
 };
 
+export const generateSearchProductKey = (distributor: string, productStore: string, productDistributor: string): string => {
+  return `${cleanString(distributor)}${cleanString(productStore)}${cleanString(productDistributor)}`.toUpperCase();
+};
+
+export const generateSearchStoreKey = (distributor: string, storeDistributor: string): string => {
+  return `${cleanString(distributor)}${cleanString(storeDistributor)}`.toUpperCase();
+};
+
 const verifyPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
   try {
     const isMatch = await bcrypt.compare(password, hashedPassword);
