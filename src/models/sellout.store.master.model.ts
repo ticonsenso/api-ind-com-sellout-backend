@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn, } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('sellout_store_master')
+@Unique(['searchStore', 'periodo'])
 export class SelloutStoreMaster {
 
     @PrimaryGeneratedColumn()
@@ -12,7 +13,7 @@ export class SelloutStoreMaster {
     @Column({ name: 'store_distributor', type: 'varchar', length: 255 })
     storeDistributor?: string | null;
 
-    @Column({ name: 'search_store', type: 'varchar', length: 255, unique: true })
+    @Column({ name: 'search_store', type: 'varchar', length: 255 })
     searchStore?: string | null;
 
     @Column({ name: 'code_store_sic', type: 'varchar', length: 255 })

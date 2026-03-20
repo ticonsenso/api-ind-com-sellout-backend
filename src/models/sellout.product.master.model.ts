@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn, } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('sellout_product_master')
+@Unique(['searchProductStore', 'periodo'])
 export class SelloutProductMaster {
 
     @PrimaryGeneratedColumn()
@@ -15,7 +16,7 @@ export class SelloutProductMaster {
     @Column({ name: 'product_store', type: 'varchar', length: 255 })
     productStore?: string | null;
 
-    @Column({ name: 'search_product_store', type: 'varchar', length: 255, unique: true })
+    @Column({ name: 'search_product_store', type: 'varchar', length: 255 })
     searchProductStore?: string | null;
 
     @Column({ name: 'code_product_sic', type: 'varchar', length: 255 })
