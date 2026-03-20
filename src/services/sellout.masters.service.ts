@@ -1,5 +1,5 @@
 import { plainToClass, plainToInstance } from 'class-transformer';
-import { DataSource } from 'typeorm';
+import { Brackets, DataSource } from 'typeorm';
 import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
 import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
 import { SelloutStoreMaster } from '../models/sellout.store.master.model';
@@ -24,6 +24,7 @@ import { ConsolidatedDataStoresRepository } from '../repository/consolidated.dat
 import { ConsolidatedDataStoresService } from './consolidated.data.stores.service';
 import { ConsolidatedDataStores } from '../models/consolidated.data.stores.model';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { SelectQueryBuilder } from 'typeorm';
 
 interface ModelProductSic {
     productSic: string;
@@ -563,7 +564,7 @@ export class SelloutMastersService {
 
         for (const [code, keys] of Object.entries(grouped)) {
             // Actualización masiva de todos los registros que coincidan con estas llaves
-            await this.consolidatedDataStoresRepository.createQueryBuilder()
+            await this.consolidatedDataStoresRepository.repository.createQueryBuilder()
                 .update(ConsolidatedDataStores)
                 .set({ 
                     codeStore: code, 
@@ -573,7 +574,7 @@ export class SelloutMastersService {
                     REPLACE(distributor, ' ', '') || 
                     REPLACE(code_store_distributor, ' ', '') IN (:...keys)
                 `, { keys })
-                .andWhere(new Brackets(qb => {
+                .andWhere(new Brackets((qb: any) => {
                     qb.where("code_store IS NULL OR code_store = ''")
                       .orWhere("store_name IS NULL OR store_name = ''");
                 }))
@@ -744,7 +745,7 @@ export class SelloutMastersService {
 
         for (const [code, keys] of Object.entries(grouped)) {
             // Actualización masiva por cada código SIC único
-            await this.consolidatedDataStoresRepository.createQueryBuilder()
+            await this.consolidatedDataStoresRepository.repository.createQueryBuilder()
                 .update(ConsolidatedDataStores)
                 .set({ 
                     codeProduct: code, 
@@ -755,7 +756,7 @@ export class SelloutMastersService {
                     REPLACE(code_product_distributor, ' ', '') || 
                     REPLACE(description_distributor, ' ', '') IN (:...keys)
                 `, { keys })
-                .andWhere(new Brackets(qb => {
+                .andWhere(new Brackets((qb: any) => {
                     qb.where("code_product IS NULL OR code_product = ''")
                       .orWhere("product_model IS NULL OR product_model = ''");
                 }))
