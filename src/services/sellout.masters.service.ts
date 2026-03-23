@@ -86,16 +86,31 @@ export class SelloutMastersService {
         const uniquePeriods = [...new Set(createSelloutStoreMasterDtos.map(d => d.periodo?.toString()).filter(Boolean))];
 
         return this.selloutStoreMasterRepository.dataSource.transaction(async (manager) => {
-            // "Al insertar elimine": Borramos TODOS los registros de los periodos seleccionados antes de insertar
-            for (const p of uniquePeriods) {
-                await manager.createQueryBuilder()
-                    .delete()
-                    .from(SelloutStoreMaster)
-                    .where('periodo = :periodo', { periodo: p })
-                    .execute();
+            const existingRecords = uniquePeriods.length > 0
+                ? await manager.createQueryBuilder(SelloutStoreMaster, 's')
+                    .where('s.periodo IN (:...periods)', { periods: uniquePeriods })
+                    .getMany()
+                : [];
+
+            const existingMap = new Map<string, SelloutStoreMaster>();
+            for (const record of existingRecords) {
+                let pKey = 'no-p';
+                if (record.periodo) {
+                    const d = new Date(record.periodo);
+                    if (!isNaN(d.getTime())) {
+                        const year = d.getUTCFullYear();
+                        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(d.getUTCDate()).padStart(2, '0');
+                        pKey = `${year}-${month}-${day}`;
+                    } else {
+                        pKey = record.periodo.toString();
+                    }
+                }
+                existingMap.set(`${record.searchStore}-${pKey}`, record);
             }
 
             const storesToInsert: any[] = [];
+            const storesToUpdate: any[] = [];
             const processedKeysInBatch = new Set<string>();
 
             for (const dto of createSelloutStoreMasterDtos) {
@@ -114,26 +129,51 @@ export class SelloutMastersService {
                 }
                 processedKeysInBatch.add(batchKey);
 
-                storesToInsert.push({
-                    distributor: dto.distributor,
-                    storeDistributor: dto.storeDistributor,
-                    searchStore: dto.searchStore,
-                    codeStoreSic: dto.codeStoreSic,
-                    status: dto.status ?? true,
-                    periodo: dto.periodo
-                });
-                insert++;
+                const existing = existingMap.get(batchKey);
+                if (existing) {
+                    storesToUpdate.push({
+                        id: existing.id,
+                        distributor: dto.distributor,
+                        storeDistributor: dto.storeDistributor,
+                        searchStore: dto.searchStore,
+                        codeStoreSic: dto.codeStoreSic,
+                        status: dto.status ?? true,
+                        periodo: dto.periodo
+                    });
+                    update++;
+                } else {
+                    storesToInsert.push({
+                        distributor: dto.distributor,
+                        storeDistributor: dto.storeDistributor,
+                        searchStore: dto.searchStore,
+                        codeStoreSic: dto.codeStoreSic,
+                        status: dto.status ?? true,
+                        periodo: dto.periodo
+                    });
+                    insert++;
+                }
             }
 
-            if (storesToInsert.length > 0) {
-                const chunks = chunkArray(storesToInsert, 500);
-                for (const chunk of chunks) {
-                    await manager.createQueryBuilder()
-                        .insert()
-                        .into(SelloutStoreMaster)
-                        .values(chunk)
-                        .execute();
+            try {
+                if (storesToInsert.length > 0) {
+                    const chunks = chunkArray(storesToInsert, 500);
+                    for (const chunk of chunks) {
+                        await manager.createQueryBuilder()
+                            .insert()
+                            .into(SelloutStoreMaster)
+                            .values(chunk)
+                            .execute();
+                    }
                 }
+
+                if (storesToUpdate.length > 0) {
+                    const chunks = chunkArray(storesToUpdate, 500);
+                    for (const chunk of chunks) {
+                        await manager.save(SelloutStoreMaster, chunk);
+                    }
+                }
+            } catch (err: any) {
+                errors += `Error al guardar los registros: ${err.message}\n`;
             }
 
             return { insert, update, errors, duplicates };
@@ -158,16 +198,31 @@ export class SelloutMastersService {
         const uniquePeriods = [...new Set(createSelloutProductMasterDtos.map(d => d.periodo?.toString()).filter(Boolean))];
 
         return this.selloutProductMasterRepository.dataSource.transaction(async (manager) => {
-            // "Al insertar elimine": Borramos TODO por periodo antes de insertar
-            for (const p of uniquePeriods) {
-                await manager.createQueryBuilder()
-                    .delete()
-                    .from(SelloutProductMaster)
-                    .where('periodo = :periodo', { periodo: p })
-                    .execute();
+            const existingRecords = uniquePeriods.length > 0
+                ? await manager.createQueryBuilder(SelloutProductMaster, 'p')
+                    .where('p.periodo IN (:...periods)', { periods: uniquePeriods })
+                    .getMany()
+                : [];
+
+            const existingMap = new Map<string, SelloutProductMaster>();
+            for (const record of existingRecords) {
+                let pKey = 'no-p';
+                if (record.periodo) {
+                    const d = new Date(record.periodo);
+                    if (!isNaN(d.getTime())) {
+                        const year = d.getUTCFullYear();
+                        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(d.getUTCDate()).padStart(2, '0');
+                        pKey = `${year}-${month}-${day}`;
+                    } else {
+                        pKey = record.periodo.toString();
+                    }
+                }
+                existingMap.set(`${record.searchProductStore}-${pKey}`, record);
             }
 
             const productsToInsert: any[] = [];
+            const productsToUpdate: any[] = [];
             const processedKeysInBatch = new Set<string>();
 
             for (const dto of createSelloutProductMasterDtos) {
@@ -187,27 +242,53 @@ export class SelloutMastersService {
                 }
                 processedKeysInBatch.add(batchKey);
 
-                productsToInsert.push({
-                    distributor: dto.distributor,
-                    productDistributor: dto.productDistributor,
-                    productStore: dto.productStore,
-                    searchProductStore: dto.searchProductStore,
-                    codeProductSic: dto.codeProductSic,
-                    status: dto.status ?? true,
-                    periodo: dto.periodo
-                });
-                insert++;
+                const existing = existingMap.get(batchKey);
+                if (existing) {
+                    productsToUpdate.push({
+                        id: existing.id,
+                        distributor: dto.distributor,
+                        productDistributor: dto.productDistributor,
+                        productStore: dto.productStore,
+                        searchProductStore: dto.searchProductStore,
+                        codeProductSic: dto.codeProductSic,
+                        status: dto.status ?? true,
+                        periodo: dto.periodo
+                    });
+                    update++;
+                } else {
+                    productsToInsert.push({
+                        distributor: dto.distributor,
+                        productDistributor: dto.productDistributor,
+                        productStore: dto.productStore,
+                        searchProductStore: dto.searchProductStore,
+                        codeProductSic: dto.codeProductSic,
+                        status: dto.status ?? true,
+                        periodo: dto.periodo
+                    });
+                    insert++;
+                }
             }
 
-            if (productsToInsert.length > 0) {
-                const chunks = chunkArray(productsToInsert, 500);
-                for (const chunk of chunks) {
-                    await manager.createQueryBuilder()
-                        .insert()
-                        .into(SelloutProductMaster)
-                        .values(chunk)
-                        .execute();
+            try {
+                if (productsToInsert.length > 0) {
+                    const chunks = chunkArray(productsToInsert, 500);
+                    for (const chunk of chunks) {
+                        await manager.createQueryBuilder()
+                            .insert()
+                            .into(SelloutProductMaster)
+                            .values(chunk)
+                            .execute();
+                    }
                 }
+
+                if (productsToUpdate.length > 0) {
+                    const chunks = chunkArray(productsToUpdate, 500);
+                    for (const chunk of chunks) {
+                        await manager.save(SelloutProductMaster, chunk);
+                    }
+                }
+            } catch (err: any) {
+                errors += `Error al guardar los registros: ${err.message}\n`;
             }
 
             return { insert, update, errors, duplicates };
@@ -230,7 +311,6 @@ export class SelloutMastersService {
 
         const updatedProduct = plainToInstance(SelloutProductMaster, { ...product, ...updateSelloutProductMasterDto });
         await this.selloutProductMasterRepository.save([updatedProduct]);
-        await this.syncConsolidatedDataStoresOnUpdateProduct([updatedProduct]);
         return updatedProduct;
     }
 
