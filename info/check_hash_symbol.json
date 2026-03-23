@@ -1,0 +1,41 @@
+{
+  "masterWithHash": [
+    {
+      "id": 315295,
+      "search_product_store": "MAYOREOCOSTACAFETERAINDURAMACAF-BCICAPAC#12TAZASCAFETERAINDURAMACAF-BCICAPAC#12TAZAS",
+      "product_store": "CAFETERA INDURAMA CAF-BCI CAPAC #12 TAZAS",
+      "code_product_sic": "OTROS",
+      "periodo": "2026-02-01T05:00:00.000Z"
+    }
+  ],
+  "consolidatedWithHash": [
+    {
+      "id": 204678,
+      "distributor": "MAYOREO COSTA",
+      "description_distributor": "CAFETERA INDURAMA CAF-BCI CAPAC #12 TAZAS DE",
+      "observation": "",
+      "code_product": "CAF003"
+    },
+    {
+      "id": 204688,
+      "distributor": "MAYOREO COSTA",
+      "description_distributor": "CAFETERA INDURAMA CAF-BCI CAPAC #12 TAZAS OBSEQUIO",
+      "observation": "",
+      "code_product": "CAF003"
+    },
+    {
+      "id": 374181,
+      "distributor": "MAYOREO COSTA",
+      "description_distributor": "CAFETERA INDURAMA CAF-BCI CAPAC #12 TAZAS\u0002",
+      "observation": "MAYOREOCOSTACAFETERAINDURAMACAF-BCICAPAC#12TAZAS\u0002CAFETERAINDURAMACAF-BCICAPAC#12TAZAS\u0002",
+      "code_product": null
+    },
+    {
+      "id": 356456,
+      "distributor": "CREDITOS MORALES",
+      "description_distributor": "PARLANTE TORRE XBOSS MX-1270 2x12&AMP;#34; 150000 PMPO NG",
+      "observation": "CREDITOSMORALESP000010892PARLANTETORREXBOSSMX-12702X12&AMP;#34;150000PMPONG",
+      "code_product": "OTROS"
+    }
+  ]
+}
