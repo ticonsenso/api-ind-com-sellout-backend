@@ -15,7 +15,7 @@ import { SelloutProductMasterRepository } from '../repository/sellout.product.ma
 import { SelloutStoreMasterRepository } from '../repository/sellout.store.master.repository';
 import { ProductSicRepository } from '../repository/product.sic.repository';
 import { StoresSicRepository } from '../repository/stores.repository';
-import { chunkArray, cleanString } from '../utils/utils';
+import { chunkArray, cleanString, generateSearchProductKey, generateSearchStoreKey } from '../utils/utils';
 import { CreateSelloutProductMasterDto } from '../dtos/sellout.product.master.dto';
 import { CreateSelloutStoreMasterDto } from '../dtos/sellout.store.master.dto';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
@@ -37,13 +37,8 @@ export class ConsolidatedDataStoresService {
     }
 
     async createConsolidatedDataStores(consolidatedDataStores: CreateConsolidatedDataStoresDto): Promise<ConsolidatedDataStores> {
-        const distributor = cleanString(consolidatedDataStores.distributor ?? '');
-        const codeProductDistributor = cleanString(consolidatedDataStores.codeProductDistributor ?? '');
-        const codeStoreDistributor = cleanString(consolidatedDataStores.codeStoreDistributor ?? '');
-        const descriptionDistributor = cleanString(consolidatedDataStores.descriptionDistributor ?? '');
-
-        const searchProductKey = distributor + codeProductDistributor + descriptionDistributor;
-        const searchStoreKey = distributor + codeStoreDistributor;
+        const searchProductKey = generateSearchProductKey(consolidatedDataStores.distributor ?? '', consolidatedDataStores.codeProductDistributor ?? '', consolidatedDataStores.descriptionDistributor ?? '');
+        const searchStoreKey = generateSearchStoreKey(consolidatedDataStores.distributor ?? '', consolidatedDataStores.codeStoreDistributor ?? '');
 
         const [codeProduct, codeStore] = await Promise.all([
             this.productStoreRepository.findBySearchProductStoreOnly(searchProductKey),
@@ -73,6 +68,8 @@ export class ConsolidatedDataStoresService {
             productModel: productSic?.codigoJde ?? null,
             calculateDate: consolidatedDataStores.calculateDate?.split('T')[0],
             observation: consolidatedDataStores.observation,
+            keyStore: searchStoreKey,
+            keyProducto: searchProductKey,
         };
 
         return this.consolidatedDataStoresRepository.create(commonData);
@@ -84,13 +81,8 @@ export class ConsolidatedDataStoresService {
             throw new Error(`Consolidated data stores con ID ${id} no encontrado`);
         }
 
-        const distributor = cleanString(existingConsolidatedDataStores.distributor ?? '');
-        const codeProductDistributor = cleanString(existingConsolidatedDataStores.codeProductDistributor ?? '');
-        const codeStoreDistributor = cleanString(existingConsolidatedDataStores.codeStoreDistributor ?? '');
-        const descriptionDistributor = cleanString(existingConsolidatedDataStores.descriptionDistributor ?? '');
-
-        const searchProductKey = distributor + codeProductDistributor + descriptionDistributor;
-        const searchStoreKey = distributor + codeStoreDistributor;
+        const searchProductKey = generateSearchProductKey(existingConsolidatedDataStores.distributor ?? '', existingConsolidatedDataStores.codeProductDistributor ?? '', existingConsolidatedDataStores.descriptionDistributor ?? '');
+        const searchStoreKey = generateSearchStoreKey(existingConsolidatedDataStores.distributor ?? '', existingConsolidatedDataStores.codeStoreDistributor ?? '');
 
         const [codeProduct, codeStore] = await Promise.all([
             this.productStoreRepository.findBySearchProductStoreOnly(searchProductKey),
@@ -121,6 +113,8 @@ export class ConsolidatedDataStoresService {
             calculateDate: consolidatedDataStores.calculateDate,
             status: consolidatedDataStores.status,
             observation: consolidatedDataStores.observation,
+            keyStore: searchStoreKey,
+            keyProducto: searchProductKey,
         };
 
         return this.consolidatedDataStoresRepository.update(id, commonData);
@@ -336,6 +330,8 @@ export class ConsolidatedDataStoresService {
                         productModel: null,
                         calculateDate,
                         observation: null,
+                        keyStore: generateSearchStoreKey(consolidatedDataStore.distributor, consolidatedDataStore.codeStoreDistributor),
+                        keyProducto: generateSearchProductKey(consolidatedDataStore.distributor, consolidatedDataStore.codeProductDistributor, consolidatedDataStore.descriptionDistributor)
                     };
 
                     const newStoreData = plainToClass(ConsolidatedDataStores, {

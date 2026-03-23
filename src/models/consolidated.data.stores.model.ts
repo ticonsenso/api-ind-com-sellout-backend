@@ -50,5 +50,11 @@ export class ConsolidatedDataStores {
 
     @Column({ name: 'observation', type: 'text', nullable: true })
     observation?: string | null;
+
+    @Column({ name: 'key_store', type: 'text', nullable: true })
+    keyStore?: string | null;
+
+    @Column({ name: 'key_producto', type: 'text', nullable: true })
+    keyProducto?: string | null;
 }
 
