@@ -36,7 +36,7 @@ def update_consolidated_keys():
         # Procedemos a actualizar las columnas key_store y key_producto
         # Usamos COALESCE para evitar que valores nulos arruinen la concatenación
         # Se normalizan acentos, se eliminan espacios, caracteres especiales y se convierte a MAYÚSCULAS
-        # Usamos TRANSLATE para convertir á, é, í, ó, ú, ñ a sus formas base a, e, i, o, u, n
+        # Usamos TRANSLATE para convertir á, é, í, ó, ú, ñ y sus variantes (Ã, Ä, etc.) a sus formas base a, e, i, o, u, n
         
         # 1. Actualizar key_store
         print("Actualizando columna 'key_store'...")
@@ -45,8 +45,8 @@ def update_consolidated_keys():
             SET key_store = UPPER(REGEXP_REPLACE(
                 TRANSLATE(
                     COALESCE(distributor, '') || COALESCE(code_store_distributor, ''),
-                    'áéíóúÁÉÍÓÚÑñ',
-                    'aeiouAEIOUNn'
+                    'áéíóúÁÉÍÓÚÑñÃãÄäËëÏïÖöÜüÂâÊêÎîÔôÛûÀàÈèÌìÒòÙù',
+                    'aeiouAEIOUNnAaAaEeIiOoUuAaEeIiOoUuAaEeIiOoUu'
                 ),
                 '[^a-zA-Z0-9]', '', 'g'
             ))
@@ -65,8 +65,8 @@ def update_consolidated_keys():
                     COALESCE(distributor, '') || 
                     COALESCE(code_product_distributor, '') || 
                     COALESCE(description_distributor, ''),
-                    'áéíóúÁÉÍÓÚÑñ',
-                    'aeiouAEIOUNn'
+                    'áéíóúÁÉÍÓÚÑñÃãÄäËëÏïÖöÜüÂâÊêÎîÔôÛûÀàÈèÌìÒòÙù',
+                    'aeiouAEIOUNnAaAaEeIiOoUuAaEeIiOoUuAaEeIiOoUu'
                 ),
                 '[^a-zA-Z0-9]', '', 'g'
             ))

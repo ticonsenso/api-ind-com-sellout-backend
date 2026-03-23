@@ -998,7 +998,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   async findByCalculateDateDataAgrupacion(calculateDate: Date): Promise<ReadStream> {
     const date = calculateDate.toISOString().split("T")[0];
     const [year, month] = date.split("-");
-    console.log(year, month);
 
     const qb = this.repository
       .createQueryBuilder("s")
@@ -1068,10 +1067,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "ss.grupozona",
         "ss.zona",
         "ss.categoriaalmacen",
-        "ss.supervisor",
-        // --- Datos de Maestro ---
-        "REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(s.distributor, s.code_store_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') as maestroalmacen",
-        "REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(s.distributor, s.code_product_distributor, s.description_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') as maestroproductos"
+        "ss.supervisor"
       ])
       // 4. Filtros
       .where(`s.calculate_date::date = '${date}'`)

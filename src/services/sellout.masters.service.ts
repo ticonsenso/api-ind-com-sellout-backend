@@ -55,9 +55,13 @@ export class SelloutMastersService {
     }
 
     private normalizePeriodo(periodo: any): string {
-        if (!periodo) return '';
+        if (!periodo) {
+            throw new Error("El campo 'periodo' es obligatorio y no puede estar vacío.");
+        }
         const d = new Date(periodo);
-        if (isNaN(d.getTime())) return '';
+        if (isNaN(d.getTime())) {
+            throw new Error(`El valor proporcionado no es una fecha válida para el campo 'periodo'.`);
+        }
         const year = d.getUTCFullYear();
         const month = String(d.getUTCMonth() + 1).padStart(2, '0');
         const day = String(d.getUTCDate()).padStart(2, '0');
@@ -284,7 +288,7 @@ export class SelloutMastersService {
                     searchProductStore: dto.searchProductStore,
                     codeProductSic: dto.codeProductSic,
                     status: dto.status ?? true,
-                    periodo: dto.periodo
+                    ...(dto.periodo ? { periodo: dto.periodo } : {})
                 });
                 insert++;
             }
@@ -566,9 +570,9 @@ export class SelloutMastersService {
             // Actualización masiva de todos los registros que coincidan con estas llaves
             await this.consolidatedDataStoresRepository.repository.createQueryBuilder()
                 .update(ConsolidatedDataStores)
-                .set({ 
-                    codeStore: code, 
-                    updatedAt: new Date() 
+                .set({
+                    codeStore: code,
+                    updatedAt: new Date()
                 })
                 .where(`
                     REPLACE(distributor, ' ', '') || 
@@ -576,7 +580,7 @@ export class SelloutMastersService {
                 `, { keys })
                 .andWhere(new Brackets((qb: any) => {
                     qb.where("code_store IS NULL OR code_store = ''")
-                      .orWhere("store_name IS NULL OR store_name = ''");
+                        .orWhere("store_name IS NULL OR store_name = ''");
                 }))
                 .execute();
         }
@@ -747,9 +751,9 @@ export class SelloutMastersService {
             // Actualización masiva por cada código SIC único
             await this.consolidatedDataStoresRepository.repository.createQueryBuilder()
                 .update(ConsolidatedDataStores)
-                .set({ 
-                    codeProduct: code, 
-                    updatedAt: new Date() 
+                .set({
+                    codeProduct: code,
+                    updatedAt: new Date()
                 })
                 .where(`
                     REPLACE(distributor, ' ', '') || 
@@ -758,7 +762,7 @@ export class SelloutMastersService {
                 `, { keys })
                 .andWhere(new Brackets((qb: any) => {
                     qb.where("code_product IS NULL OR code_product = ''")
-                      .orWhere("product_model IS NULL OR product_model = ''");
+                        .orWhere("product_model IS NULL OR product_model = ''");
                 }))
                 .execute();
         }

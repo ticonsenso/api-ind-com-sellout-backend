@@ -91,7 +91,7 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     { key: 'code_store', header: 'COD. ALMACEN', width: 25, type: 'string' },
     { key: 'sale_date', header: 'FECHA VENTA', width: 25, type: 'date' },
     { key: 'calculate_date', header: 'FECHA CALCULO', width: 25, type: 'date' },
-    { key: 's_observation', header: 'OBSERVACION', width: 25, type: 'string' },
+    { key: 'observation', header: 'OBSERVACION', width: 25, type: 'string' },
     // --- Nuevos Datos: Información del Producto (Product SIC) ---
     { key: 'lineanegociosap', header: 'LINEA DE NEGOCIO', width: 25, type: 'string' },
     { key: 'categoria', header: 'CATEGORIA', width: 25, type: 'string' },
@@ -108,10 +108,6 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     { key: 'zona', header: 'ZONA', width: 25, type: 'string' },
     { key: 'categoriaalmacen', header: 'CATEGORIA ALMACEN', width: 25, type: 'string' },
     { key: 'supervisor', header: 'SUPERVISOR', width: 25, type: 'string' },
-
-    // --- Nuevos Datos: Información de la Tienda (Maestros) ---
-    { key: 'maestroalmacen', header: 'MAESTRO_ALMACEN', width: 25, type: 'string' },
-    { key: 'maestroproductos', header: 'MAESTRO_PRODUCTOS', width: 25, type: 'string' },
 ];
 
 export const fieldsConsolidatedDataStoresBasicInfo: ExportFieldAvanced[] = [
