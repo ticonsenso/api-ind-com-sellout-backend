@@ -1200,7 +1200,9 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   async syncDataProducts(calculateDate: string): Promise<number> {
     const queryWipeAll = `
       UPDATE "db-sellout".consolidated_data_stores 
-      SET code_product = NULL
+      SET 
+        code_product = NULL,
+        observation = REGEXP_REPLACE(UPPER(CONCAT(distributor, code_product_distributor, description_distributor)), '\\s+', '', 'g')
       WHERE calculate_date = $1;
     `;
     await this.repository.query(queryWipeAll, [calculateDate]);
