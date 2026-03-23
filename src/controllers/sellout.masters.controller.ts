@@ -35,12 +35,12 @@ export class SelloutMastersController {
             // Asegurarse de que el input es un array
             const bodyArray = Array.isArray(req.body) ? req.body : [req.body];
             const createSelloutStoreMasterDtos = plainToInstance(CreateSelloutStoreMasterDto, bodyArray);
-            
+
             const result = await this.selloutMastersService.createSelloutStoreMaster(createSelloutStoreMasterDtos);
-            
-            res.status(StatusCodes.CREATED).json({ 
-                message: `Maestros almacenes procesados correctamente: ${result.insert} creados, ${result.update} actualizados.`, 
-                ...result 
+
+            res.status(StatusCodes.CREATED).json({
+                message: `Maestros almacenes procesados correctamente: ${result.insert} creados, ${result.update} actualizados.`,
+                ...result
             });
         } catch (error) {
             res
@@ -145,12 +145,12 @@ export class SelloutMastersController {
             // Asegurarse de que el input es un array
             const bodyArray = Array.isArray(req.body) ? req.body : [req.body];
             const createSelloutProductMasterDtos = plainToInstance(CreateSelloutProductMasterDto, bodyArray);
-            
+
             const result = await this.selloutMastersService.createSelloutProductMaster(createSelloutProductMasterDtos);
-            
-            res.status(StatusCodes.CREATED).json({ 
-                message: `Maestros productos procesados correctamente: ${result.insert} creados, ${result.update} actualizados.`, 
-                ...result 
+
+            res.status(StatusCodes.CREATED).json({
+                message: `Maestros productos procesados correctamente: ${result.insert} creados, ${result.update} actualizados.`,
+                ...result
             });
         } catch (error) {
             res
@@ -245,7 +245,11 @@ export class SelloutMastersController {
                 return;
             }
             const result = await this.selloutMastersService.createSelloutStoreMastersBatch(createSelloutStoreMasterDto);
-            res.status(StatusCodes.CREATED).json({ message: `Maestros almacenes creados correctamente: ${result.insert} insertados y ${result.update} actualizados`, errors: result.errors });
+            res.status(StatusCodes.CREATED).json({
+                message: `Maestros almacenes creados correctamente: ${result.insert} insertados y ${result.update} actualizados`,
+                errors: result.errors,
+                duplicates: result.duplicates
+            });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -261,7 +265,11 @@ export class SelloutMastersController {
                 return;
             }
             const result = await this.selloutMastersService.createSelloutProductMastersBatch(createSelloutProductMasterDto);
-            res.status(StatusCodes.CREATED).json({ message: `Maestros productos creados correctamente: ${result.insert} insertados y ${result.update} actualizados`, errors: result.errors });
+            res.status(StatusCodes.CREATED).json({
+                message: `Maestros productos creados correctamente: ${result.insert} insertados y ${result.update} actualizados`,
+                errors: result.errors,
+                duplicates: result.duplicates
+            });
         } catch (error) {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)

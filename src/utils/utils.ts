@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import {format, parse} from 'date-fns';
+import { format, parse } from 'date-fns';
 
 const saltRounds = 10;
 
@@ -16,13 +16,18 @@ const hashPassword = async (password: string): Promise<string> => {
 const cleanString = (input: unknown): string => {
   const str = typeof input === 'string' ? input : String(input ?? '');
   return str
-    .replace(/ñ/g, 'n')
-    .replace(/Ñ/g, 'N')
-    .normalize('NFD') // descompone los caracteres (ej. 'á' -> 'a' + '´')
-    .replace(/[\u0300-\u036f]/g, '') // elimina los acentos/diacríticos (tildes, diéresis, etc.)
-    .replace(/(^|\D)0+(?=\d)/g, '$1') // Novedad: elimina los ceros a la izquierda de un bloque de números
-    .replace(/[^a-zA-Z0-9]/g, '') // Novedad: elimina todos los símbolos, puntos, vacíos, guiones y caracteres raros
-    .trim();
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Elimina acentos/tildes
+    .replace(/[^a-zA-Z0-9]/g, '')   // Elimina caracteres especiales y espacios
+    .toUpperCase();
+};
+
+export const generateSearchProductKey = (distributor: string, productStore: string, productDistributor: string): string => {
+  return `${cleanString(distributor)}${cleanString(productStore)}${cleanString(productDistributor)}`.toUpperCase();
+};
+
+export const generateSearchStoreKey = (distributor: string, storeDistributor: string): string => {
+  return `${cleanString(distributor)}${cleanString(storeDistributor)}`.toUpperCase();
 };
 
 const verifyPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
@@ -67,7 +72,7 @@ function addErrorMessage(message: string) {
 
 function parseLocalDate(dateStr: string): Date {
   const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(year, month - 1, day); 
+  return new Date(year, month - 1, day);
 }
 
 

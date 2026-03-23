@@ -399,7 +399,6 @@ export class ExportDataController {
     }
 
     async exportDataAvancedHandler(req: Request, res: Response): Promise<void> {
-        console.log(req.query);
         const { calculate_date } = req.query as { calculate_date: string };
         const calculateDate = new Date(calculate_date);
 
