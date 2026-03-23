@@ -1175,20 +1175,48 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       SET code_product = NULL
       WHERE calculate_date = $1;
     `;
-
-    const queryUpdateMatches = `
-      UPDATE "db-sellout".consolidated_data_stores cds
-      SET code_product = t2.code_product_sic
-      FROM "db-sellout".sellout_product_master t2
-      WHERE 
-        REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = 
-        REGEXP_REPLACE(TRANSLATE(UPPER(t2.search_product_store), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g')
-      AND cds.calculate_date = $1
-      AND t2.periodo = $1;
-    `;
-
     await this.repository.query(queryWipeAll, [calculateDate]);
-    const resultMatches = await this.repository.query(queryUpdateMatches, [calculateDate]);
-    return resultMatches[1] || 0;
+
+    // 1. Obtener los límites de ID para la fecha de cálculo
+    const boundsQuery = `
+      SELECT MIN(id) as min_id, MAX(id) as max_id 
+      FROM "db-sellout".consolidated_data_stores 
+      WHERE calculate_date = $1;
+    `;
+    const boundsResult = await this.repository.query(boundsQuery, [calculateDate]);
+    const minId = boundsResult[0]?.min_id;
+    const maxId = boundsResult[0]?.max_id;
+
+    if (!minId || !maxId) return 0;
+
+    let totalUpdated = 0;
+    const chunkSize = 5000; // Puedes ajustar el tamaño del bloque según el rendimiento necesario
+
+    // 2. Iterar en bloques
+    for (let currentMin = minId; currentMin <= maxId; currentMin += chunkSize) {
+      const currentMax = currentMin + chunkSize - 1;
+
+      const queryUpdateMatchesChunk = `
+        UPDATE "db-sellout".consolidated_data_stores cds
+        SET code_product = t2.code_product_sic
+        FROM "db-sellout".sellout_product_master t2
+        WHERE 
+          REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = 
+          REGEXP_REPLACE(TRANSLATE(UPPER(t2.search_product_store), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g')
+        AND cds.calculate_date = $1
+        AND t2.periodo = $1
+        AND cds.id BETWEEN $2 AND $3;
+      `;
+
+      const resultMatches = await this.repository.query(queryUpdateMatchesChunk, [
+        calculateDate,
+        currentMin,
+        currentMax,
+      ]);
+      
+      totalUpdated += resultMatches[1] || 0;
+    }
+
+    return totalUpdated;
   }
 }
