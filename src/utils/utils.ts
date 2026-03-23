@@ -13,7 +13,7 @@ const hashPassword = async (password: string): Promise<string> => {
   }
 };
 
-const cleanString = (input: unknown): string => {
+export const cleanString = (input: unknown): string => {
   const str = typeof input === 'string' ? input : String(input ?? '');
   return str
     .replace(/[^A-Z0-9ÁÉÍÓÚÄËÏÖÜÑ#\.\-_]+/g, '') // limpia todo EXCEPTO letras, números, tildes, Ñ, #, ., -, _
@@ -160,7 +160,6 @@ export {
   getLastDayOfMonth,
   parseDateFromISO,
   parseLocalDate,
-  cleanString,
   addErrorMessage,
   normalizePercent,
   primerDiaDelMesString,
