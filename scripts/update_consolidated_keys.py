@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 # Configuración: Cargamos el entorno de desarrollo
 # Por defecto buscamos .env.development que es el que el usuario seleccionó
-env_file = '.env.development'
+env_file = '.env.production'
 if os.path.exists(env_file):
     load_dotenv(env_file)
 else:
