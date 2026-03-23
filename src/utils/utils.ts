@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import {format, parse} from 'date-fns';
+import { format, parse } from 'date-fns';
 
 const saltRounds = 10;
 
@@ -16,10 +16,8 @@ const hashPassword = async (password: string): Promise<string> => {
 const cleanString = (input: unknown): string => {
   const str = typeof input === 'string' ? input : String(input ?? '');
   return str
-    .normalize('NFD') // descompone los caracteres (ej. 'á' -> 'a' + '´')
-    .replace(/[\u0300-\u036f]/g, '') // elimina los acentos/diacríticos (tildes, diéresis, etc.)
-    .replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g, '') // elimina todos los espacios y caracteres invisibles
-    .trim();
+    .replace(/\s+/g, '') // elimina todos los espacios y saltos (adelante, atrás, intermedios)
+    .toUpperCase();
 };
 
 export const generateSearchProductKey = (distributor: string, productStore: string, productDistributor: string): string => {
@@ -72,7 +70,7 @@ function addErrorMessage(message: string) {
 
 function parseLocalDate(dateStr: string): Date {
   const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(year, month - 1, day); 
+  return new Date(year, month - 1, day);
 }
 
 

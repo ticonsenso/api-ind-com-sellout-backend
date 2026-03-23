@@ -1178,8 +1178,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         SET code_store = t2.code_store_sic
         FROM "db-sellout".sellout_store_master t2
         WHERE 
-          REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(cds.distributor, cds.code_store_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = 
-          REGEXP_REPLACE(TRANSLATE(UPPER(t2.search_store), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g')
+          REGEXP_REPLACE(UPPER(CONCAT(cds.distributor, cds.code_store_distributor)), '\\s+', '', 'g') = 
+          REGEXP_REPLACE(UPPER(t2.search_store), '\\s+', '', 'g')
         AND cds.calculate_date = $1
         AND t2.periodo = $1
         AND cds.id BETWEEN $2 AND $3;
@@ -1190,7 +1190,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         currentMin,
         currentMax,
       ]);
-      
+
       totalUpdated += resultMatches[1] || 0;
     }
 
@@ -1229,8 +1229,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         SET code_product = t2.code_product_sic
         FROM "db-sellout".sellout_product_master t2
         WHERE 
-          REGEXP_REPLACE(TRANSLATE(UPPER(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor)), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g') = 
-          REGEXP_REPLACE(TRANSLATE(UPPER(t2.search_product_store), 'ÁÉÍÓÚÄËÏÖÜÑÃ', 'AEIOUAEIOUNA'), '[^A-Z0-9]', '', 'g')
+          REGEXP_REPLACE(UPPER(CONCAT(cds.distributor, cds.code_product_distributor, cds.description_distributor)), '\\s+', '', 'g') = 
+          REGEXP_REPLACE(UPPER(t2.search_product_store), '\\s+', '', 'g')
         AND cds.calculate_date = $1
         AND t2.periodo = $1
         AND cds.id BETWEEN $2 AND $3;
@@ -1241,7 +1241,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         currentMin,
         currentMax,
       ]);
-      
+
       totalUpdated += resultMatches[1] || 0;
     }
 
