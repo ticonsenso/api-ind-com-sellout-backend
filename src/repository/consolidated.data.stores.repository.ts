@@ -1084,18 +1084,21 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .createQueryBuilder("cds")
       .select("cds.calculateDate", "periodo")
       .addSelect("cds.saleDate", "fecha_venta")
-      .addSelect("cds.codeProduct", "cod_prod")
-      .addSelect("cds.codeStore", "cod_almacen")
-      .addSelect("SUM(cds.unitsSoldDistributor)", "cantidad_venta")
-      .addSelect(`COALESCE(
+      // cod_prod ahora usa la subconsulta con la limpieza de 'OTROS'
+      .addSelect(`NULLIF(COALESCE(
         (SELECT CAST(MAX(ps.prod_id) AS VARCHAR) FROM "db-sellout".product_sic ps WHERE ps.codigo_jde = cds.code_product),
         cds.code_product
-      )`, "prod_id")
+      ), 'OTROS')`, "cod_prod")
+      .addSelect("NULLIF(cds.codeStore, 'NO SE VISITA')", "cod_almacen")
+      .addSelect("cds.unitsSoldDistributor", "cantidad_venta")
+      .addSelect("4", "mae_empresa")
+      .addSelect("cds.distributor", "distribuidor")
+      .addSelect("cds.codeStoreDistributor", "codalmacendistribuidor")
+      .addSelect("cds.codeProductDistributor", "codproddistribuidor")
+      .addSelect("cds.descriptionDistributor", "descripcion_distribuidor")
       .where("cds.calculateDate = :date", { date })
-      .groupBy("cds.calculateDate")
-      .addGroupBy("cds.saleDate")
-      .addGroupBy("cds.codeProduct")
-      .addGroupBy("cds.codeStore");
+      .orderBy("cds.saleDate", "ASC");
+
     return qb.stream();
   }
 
