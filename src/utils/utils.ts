@@ -14,20 +14,15 @@ const hashPassword = async (password: string): Promise<string> => {
 };
 
 const cleanString = (input: unknown): string => {
-  const str = typeof input === 'string' ? input : String(input ?? '');
-  return str
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Elimina acentos/tildes
-    .replace(/[^a-zA-Z0-9]/g, '')   // Elimina caracteres especiales y espacios
-    .toUpperCase();
+  return typeof input === 'string' ? input : String(input ?? '');
 };
 
 export const generateSearchProductKey = (distributor: string, productStore: string, productDistributor: string): string => {
-  return `${cleanString(distributor)}${cleanString(productStore)}${cleanString(productDistributor)}`.toUpperCase();
+  return `${cleanString(distributor)}${cleanString(productStore)}${cleanString(productDistributor)}`.trim();
 };
 
 export const generateSearchStoreKey = (distributor: string, storeDistributor: string): string => {
-  return `${cleanString(distributor)}${cleanString(storeDistributor)}`.toUpperCase();
+  return `${cleanString(distributor)}${cleanString(storeDistributor)}`.trim();
 };
 
 const verifyPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
