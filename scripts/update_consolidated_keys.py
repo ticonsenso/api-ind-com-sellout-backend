@@ -41,9 +41,9 @@ def update_consolidated_keys():
         print("Actualizando columna 'key_store'...")
         update_key_store_sql = f"""
             UPDATE "{DB_SCHEMA}".consolidated_data_stores
-            SET key_store = TRIM(
+            SET key_store = UPPER(TRIM(
                 COALESCE(distributor, '') || COALESCE(code_store_distributor, '')
-            )
+            ))
             WHERE distributor IS NOT NULL OR code_store_distributor IS NOT NULL;
         """
         cur.execute(update_key_store_sql)
@@ -54,11 +54,11 @@ def update_consolidated_keys():
         print("Actualizando columna 'key_producto'...")
         update_key_product_sql = f"""
             UPDATE "{DB_SCHEMA}".consolidated_data_stores
-            SET key_producto = TRIM(
+            SET key_producto = UPPER(TRIM(
                 COALESCE(distributor, '') || 
                 COALESCE(code_product_distributor, '') || 
                 COALESCE(description_distributor, '')
-            )
+            ))
             WHERE distributor IS NOT NULL 
                OR code_product_distributor IS NOT NULL 
                OR description_distributor IS NOT NULL;

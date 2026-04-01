@@ -18,11 +18,11 @@ const cleanString = (input: unknown): string => {
 };
 
 export const generateSearchProductKey = (distributor: string, productStore: string, productDistributor: string): string => {
-  return `${cleanString(distributor)}${cleanString(productStore)}${cleanString(productDistributor)}`.trim();
+  return `${cleanString(distributor)}${cleanString(productStore)}${cleanString(productDistributor)}`.trim().toUpperCase();
 };
 
 export const generateSearchStoreKey = (distributor: string, storeDistributor: string): string => {
-  return `${cleanString(distributor)}${cleanString(storeDistributor)}`.trim();
+  return `${cleanString(distributor)}${cleanString(storeDistributor)}`.trim().toUpperCase();
 };
 
 const verifyPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
