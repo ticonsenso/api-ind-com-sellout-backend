@@ -816,78 +816,62 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
   async findConsolidatedNullFieldsUnique(
     nullFields?: NullFieldFilters,
-    calculateDate?: Date
-  ): Promise<{
-    items: Array<
-      | { distributor: string; codeStoreDistributor: string }
-      | {
-        distributor: string;
-        codeProductDistributor: string;
-        descriptionDistributor: string;
-      }
-    >;
-    total: number;
-  }> {
-    const date = calculateDate?.toISOString().split("T")[0];
-    const year = date?.split("-")[0];
-    const month = date?.split("-")[1];
+    calculateDate?: Date,
+    search?: string
+  ): Promise<{ items: any[]; total: number }> {
+    const qb = this.repository.createQueryBuilder("cds");
 
-    const allData = await this.findByYearAndMonth(Number(year), Number(month));
+    // 1. Identificar si estamos buscando Tiendas o Productos
+    const isStore = nullFields?.codeStore || nullFields?.authorizedDistributor || nullFields?.storeName;
+    const isProduct = nullFields?.codeProduct || nullFields?.productModel;
 
-    const isNullOrEmpty = (value: any) => value === null || value === "";
+    if (!isStore && !isProduct) return { items: [], total: 0 };
 
-    const isTrue = (value: any) => value === true;
+    // 2. Configuración dinámica según el tipo de búsqueda
+    const selectFields = [
+      'MAX(cds.distributor) as "distributor"',
+      'MAX(cds.codeStoreDistributor) as "codeStoreDistributor"',
+      'MAX(cds.codeProductDistributor) as "codeProductDistributor"',
+      'MAX(cds.descriptionDistributor) as "descriptionDistributor"',
+      'MAX(cds.codeStore) as "codeStore"',
+      'MAX(cds.codeProduct) as "codeProduct"',
+      'MAX(cds.id) as "id"'
+    ];
 
-    const uniqueMap = new Map<string, ConsolidatedDataStores>();
+    if (isStore) {
+      qb.select(selectFields).groupBy("TRIM(cds.keyStore)");
 
-    for (const item of allData) {
-      if (
-        nullFields?.codeStore &&
-        isNullOrEmpty(item.codeStore) &&
-        isTrue(item.status)
-      ) {
-        const key = `${item.distributor}-${item.codeStoreDistributor}`;
-        if (!uniqueMap.has(key)) uniqueMap.set(key, item);
-      }
+      if (nullFields?.codeStore) qb.andWhere("(TRIM(cds.codeStore) IS NULL OR TRIM(cds.codeStore) = '')");
+      if (nullFields?.authorizedDistributor) qb.andWhere("(TRIM(cds.authorizedDistributor) IS NULL OR TRIM(cds.authorizedDistributor) = '')");
+      if (nullFields?.storeName) qb.andWhere("(TRIM(cds.storeName) IS NULL OR TRIM(cds.storeName) = '')");
+    } else {
+      qb.select(selectFields).groupBy("TRIM(cds.keyProducto)");
 
-      if (
-        nullFields?.codeProduct &&
-        isNullOrEmpty(item.codeProduct) &&
-        isTrue(item.status)
-      ) {
-        const key = `${item.distributor}-${item.codeProductDistributor}-${item.descriptionDistributor}`;
-        if (!uniqueMap.has(key)) uniqueMap.set(key, item);
-      }
+      if (nullFields?.codeProduct) qb.andWhere("(TRIM(cds.codeProduct) IS NULL OR TRIM(cds.codeProduct) = '')");
+      if (nullFields?.productModel) qb.andWhere("(TRIM(cds.productModel) IS NULL OR TRIM(cds.productModel) = '')");
     }
 
-    const allValues = Array.from(uniqueMap.values());
+    // 3. Filtros comunes (Fecha, Estado y Búsqueda ILIKE)
+    qb.andWhere("cds.status = true");
+    if (calculateDate) {
+      qb.andWhere("cds.calculateDate = :date", { date: calculateDate.toISOString().split("T")[0] });
+    }
 
-    const mappedItems = allValues.map((item) => {
-      if (nullFields?.codeStore) {
-        return {
-          id: item.id,
-          distributor: item.distributor ?? "",
-          codeStoreDistributor: item.codeStoreDistributor ?? "",
-          codeStore: item.codeStore ?? "",
-        };
-      } else {
-        return {
-          id: item.id,
-          distributor: item.distributor ?? "",
-          codeProductDistributor: item.codeProductDistributor ?? "",
-          descriptionDistributor: item.descriptionDistributor ?? "",
-          codeProduct: item.codeProduct ?? "",
-        };
-      }
-    });
+    if (search?.trim()) {
+      const searchFields = isStore
+        ? ["cds.distributor", "cds.codeStoreDistributor", "cds.storeName"]
+        : ["cds.distributor", "cds.codeProductDistributor", "cds.descriptionDistributor"];
 
-    const total = mappedItems.length;
+      qb.andWhere(new Brackets(sqb => {
+        searchFields.forEach(field => sqb.orWhere(`${field} ILIKE :search`, { search: `%${search}%` }));
+      }));
+    }
 
-    return {
-      items: mappedItems,
-      total,
-    };
+    const items = await qb.getRawMany();
+    return { items, total: items.length };
   }
+
+
 
   async findDetailNullFields(calculateDate?: Date): Promise<any> {
     const date = calculateDate?.toISOString().split("T")[0];
