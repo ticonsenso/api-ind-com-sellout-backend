@@ -184,6 +184,38 @@ export class UpdateConsolidatedDto {
     status?: boolean;
 }
 
+export class ConsolidatedDataStoresDtoNullUnique {
+    @Expose()
+    id!: number;
+
+    @Expose()
+    distributor?: string;
+
+    @Expose()
+    codeStoreDistributor?: string;
+
+    @Expose()
+    codeProductDistributor?: string;
+
+    @Expose()
+    descriptionDistributor?: string;
+
+    @Expose()
+    codeProduct?: string;
+
+    @Expose()
+    codeStore?: string;
+
+    @Expose()
+    authorizedDistributor?: string;
+
+    @Expose()
+    storeName?: string;
+
+    @Expose()
+    productModel?: string;
+}
+
 export class ConsolidatedDataStoresDto {
     @Expose()
     id!: number;

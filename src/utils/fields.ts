@@ -308,6 +308,7 @@ export const filedsNoHomologadosStores: ExportField[] = [
     { key: 'distributor', header: 'DISTRIBUIDOR' },
     { key: 'codeStoreDistributor', header: 'ALMACEN DISTRIBUIDOR' },
     { key: 'codeStore', header: 'COD. ALMACEN SIC' },
+    { key: 'periodo', header: 'PERIODO' },
 ];
 
 export const filedsNoHomologadosProducts: ExportField[] = [
@@ -315,5 +316,6 @@ export const filedsNoHomologadosProducts: ExportField[] = [
     { key: 'codeProductDistributor', header: 'PRODUCTO ALMACEN' },
     { key: 'descriptionDistributor', header: 'DESCRIPCIÓN PRODUCTO ALMACEN' },
     { key: 'codeProduct', header: 'COD. PRODUCTO SIC' },
+    { key: 'periodo', header: 'PERIODO' },
 ];
 

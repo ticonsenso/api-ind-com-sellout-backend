@@ -280,9 +280,11 @@ export class ExportDataController {
                     nullFieldFiltersStore,
                     new Date(calculateDate)
                 )).items;
+                console.log(rawData[1]);
                 rawData = rawData.map(item => ({
                     ...item,
                     codeStore: 'NO SE VISITA',
+                    periodo: calculateDate,
                 }));
                 break;
             case 'noHomologadosProducts':
@@ -297,6 +299,7 @@ export class ExportDataController {
                 rawData = rawData.map(item => ({
                     ...item,
                     codeProduct: 'OTROS',
+                    periodo: calculateDate,
                 }));
                 break;
             default:

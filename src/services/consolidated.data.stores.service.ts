@@ -8,7 +8,8 @@ import {
     CreateConsolidatedDataStoresDto,
     NullFieldFilters,
     UpdateConsolidatedDataStoresDto,
-    UpdateConsolidatedDto
+    UpdateConsolidatedDto,
+    ConsolidatedDataStoresDtoNullUnique
 } from '../dtos/consolidated.data.stores.dto';
 import { ConsolidatedDataStores } from '../models/consolidated.data.stores.model';
 import { SelloutProductMasterRepository } from '../repository/sellout.product.master.repository';
@@ -502,9 +503,9 @@ export class ConsolidatedDataStoresService {
     ): Promise<ConsolidatedDataStoresFiltersResponseDto> {
         const { items, total } = await this.consolidatedDataStoresRepository.findConsolidatedNullFieldsUnique(nullFields, calculateDate);
         return {
-            items: plainToInstance(ConsolidatedDataStoresDto, items, {
+            items: plainToInstance(ConsolidatedDataStoresDtoNullUnique, items, {
                 excludeExtraneousValues: true,
-            }),
+            }) as any,
             total,
         };
     }

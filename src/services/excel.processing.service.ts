@@ -100,6 +100,7 @@ export class ExcelImportService {
         if (!row.distribuidor) return "Falta el distribuidor";
         if (!row.almacenDistribuidor) return "Falta el almacén del distribuidor";
         if (!row.codAlmSic) return "Falta el código SIC - NO SE VISITA";
+        if (!row.periodo) return "Falta el campo perido / 2026-03-01";
         return true;
 
       case ExcelImportService.NOHOMOLOGADOSPRODUCTS:
@@ -107,6 +108,7 @@ export class ExcelImportService {
         if (!row.productoAlmacen) return "Falta el productoAlmacen";
         if (!row.descriptionProduct) return "Falta la descripción del producto";
         if (!row.codProdSic) return "Falta el código SIC - OTROS";
+        if (!row.periodo) return "Falta el campo perido / 2026-03-01";
         return true;
 
       default:
