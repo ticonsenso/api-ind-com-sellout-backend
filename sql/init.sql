@@ -1301,3 +1301,20 @@ DROP INDEX "db-sellout".unique_search_product_store;
 -- 2. Crear el nuevo índice compuesto por 'search_product_store' y 'periodo'
 CREATE UNIQUE INDEX unique_search_product_per_periodo 
 ON "db-sellout".sellout_product_master USING btree (search_product_store, periodo);
+
+
+CREATE TABLE "db-sellout".sco_adm_delta_jobs (
+    id SERIAL PRIMARY KEY,
+    job_id VARCHAR(50) UNIQUE NOT NULL,      -- Identificador único del proceso
+    entity_name VARCHAR(100) NOT NULL,      -- Ejemplo: 'dim_producto_s08' o 'ALL'
+    status VARCHAR(20) NOT NULL,            -- 'EJECUTANDO', 'COMPLETADO', 'ERROR'
+    total_records INT DEFAULT 0,            -- Total de registros encontrados en Delta
+    processed_records INT DEFAULT 0,        -- Cuántos vamos guardando
+    error_message TEXT,                     -- Si falla, guardamos el porqué
+    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    end_time TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Índice para buscar rápido el último proceso de una entidad
+CREATE INDEX idx_delta_jobs_entity_status ON "db-sellout".sco_adm_delta_jobs (entity_name, status);
