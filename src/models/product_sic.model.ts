@@ -66,6 +66,9 @@ export class ProductSic {
     @Column({ name: 'prod_id', type: 'varchar', length: 255, nullable: true })
     prodId?: string;
 
+    @Column({ name: 'etl_extract_date', type: 'varchar', nullable: true })
+    etlExtractDate?: string | null;
+
     @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: true })
     createdAt?: Date;
 

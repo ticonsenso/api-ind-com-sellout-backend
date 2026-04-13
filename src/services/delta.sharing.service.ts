@@ -239,6 +239,7 @@ export class DeltaSharingService {
       mapped.equivalencia = row.equivalancia || '';
       mapped.vigencia = row.vigencia || null;
       mapped.prod_id = row.prodId ? parseInt(row.prodId.toString()) : 0;
+      mapped.etl_extract_date = row.etlTimestamp ? row.etlTimestamp.toString() : null;
     } else if (sourceTable === 'dim_almacenes_s08') {
       // Mapeo exacto solicitado: cod_almacen = almId
       mapped.cod_almacen = (row.almId || row.idAlmacen).toString();
@@ -261,6 +262,7 @@ export class DeltaSharingService {
       mapped.grupo_zona = row.grupoZona || null;
       mapped.supervisor = row.Supervisor || null;
       mapped.zona = row.zona || null;
+      mapped.etl_extract_date = row.etlTimestamp ? row.etlTimestamp.toString() : null;
     }
     
     // Limpieza final de types para JSON
