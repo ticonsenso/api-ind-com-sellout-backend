@@ -72,7 +72,7 @@ export class DeltaSharingService {
       for (const url of fileUrls) {
         const fileRes = await axios.get(url, { responseType: 'arraybuffer' });
         const arrayBuffer = fileRes.data.buffer.slice(fileRes.data.byteOffset, fileRes.data.byteOffset + fileRes.data.byteLength);
-        
+
         const rawRows = await parquetReadObjects({ file: arrayBuffer, rowEnd: limit, compressors: compressors } as any);
         const processedRows = rawRows.map((row: any) => this.mapDeltaToSic(tableName, row));
 
@@ -164,10 +164,22 @@ export class DeltaSharingService {
         // basándonos en prodId o idProducto que son únicos por registro en Delta
         const uniqueEntriesMap = new Map();
         for (const row of allRawRows) {
-            const entryId = row.prodId || row.idProducto;
+          const entryId = row.prodId || row.idProducto;
+
+          if (!uniqueEntriesMap.has(entryId)) {
             uniqueEntriesMap.set(entryId, row);
+          } else {
+            const existingRow = uniqueEntriesMap.get(entryId);
+            // Comparamos fechaCarga o etlTimestamp para dejar el más reciente
+            const existingDate = existingRow.fechaCarga || existingRow.etlTimestamp || 0;
+            const newDate = row.fechaCarga || row.etlTimestamp || 0;
+
+            if (new Date(newDate) > new Date(existingDate)) {
+              uniqueEntriesMap.set(entryId, row);
+            }
+          }
         }
-        
+
         const uniqueData = Array.from(uniqueEntriesMap.values());
         for (const row of uniqueData) {
           const key = (row.codigoJde || 'null').toString();
@@ -178,16 +190,18 @@ export class DeltaSharingService {
       // 3. Procesar y guardar en chunks
       let totalProcessed = 0;
       const chunkSize = 500;
+      const allSyncedIds = new Set<string>();
+      
       for (let i = 0; i < allRawRows.length; i += chunkSize) {
         const chunk = allRawRows.slice(i, i + chunkSize);
-        
+
         // Mapear registros
         let processedRows = chunk.map((row: any) => {
           const mapped = this.mapDeltaToSic(tableName, row);
           if (tableName === 'dim_producto_s08') {
-             const count = counts.get((row.codigoJde || 'null').toString()) || 0;
-             // Si el conteo es 1, ponemos 0 (no hay repetidos). Si es > 1, el número.
-             mapped.num_repetidos = count > 1 ? count.toString() : '0';
+            const count = counts.get((row.codigoJde || 'null').toString()) || 0;
+            // Si el conteo es 1, ponemos 0 (no hay repetidos). Si es > 1, el número.
+            mapped.num_repetidos = count > 1 ? count.toString() : '0';
           }
           return mapped;
         });
@@ -196,14 +210,23 @@ export class DeltaSharingService {
         const conflictKey = targetTable === 'product_sic' ? 'idproductosic' : 'cod_almacen';
         const uniqueRowsMap = new Map();
         for (const row of processedRows) {
-            uniqueRowsMap.set(row[conflictKey], row);
+          uniqueRowsMap.set(row[conflictKey], row);
         }
         processedRows = Array.from(uniqueRowsMap.values());
+        
+        // Registrar IDs que siguen vigentes
+        processedRows.forEach(row => allSyncedIds.add(row[conflictKey]));
 
         await this.upsertToDatabase(targetTable, processedRows);
-        
+
         totalProcessed += chunk.length; // Usamos el tamaño del chunk original para el progreso
         await this.jobRepository.updateJobProgress(jobId, totalProcessed, allRawRows.length);
+      }
+
+      // 4. Eliminar los registros que ya no existen en la fuente
+      const syncedIdsArray = Array.from(allSyncedIds);
+      if (syncedIdsArray.length > 0) {
+        await this.deleteMissingRecords(targetTable, syncedIdsArray);
       }
 
       await this.jobRepository.completeJob(jobId);
@@ -241,7 +264,7 @@ export class DeltaSharingService {
       mapped.prod_id = row.prodId ? parseInt(row.prodId.toString()) : 0;
       mapped.etl_extract_date = row.etlTimestamp ? row.etlTimestamp.toString() : null;
     } else if (sourceTable === 'dim_almacenes_s08') {
-      // Mapeo exacto solicitado: cod_almacen = almId
+      // Usamos almId como identificador principal
       mapped.cod_almacen = (row.almId || row.idAlmacen).toString();
       mapped.nombre_almacen = row.nombre || '';
       mapped.direccion_almacen = row.direccion || '';
@@ -264,7 +287,7 @@ export class DeltaSharingService {
       mapped.zona = row.zona || null;
       mapped.etl_extract_date = row.etlTimestamp ? row.etlTimestamp.toString() : null;
     }
-    
+
     // Limpieza final de types para JSON
     for (const key in mapped) {
       if (typeof mapped[key] === 'bigint') mapped[key] = mapped[key].toString();
@@ -276,7 +299,7 @@ export class DeltaSharingService {
     if (rows.length === 0) return;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
-    
+
     const conflictKey = tableName === 'product_sic' ? 'idproductosic' : 'cod_almacen';
     const columns = Object.keys(rows[0]);
     const setClause = columns.map(col => `"${col}" = EXCLUDED."${col}"`).join(', ');
@@ -306,13 +329,13 @@ export class DeltaSharingService {
 
     try {
       dim_producto_s08 = await this.getTableRecordsLimited('co_comisiones', 'dwh', 'dim_producto_s08', 10);
-    } catch(err: any) {
+    } catch (err: any) {
       errors.push({ table: 'dim_producto_s08', error: err.message || err });
     }
 
     try {
       dim_almacenes_s08 = await this.getTableRecordsLimited('co_comisiones', 'dwh', 'dim_almacenes_s08', 10);
-    } catch(err: any) {
+    } catch (err: any) {
       errors.push({ table: 'dim_almacenes_s08', error: err.message || err });
     }
 
@@ -329,5 +352,35 @@ export class DeltaSharingService {
 
   async getAllJobs(page: number, limit: number) {
     return await this.jobRepository.findAllPaginated(page, limit);
+  }
+
+  private async deleteMissingRecords(tableName: string, syncedIds: string[]) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      const conflictKey = tableName === 'product_sic' ? 'idproductosic' : 'cod_almacen';
+      
+      // Obtener todos los IDs actualmente en la base de datos local
+      const allDbRecords = await queryRunner.query(`SELECT "${conflictKey}" FROM "db-sellout"."${tableName}"`);
+      const dbIds = allDbRecords.map((r: any) => r[conflictKey]);
+      
+      // Identificar cuáles deben eliminarse (están en BD pero no en la fuente)
+      const syncedIdsSet = new Set(syncedIds);
+      const idsToDelete = dbIds.filter((dbId: string) => !syncedIdsSet.has(dbId));
+      
+      if (idsToDelete.length > 0) {
+        const deleteChunkSize = 500;
+        for (let i = 0; i < idsToDelete.length; i += deleteChunkSize) {
+          const chunk = idsToDelete.slice(i, i + deleteChunkSize);
+          const paramSlots = chunk.map((_item: string, idx: number) => `$${idx + 1}`).join(', ');
+          const query = `DELETE FROM "db-sellout"."${tableName}" WHERE "${conflictKey}" IN (${paramSlots})`;
+          await queryRunner.query(query, chunk);
+        }
+        console.log(`[DeltaSync] Eliminados ${idsToDelete.length} registros obsoletos de la tabla ${tableName}`);
+      }
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

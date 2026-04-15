@@ -1,12 +1,12 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn, } from 'typeorm';
 
-@Unique('uq_product_sic_id_producto_sic', ['idProductoSic'])
+@Unique('product_sic_id_product_sic_key', ['idProductoSic'])
 @Entity({ name: 'product_sic', schema: 'db-sellout' })
 export class ProductSic {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ name: 'idProductoSic', type: 'varchar', length: 255, unique: true })
+    @Column({ name: 'idproductosic', type: 'varchar', length: 255, unique: true })
     idProductoSic!: string;
 
     @Column({ name: 'codigo_jde', type: 'varchar', length: 255 })
@@ -63,8 +63,8 @@ export class ProductSic {
     @Column({ name: 'vigencia', type: 'varchar', length: 255, nullable: true })
     vigencia?: string | null;
 
-    @Column({ name: 'prod_id', type: 'varchar', length: 255, nullable: true })
-    prodId?: string;
+    @Column({ name: 'prod_id', type: 'integer', default: 0 })
+    prodId!: number;
 
     @Column({ name: 'etl_extract_date', type: 'varchar', nullable: true })
     etlExtractDate?: string | null;
