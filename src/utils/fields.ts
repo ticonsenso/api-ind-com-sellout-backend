@@ -125,9 +125,9 @@ export const fieldsConsolidatedDataStoresBasicInfo: ExportFieldAvanced[] = [
     { key: 'cantidad_venta', header: 'VENTA', width: 25, type: 'number' },
     { key: 'mae_empresa', header: 'MAE_EMPRESA', width: 15, type: 'number' },
     { key: 'distribuidor', header: 'DISTRIBUIDOR', width: 25, type: 'string' },
-    { key: 'codalmacendistribuidor', header: 'COD_ALMACEN_DIST', width: 25, type: 'string' },
-    { key: 'codproddistribuidor', header: 'COD_PROD_DIST', width: 25, type: 'string' },
-    { key: 'descripcion_distribuidor', header: 'DESC_DISTRIBUIDOR', width: 40, type: 'string' },
+    { key: 'codalmacendistribuidor', header: 'CODALMACENDISTRIBUIDOR', width: 25, type: 'string' },
+    { key: 'codproddistribuidor', header: 'CODPRODDISTRIBUIDOR', width: 25, type: 'string' },
+    { key: 'descripcion_distribuidor', header: 'DESCRIPCION_DISTRIBUIDOR', width: 40, type: 'string' },
 ];
 
 export const fieldsBaseValuesSellout = [

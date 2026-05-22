@@ -1085,8 +1085,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addSelect(`NULLIF(UPPER(COALESCE(
         (SELECT CAST(MAX(ps.prod_id) AS VARCHAR) FROM "db-sellout".product_sic ps WHERE ps.codigo_jde = cds.code_product),
         cds.code_product
-      )), 'OTROS')`, "cod_prod")
-      .addSelect("NULLIF(UPPER(cds.codeStore), 'NO SE VISITA')", "cod_almacen")
+      )), '')`, "cod_prod")
+      .addSelect("NULLIF(UPPER(cds.codeStore), '')", "cod_almacen")
       .addSelect("cds.unitsSoldDistributor", "cantidad_venta")
       .addSelect("4", "mae_empresa")
       .addSelect("cds.distributor", "distribuidor")
