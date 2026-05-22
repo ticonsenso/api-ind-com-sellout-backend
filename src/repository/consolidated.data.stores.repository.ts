@@ -730,8 +730,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "s.code_store AS code_store",
         "s.sale_date AS sale_date",
         "s.sale_date AS fecha_venta",
-        "s.observation AS observation",
-
         // --- Campos de Tienda (ss) ---
         "ss.nombre_almacen AS store_name",
         "ss.nombre_almacen AS nombre_almacen",
@@ -813,7 +811,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       id: item.id, // Nota: Asegúrate de incluir 's.id AS id' en el select si tu tabla principal lo tiene
       status: item.status, // Nota: Igual con status si pertenece a 's'
       fechaVenta: item.fecha_venta,
-      observation: item.observation,
       lineaNegocio: item.linea_negocio,
       categoria: item.categoria,
       subCategoria: item.sub_categoria,
