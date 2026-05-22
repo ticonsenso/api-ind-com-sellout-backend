@@ -81,7 +81,7 @@ export const fieldsSelloutStoreMaster: ExportField[] = [
 ];
 
 export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
-    { key: 'distribuidor_sellout', header: 'DISTRIBUIDOR', width: 25, type: 'string' },
+    { key: 'distribuidor_sellout', header: 'DISTRIBUIDOR SELLOUT', width: 25, type: 'string' },
     { key: 'cod_almacen_distribuidor', header: 'COD. ALMACEN DISTRIBUIDOR', width: 25, type: 'string' },
     { key: 'cod_prod_distribuidor', header: 'COD. PROD DISTRIBUIDOR', width: 25, type: 'string' },
     { key: 'descripcion_distribuidor', header: 'DESCRIPCION DISTRIBUIDOR', width: 25, type: 'string' },
@@ -105,7 +105,7 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     // --- 20 al 32: Información del Canal y Almacén (Stores SIC) y Extras ---
     { key: 'canal', header: 'CANAL', width: 25, type: 'string' },
     { key: 'distribuidor_sap', header: 'DISTRIBUIDOR SAP', width: 25, type: 'string' },
-    { key: 'distribuidor', header: 'DISTRIBUIDOR 2', width: 25, type: 'string' }, // El segundo distribuidor
+    { key: 'distribuidor', header: 'DISTRIBUIDOR', width: 25, type: 'string' }, // El segundo distribuidor
     { key: 'nombre_almacen', header: 'NOMBRE ALMACEN', width: 25, type: 'string' },
     { key: 'supervision', header: 'SUPERVISION', width: 25, type: 'string' },
     { key: 'grupo_zona', header: 'GRUPO ZONA', width: 25, type: 'string' },
