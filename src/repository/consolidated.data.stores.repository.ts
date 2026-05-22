@@ -667,7 +667,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     },
     calculateDate?: Date
   ): Promise<{
-    items: ConsolidatedDataStoresDto[];
+    items: ConsolidatedDataStoresDto[]; // Asegúrate de que el DTO tenga estas nuevas propiedades
     total: number;
     totalAll: number;
   }> {
@@ -685,12 +685,15 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
             .addSelect("MAX(mar_desc_jerarq)", "sub_categoria")
             .addSelect("MAX(mar_modelo_im)", "modelo")
             .addSelect("MAX(nombre_ime)", "nombre_ime")
-            .addSelect("MAX(linea_negocio_sap)", "linea")
+            // Nuevos y corregidos:
+            .addSelect("MAX(linea_disenio_sap)", "linea") // Corregido a linea_disenio_sap según mapeo anterior
+            .addSelect("MAX(marca_sap)", "marca")
+            .addSelect("NULL", "linea_variable")
             .from("db-sellout.product_sic", "ps_inner")
             .groupBy("codigo_jde");
         },
         "ps",
-        "ps.codigo_jde = s.codeProduct"
+        "ps.codigo_jde = s.codeProduct" // Mantengo tu condición original
       )
       // Left Join con Subconsulta para Stores SIC
       .leftJoin(
@@ -699,18 +702,24 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
             .select("cod_almacen")
             .addSelect("MAX(nombre_almacen)", "nombre_almacen")
             .addSelect("MAX(canal)", "canal")
-            .addSelect("MAX(distrib_sap)", "grupo_comercial")
+            .addSelect("MAX(distrib_sap)", "grupo_comercial") // Anteriormente alias distribuidor_sap
             .addSelect("MAX(grupo_zona)", "grupo_zona")
             .addSelect("MAX(zona)", "zona")
             .addSelect("MAX(categoria)", "categoria_almacen")
             .addSelect("MAX(supervisor)", "supervisor")
+            // Nuevos:
+            .addSelect("MAX(distribuidor)", "distribuidor_2")
+            .addSelect("MAX(region)", "regional")
+            .addSelect("MAX(provincia)", "provincia")
+            .addSelect("MAX(ciudad)", "ciudad")
             .from("db-sellout.stores_sic", "ss_inner")
             .groupBy("cod_almacen");
         },
         "ss",
-        "ss.cod_almacen = s.codeStore"
+        "ss.cod_almacen = s.codeStore" // Mantengo tu condición original
       )
       .select([
+        // --- Tabla Principal ---
         "s.calculate_date AS calculate_date",
         "s.distributor AS distributor",
         "s.code_store_distributor AS code_store_distributor",
@@ -720,24 +729,36 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "s.code_product AS code_product",
         "s.code_store AS code_store",
         "s.sale_date AS sale_date",
-        "ss.nombre_almacen AS store_name",
-        "ss.nombre_almacen AS nombre_almacen",
-        "ps.nombre_sap AS product_model",
         "s.sale_date AS fecha_venta",
         "s.observation AS observation",
-        "ps.linea_negocio",
-        "ps.categoria",
-        "ps.sub_categoria",
-        "ps.modelo",
-        "ps.nombre_ime",
-        "ps.prod_id AS prod_id",
+
+        // --- Campos de Tienda (ss) ---
+        "ss.nombre_almacen AS store_name",
+        "ss.nombre_almacen AS nombre_almacen",
         "ss.canal",
         "ss.grupo_comercial",
         "ss.grupo_zona",
         "ss.zona",
         "ss.categoria_almacen",
         "ss.supervisor",
-        "ps.linea"
+        // Nuevos:
+        "ss.distribuidor_2 AS distribuidor_2",
+        "ss.regional AS regional",
+        "ss.provincia AS provincia",
+        "ss.ciudad AS ciudad",
+
+        // --- Campos de Producto (ps) ---
+        "ps.nombre_sap AS product_model",
+        "ps.linea_negocio",
+        "ps.categoria",
+        "ps.sub_categoria",
+        "ps.modelo",
+        "ps.nombre_ime",
+        "ps.prod_id AS prod_id",
+        "ps.linea",
+        // Nuevos:
+        "ps.marca AS marca",
+        "ps.linea_variable AS linea_variable"
       ]);
 
     // === Filtros dinámicos ===
@@ -763,9 +784,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     // === Filtro por año y mes ===
     if (calculateDate) {
       const date = calculateDate.toISOString().split("T")[0];
-      // const [year, month] = date.split("-");
-      // qb.andWhere("EXTRACT(YEAR FROM s.calculate_date) = :year", { year });
-      // qb.andWhere("EXTRACT(MONTH FROM s.calculate_date) = :month", { month });
       qb.andWhere(`s.calculate_date::date = '${date}'`);
     }
 
@@ -780,6 +798,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
     // === Mapeo ===
     const itemsMapped: any = items.map((item: any) => ({
+      // Mapeos Originales
       calculateDate: item.calculate_date,
       distributor: item.distributor,
       codeStoreDistributor: item.code_store_distributor,
@@ -791,8 +810,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       saleDate: item.sale_date,
       storeName: item.store_name,
       productModel: item.product_model,
-      id: item.id,
-      status: item.status,
+      id: item.id, // Nota: Asegúrate de incluir 's.id AS id' en el select si tu tabla principal lo tiene
+      status: item.status, // Nota: Igual con status si pertenece a 's'
       fechaVenta: item.fecha_venta,
       observation: item.observation,
       lineaNegocio: item.linea_negocio,
@@ -809,6 +828,14 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       categoriaAlmacen: item.categoria_almacen,
       supervisor: item.supervisor,
       linea: item.linea,
+
+      // Nuevos Mapeos Integrados
+      marca: item.marca,
+      lineaVariable: item.linea_variable,
+      distribuidor2: item.distribuidor_2, // Segundo distribuidor que viene de stores_sic
+      regional: item.regional,
+      provincia: item.provincia,
+      ciudad: item.ciudad,
     }));
 
     // === Total paginado ===

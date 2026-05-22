@@ -304,6 +304,32 @@ export class ConsolidatedDataStoresDto {
 
     @Expose()
     supervisor?: string;
+
+    // === Nuevos Campos Agregados ===
+
+    @Expose()
+    prodId?: string;
+
+    @Expose()
+    linea?: string;
+
+    @Expose()
+    marca?: string;
+
+    @Expose()
+    lineaVariable?: string;
+
+    @Expose()
+    distribuidor2?: string;
+
+    @Expose()
+    regional?: string;
+
+    @Expose()
+    provincia?: string;
+
+    @Expose()
+    ciudad?: string;
 }
 
 export class ConsolidatedDataStoresFiltersResponseDto {
