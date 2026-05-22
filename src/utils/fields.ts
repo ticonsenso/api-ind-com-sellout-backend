@@ -81,33 +81,39 @@ export const fieldsSelloutStoreMaster: ExportField[] = [
 ];
 
 export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
-    // --- Datos Originales ---
-    { key: 's_distributor', header: 'DISTRIBUIDOR', width: 25, type: 'string' },
-    { key: 'code_store_distributor', header: 'COD. ALMACEN DISTRIBUIDOR', width: 25, type: 'string' },
-    { key: 'code_product_distributor', header: 'COD. PROD DISTRIBUIDOR', width: 25, type: 'string' },
-    { key: 'description_distributor', header: 'DESCRIPCION DISTRIBUIDOR', width: 25, type: 'string' },
-    { key: 'units_sold_distributor', header: 'UNIDADES VENTA DISTRIBUIDOR', width: 25, type: 'number' },
-    { key: 'code_product', header: 'COD. PRODUCTO', width: 25, type: 'string' },
-    { key: 'code_store', header: 'COD. ALMACEN', width: 25, type: 'string' },
-    { key: 'sale_date', header: 'FECHA VENTA', width: 25, type: 'date' },
-    { key: 'calculate_date', header: 'FECHA CALCULO', width: 25, type: 'date' },
-    { key: 'observation', header: 'OBSERVACION', width: 25, type: 'string' },
-    // --- Nuevos Datos: Información del Producto (Product SIC) ---
-    { key: 'lineanegociosap', header: 'LINEA DE NEGOCIO', width: 25, type: 'string' },
-    { key: 'categoria', header: 'CATEGORIA', width: 25, type: 'string' },
-    { key: 'subcategoria', header: 'SUB CATEGORIA', width: 25, type: 'string' },
-    { key: 'marmodeloim', header: 'MODELO', width: 25, type: 'string' },
-    { key: 'nombreime', header: 'NOMBRE IM', width: 25, type: 'string' },
+    { key: 'distribuidor_sellout', header: 'DISTRIBUIDOR', width: 25, type: 'string' },
+    { key: 'cod_almacen_distribuidor', header: 'COD. ALMACEN DISTRIBUIDOR', width: 25, type: 'string' },
+    { key: 'cod_prod_distribuidor', header: 'COD. PROD DISTRIBUIDOR', width: 25, type: 'string' },
+    { key: 'descripcion_distribuidor', header: 'DESCRIPCION DISTRIBUIDOR', width: 25, type: 'string' },
+    { key: 'unidades_venta_distribuidor', header: 'UNIDADES VENTA DISTRIBUIDOR', width: 25, type: 'number' },
+    { key: 'cod_producto', header: 'COD. PRODUCTO', width: 25, type: 'string' },
+    { key: 'cod_almacen', header: 'COD. ALMACEN', width: 25, type: 'string' },
+    { key: 'fecha_venta', header: 'FECHA_VENTA', width: 25, type: 'date' },
+    { key: 'fecha_calculo', header: 'FECHA CALCULO', width: 25, type: 'date' },
+    // --- 10 al 19: Información del Producto ---
     { key: 'prod_id', header: 'PROD ID', width: 25, type: 'string' },
+    { key: 'linea_de_negocio', header: 'LINEA DE NEGOCIO', width: 25, type: 'string' },
+    { key: 'linea', header: 'LINEA', width: 25, type: 'string' },
+    { key: 'linea_variable', header: 'LINEA VARIABLE', width: 25, type: 'string' },
+    { key: 'categoria', header: 'CATEGORIA', width: 25, type: 'string' },
+    { key: 'subcategoria', header: 'SUBCATEGORIA', width: 25, type: 'string' },
+    { key: 'modelo', header: 'MODELO', width: 25, type: 'string' },
+    { key: 'nombre_im', header: 'NOMBRE IM', width: 25, type: 'string' },
+    { key: 'descripcion_sap', header: 'DESCRIPCION SAP', width: 25, type: 'string' },
+    { key: 'marca', header: 'MARCA', width: 25, type: 'string' },
 
-    // --- Nuevos Datos: Información de la Tienda (Stores SIC) ---
+    // --- 20 al 32: Información del Canal y Almacén (Stores SIC) y Extras ---
     { key: 'canal', header: 'CANAL', width: 25, type: 'string' },
-    { key: 'grupocomercial', header: 'GRUPO COMERCIAL', width: 25, type: 'string' }, // Diferenciado del 'distributor' original
-    { key: 'almacen', header: 'NOMBRE ALMACEN', width: 25, type: 'string' },
-    { key: 'grupozona', header: 'GRUPO ZONA', width: 25, type: 'string' },
+    { key: 'distribuidor_sap', header: 'DISTRIBUIDOR SAP', width: 25, type: 'string' },
+    { key: 'distribuidor', header: 'DISTRIBUIDOR 2', width: 25, type: 'string' }, // El segundo distribuidor
+    { key: 'nombre_almacen', header: 'NOMBRE ALMACEN', width: 25, type: 'string' },
+    { key: 'supervision', header: 'SUPERVISION', width: 25, type: 'string' },
+    { key: 'grupo_zona', header: 'GRUPO ZONA', width: 25, type: 'string' },
     { key: 'zona', header: 'ZONA', width: 25, type: 'string' },
-    { key: 'categoriaalmacen', header: 'CATEGORIA ALMACEN', width: 25, type: 'string' },
-    { key: 'supervisor', header: 'SUPERVISOR', width: 25, type: 'string' },
+    { key: 'categoria_almacen', header: 'CATEGORIA ALMACEN', width: 25, type: 'string' },
+    { key: 'regional', header: 'REGIONAL', width: 25, type: 'string' },
+    { key: 'provincia', header: 'PROVINCIA', width: 25, type: 'string' },
+    { key: 'ciudad', header: 'CIUDAD', width: 25, type: 'string' },
 ];
 
 export const fieldsConsolidatedDataStoresBasicInfo: ExportFieldAvanced[] = [
