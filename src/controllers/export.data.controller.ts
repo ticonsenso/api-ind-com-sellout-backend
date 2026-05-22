@@ -454,7 +454,9 @@ export class ExportDataController {
         const calculateDate = new Date(calculate_date);
 
         // 1. Configurar headers para descarga inmediata
-        const excelName = `sellou_mercado_basicInfo_${calculate_date}`;
+        // Reemplaza todos los guiones por nada: "2026-01-01" -> "20260101"
+        const formattedDate = calculate_date.replace(/-/g, '');
+        const excelName = `sellout_mercado_${formattedDate}`;
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=${excelName}.xlsx`);
 
@@ -479,7 +481,7 @@ export class ExportDataController {
             // Procesamiento de tipos
             const processedRow: any = { ...row };
 
-            fieldsConsolidatedDataStores.forEach(field => {
+            fieldsConsolidatedDataStoresBasicInfo.forEach(field => {
                 if (field.type === 'number' && processedRow[field.key] !== null && processedRow[field.key] !== undefined) {
                     // Convertir a string y reemplazar punto por coma
                     processedRow[field.key] = Number(processedRow[field.key]).toString().replace('.', ',');

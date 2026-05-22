@@ -667,7 +667,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     },
     calculateDate?: Date
   ): Promise<{
-    items: ConsolidatedDataStoresDto[];
+    items: ConsolidatedDataStoresDto[]; // Asegúrate de que el DTO tenga estas nuevas propiedades
     total: number;
     totalAll: number;
   }> {
@@ -685,11 +685,15 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
             .addSelect("MAX(mar_desc_jerarq)", "sub_categoria")
             .addSelect("MAX(mar_modelo_im)", "modelo")
             .addSelect("MAX(nombre_ime)", "nombre_ime")
+            // Nuevos y corregidos:
+            .addSelect("MAX(linea_disenio_sap)", "linea") // Corregido a linea_disenio_sap según mapeo anterior
+            .addSelect("MAX(marca_sap)", "marca")
+            .addSelect("NULL", "linea_variable")
             .from("db-sellout.product_sic", "ps_inner")
             .groupBy("codigo_jde");
         },
         "ps",
-        "ps.codigo_jde = s.codeProduct"
+        "ps.codigo_jde = s.codeProduct" // Mantengo tu condición original
       )
       // Left Join con Subconsulta para Stores SIC
       .leftJoin(
@@ -698,18 +702,24 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
             .select("cod_almacen")
             .addSelect("MAX(nombre_almacen)", "nombre_almacen")
             .addSelect("MAX(canal)", "canal")
-            .addSelect("MAX(distrib_sap)", "grupo_comercial")
+            .addSelect("MAX(distrib_sap)", "grupo_comercial") // Anteriormente alias distribuidor_sap
             .addSelect("MAX(grupo_zona)", "grupo_zona")
             .addSelect("MAX(zona)", "zona")
             .addSelect("MAX(categoria)", "categoria_almacen")
             .addSelect("MAX(supervisor)", "supervisor")
+            // Nuevos:
+            .addSelect("MAX(distribuidor)", "distribuidor_2")
+            .addSelect("MAX(region)", "regional")
+            .addSelect("MAX(provincia)", "provincia")
+            .addSelect("MAX(ciudad)", "ciudad")
             .from("db-sellout.stores_sic", "ss_inner")
             .groupBy("cod_almacen");
         },
         "ss",
-        "ss.cod_almacen = s.codeStore"
+        "ss.cod_almacen = s.codeStore" // Mantengo tu condición original
       )
       .select([
+        // --- Tabla Principal ---
         "s.calculate_date AS calculate_date",
         "s.distributor AS distributor",
         "s.code_store_distributor AS code_store_distributor",
@@ -719,23 +729,34 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         "s.code_product AS code_product",
         "s.code_store AS code_store",
         "s.sale_date AS sale_date",
+        "s.sale_date AS fecha_venta",
+        // --- Campos de Tienda (ss) ---
         "ss.nombre_almacen AS store_name",
         "ss.nombre_almacen AS nombre_almacen",
+        "ss.canal",
+        "ss.grupo_comercial",
+        "ss.grupo_zona",
+        "ss.zona",
+        "ss.categoria_almacen",
+        "ss.supervisor",
+        // Nuevos:
+        "ss.distribuidor_2 AS distribuidor_2",
+        "ss.regional AS regional",
+        "ss.provincia AS provincia",
+        "ss.ciudad AS ciudad",
+
+        // --- Campos de Producto (ps) ---
         "ps.nombre_sap AS product_model",
-        "s.sale_date AS fecha_venta",
-        "s.observation AS observation",
         "ps.linea_negocio",
         "ps.categoria",
         "ps.sub_categoria",
         "ps.modelo",
         "ps.nombre_ime",
         "ps.prod_id AS prod_id",
-        "ss.canal",
-        "ss.grupo_comercial",
-        "ss.grupo_zona",
-        "ss.zona",
-        "ss.categoria_almacen",
-        "ss.supervisor"
+        "ps.linea",
+        // Nuevos:
+        "ps.marca AS marca",
+        "ps.linea_variable AS linea_variable"
       ]);
 
     // === Filtros dinámicos ===
@@ -761,9 +782,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     // === Filtro por año y mes ===
     if (calculateDate) {
       const date = calculateDate.toISOString().split("T")[0];
-      // const [year, month] = date.split("-");
-      // qb.andWhere("EXTRACT(YEAR FROM s.calculate_date) = :year", { year });
-      // qb.andWhere("EXTRACT(MONTH FROM s.calculate_date) = :month", { month });
       qb.andWhere(`s.calculate_date::date = '${date}'`);
     }
 
@@ -778,6 +796,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
     // === Mapeo ===
     const itemsMapped: any = items.map((item: any) => ({
+      // Mapeos Originales
       calculateDate: item.calculate_date,
       distributor: item.distributor,
       codeStoreDistributor: item.code_store_distributor,
@@ -789,10 +808,9 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       saleDate: item.sale_date,
       storeName: item.store_name,
       productModel: item.product_model,
-      id: item.id,
-      status: item.status,
+      id: item.id, // Nota: Asegúrate de incluir 's.id AS id' en el select si tu tabla principal lo tiene
+      status: item.status, // Nota: Igual con status si pertenece a 's'
       fechaVenta: item.fecha_venta,
-      observation: item.observation,
       lineaNegocio: item.linea_negocio,
       categoria: item.categoria,
       subCategoria: item.sub_categoria,
@@ -805,7 +823,16 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       grupoZona: item.grupo_zona,
       zona: item.zona,
       categoriaAlmacen: item.categoria_almacen,
-      supervisor: item.supervisor
+      supervisor: item.supervisor,
+      linea: item.linea,
+
+      // Nuevos Mapeos Integrados
+      marca: item.marca,
+      lineaVariable: item.linea_variable,
+      distribuidor2: item.distribuidor_2, // Segundo distribuidor que viene de stores_sic
+      regional: item.regional,
+      provincia: item.provincia,
+      ciudad: item.ciudad,
     }));
 
     // === Total paginado ===
@@ -985,77 +1012,87 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
     const qb = this.repository
       .createQueryBuilder("s")
+
       // 1. LEFT JOIN con Subconsulta para Product SIC (ps)
       .leftJoin(
         (subQuery) => {
           return subQuery
-            .select("codigo_jde") // Campo de agrupación (sin MAX)
+            .select("codigo_jde") // Campo de agrupación
             .addSelect("MAX(prod_id)", "prod_id")
-            .addSelect("MAX(linea_negocio_sap)", "lineanegociosap")
+            .addSelect("MAX(linea_negocio_sap)", "linea_de_negocio")
+            .addSelect("MAX(linea_disenio_sap)", "linea")
+            .addSelect("NULL", "linea_variable") // Ajustar si luego existe en tu DB
             .addSelect("MAX(mar_desc_grupo_art)", "categoria")
             .addSelect("MAX(mar_desc_jerarq)", "subcategoria")
-            .addSelect("MAX(mar_modelo_im)", "marmodeloim")
-            .addSelect("MAX(nombre_ime)", "nombreime")
-            .addSelect("MAX(nombre_sap)", "nombresap")
+            .addSelect("MAX(mar_modelo_im)", "modelo")
+            .addSelect("MAX(nombre_ime)", "nombre_im")
+            .addSelect("MAX(nombre_sap)", "descripcion_sap")
+            .addSelect("MAX(marca_sap)", "marca")
             .from("db-sellout.product_sic", "ps_inner")
             .groupBy("codigo_jde");
         },
         "ps",
         "ps.codigo_jde = s.code_product"
       )
+
       // 2. LEFT JOIN con Subconsulta para Stores SIC (ss)
       .leftJoin(
         (subQuery) => {
           return subQuery
-            .select("cod_almacen") // Campo de agrupación (sin MAX)
+            .select("cod_almacen") // Campo de agrupación
             .addSelect("MAX(canal)", "canal")
-            .addSelect("MAX(distrib_sap)", "grupocomercial")
-            .addSelect("MAX(nombre_almacen)", "almacen")
-            .addSelect("MAX(grupo_zona)", "grupozona")
+            .addSelect("MAX(distrib_sap)", "distribuidor_sap")
+            .addSelect("MAX(distribuidor)", "distribuidor")
+            .addSelect("MAX(nombre_almacen)", "nombre_almacen")
+            .addSelect("MAX(supervisor)", "supervision")
+            .addSelect("MAX(grupo_zona)", "grupo_zona")
             .addSelect("MAX(zona)", "zona")
-            .addSelect("MAX(categoria)", "categoriaalmacen") // Alias para evitar colisión
-            .addSelect("MAX(supervisor)", "supervisor")
+            .addSelect("MAX(categoria)", "categoria_almacen")
+            .addSelect("MAX(region)", "regional")
+            .addSelect("MAX(provincia)", "provincia")
+            .addSelect("MAX(ciudad)", "ciudad")
             .from("db-sellout.stores_sic", "ss_inner")
             .groupBy("cod_almacen");
         },
         "ss",
         "ss.cod_almacen = s.code_store"
       )
-      // 3. Selección final de columnas
-      // Nota: Usamos los nombres de columna de 's' y los alias definidos en 'ps' y 'ss'
-      .select([
-        // --- Tabla Principal ---
-        "s.distributor",
-        "s.code_store_distributor",
-        "s.code_product_distributor",
-        "s.description_distributor",
-        "s.units_sold_distributor",
-        "s.code_product",
-        "s.code_store",
-        "s.sale_date",
-        "s.calculate_date",
-        "s.observation",
 
-        // --- Datos de Producto (Alias definidos en subquery ps) ---
-        "ps.lineanegociosap",
-        "ps.categoria",
-        "ps.subcategoria",
-        "ps.marmodeloim",
-        "ps.nombreime",
-        "ps.prod_id",
-
-        // --- Datos de Tienda (Alias definidos en subquery ss) ---
-        "ss.canal",
-        "ss.grupocomercial",
-        "ss.almacen",
-        "ss.grupozona",
-        "ss.zona",
-        "ss.categoriaalmacen",
-        "ss.supervisor"
-      ])
+      // 3. Selección final de columnas asegurando alias en MINÚSCULAS para el Excel
+      .select("s.calculate_date", "fecha_calculo")
+      .addSelect("s.sale_date", "fecha_venta")
+      .addSelect("s.distributor", "distribuidor_sellout")
+      .addSelect("s.code_store_distributor", "cod_almacen_distribuidor")
+      .addSelect("s.code_product_distributor", "cod_prod_distribuidor")
+      .addSelect("s.description_distributor", "descripcion_distribuidor")
+      .addSelect("ps.prod_id", "prod_id")
+      .addSelect("s.code_product", "cod_producto")
+      .addSelect("s.code_store", "cod_almacen")
+      .addSelect("s.units_sold_distributor", "unidades_venta_distribuidor")
+      .addSelect("ps.linea_de_negocio", "linea_de_negocio")
+      .addSelect("ps.linea", "linea")
+      .addSelect("ps.linea_variable", "linea_variable")
+      .addSelect("ps.categoria", "categoria")
+      .addSelect("ps.subcategoria", "subcategoria")
+      .addSelect("ps.modelo", "modelo")
+      .addSelect("ps.nombre_im", "nombre_im")
+      .addSelect("ps.descripcion_sap", "descripcion_sap")
+      .addSelect("ps.marca", "marca")
+      .addSelect("ss.canal", "canal")
+      .addSelect("ss.distribuidor_sap", "distribuidor_sap")
+      .addSelect("ss.distribuidor", "distribuidor")
+      .addSelect("ss.nombre_almacen", "nombre_almacen")
+      .addSelect("ss.supervision", "supervision")
+      .addSelect("ss.grupo_zona", "grupo_zona")
+      .addSelect("ss.zona", "zona")
+      .addSelect("ss.categoria_almacen", "categoria_almacen")
+      .addSelect("ss.regional", "regional")
+      .addSelect("ss.provincia", "provincia")
+      .addSelect("ss.ciudad", "ciudad")
       // 4. Filtros
       .where(`s.calculate_date::date = '${date}'`)
-      // 5. Ordenamiento (Usando columnas base para asegurar compatibilidad)
+
+      // 5. Ordenamiento
       .orderBy("s.distributor", "ASC")
       .addOrderBy("s.code_store_distributor", "ASC")
       .addOrderBy("s.code_product_distributor", "ASC");
@@ -1072,8 +1109,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addSelect(`NULLIF(UPPER(COALESCE(
         (SELECT CAST(MAX(ps.prod_id) AS VARCHAR) FROM "db-sellout".product_sic ps WHERE ps.codigo_jde = cds.code_product),
         cds.code_product
-      )), 'OTROS')`, "cod_prod")
-      .addSelect("NULLIF(UPPER(cds.codeStore), 'NO SE VISITA')", "cod_almacen")
+      )), '')`, "cod_prod")
+      .addSelect("NULLIF(UPPER(cds.codeStore), '')", "cod_almacen")
       .addSelect("cds.unitsSoldDistributor", "cantidad_venta")
       .addSelect("4", "mae_empresa")
       .addSelect("cds.distributor", "distribuidor")
