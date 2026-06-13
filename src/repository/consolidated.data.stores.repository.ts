@@ -1034,7 +1034,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
             .groupBy("codigo_jde");
         },
         "ps",
-        "ps.codigo_jde = s.code_product"
+        "ps.codigo_jde = s.code_product AND s.codeProduct <> 'OTROS'"
       )
 
       // 2. LEFT JOIN con Subconsulta para Stores SIC (ss)
@@ -1057,7 +1057,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
             .groupBy("cod_almacen");
         },
         "ss",
-        "ss.cod_almacen = s.code_store"
+        "ss.cod_almacen = s.code_store AND s.code_store <> 'NO SE VISITA' "
       )
 
       // 3. Selección final de columnas asegurando alias en MINÚSCULAS para el Excel
