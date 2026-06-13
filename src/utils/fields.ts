@@ -90,6 +90,7 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     { key: 'cod_almacen', header: 'COD. ALMACEN', width: 25, type: 'string' },
     { key: 'fecha_venta', header: 'FECHA_VENTA', width: 25, type: 'date' },
     { key: 'fecha_calculo', header: 'FECHA CALCULO', width: 25, type: 'date' },
+    { key: 'observation', header: 'OBSERVACION', width: 25, type: 'string' },
     // --- 10 al 19: Información del Producto ---
     { key: 'linea_de_negocio', header: 'LINEA DE NEGOCIO', width: 25, type: 'string' },
     // --{ key: 'linea', header: 'LINEA', width: 25, type: 'string' },

@@ -693,7 +693,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
             .groupBy("codigo_jde");
         },
         "ps",
-        "ps.codigo_jde = s.codeProduct" // Mantengo tu condición original
+        "ps.codigo_jde = s.codeProduct AND s.codeProduct <> 'OTROS'" // Mantengo tu condición original
       )
       // Left Join con Subconsulta para Stores SIC
       .leftJoin(
@@ -716,11 +716,12 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
             .groupBy("cod_almacen");
         },
         "ss",
-        "ss.cod_almacen = s.codeStore" // Mantengo tu condición original
+        "ss.cod_almacen = s.codeStore AND s.codeStore <> 'NO SE VISITA'" // Mantengo tu condición original
       )
       .select([
         // --- Tabla Principal ---
         "s.calculate_date AS calculate_date",
+        "s.observation AS observation",
         "s.distributor AS distributor",
         "s.code_store_distributor AS code_store_distributor",
         "s.code_product_distributor AS code_product_distributor",
@@ -806,6 +807,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       codeProduct: item.code_product,
       codeStore: item.code_store,
       saleDate: item.sale_date,
+      observation: item.observation,
       storeName: item.store_name,
       productModel: item.product_model,
       id: item.id, // Nota: Asegúrate de incluir 's.id AS id' en el select si tu tabla principal lo tiene
@@ -1060,6 +1062,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
       // 3. Selección final de columnas asegurando alias en MINÚSCULAS para el Excel
       .select("s.calculate_date", "fecha_calculo")
+      .addSelect("s.observation", "observation")
       .addSelect("s.sale_date", "fecha_venta")
       .addSelect("s.distributor", "distribuidor_sellout")
       .addSelect("s.code_store_distributor", "cod_almacen_distribuidor")
