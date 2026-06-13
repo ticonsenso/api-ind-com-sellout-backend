@@ -81,7 +81,7 @@ export const fieldsSelloutStoreMaster: ExportField[] = [
 ];
 
 export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
-    { key: 'distribuidor_sellout', header: 'DISTRIBUIDOR SELLOUT', width: 25, type: 'string' },
+    { key: 'distribuidor_sellout', header: 'DISTRIBUIDOR', width: 25, type: 'string' },
     { key: 'cod_almacen_distribuidor', header: 'COD. ALMACEN DISTRIBUIDOR', width: 25, type: 'string' },
     { key: 'cod_prod_distribuidor', header: 'COD. PROD DISTRIBUIDOR', width: 25, type: 'string' },
     { key: 'descripcion_distribuidor', header: 'DESCRIPCION DISTRIBUIDOR', width: 25, type: 'string' },
@@ -91,29 +91,28 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     { key: 'fecha_venta', header: 'FECHA_VENTA', width: 25, type: 'date' },
     { key: 'fecha_calculo', header: 'FECHA CALCULO', width: 25, type: 'date' },
     // --- 10 al 19: Información del Producto ---
-    { key: 'prod_id', header: 'PROD ID', width: 25, type: 'string' },
     { key: 'linea_de_negocio', header: 'LINEA DE NEGOCIO', width: 25, type: 'string' },
-    { key: 'linea', header: 'LINEA', width: 25, type: 'string' },
-    { key: 'linea_variable', header: 'LINEA VARIABLE', width: 25, type: 'string' },
+    // --{ key: 'linea', header: 'LINEA', width: 25, type: 'string' },
+    // --{ key: 'linea_variable', header: 'LINEA VARIABLE', width: 25, type: 'string' },
     { key: 'categoria', header: 'CATEGORIA', width: 25, type: 'string' },
     { key: 'subcategoria', header: 'SUBCATEGORIA', width: 25, type: 'string' },
     { key: 'modelo', header: 'MODELO', width: 25, type: 'string' },
     { key: 'nombre_im', header: 'NOMBRE IM', width: 25, type: 'string' },
-    { key: 'descripcion_sap', header: 'DESCRIPCION SAP', width: 25, type: 'string' },
+    { key: 'prod_id', header: 'PROD ID', width: 25, type: 'string' },
     { key: 'marca', header: 'MARCA', width: 25, type: 'string' },
-
+    // --{ key: 'descripcion_sap', header: 'DESCRIPCION SAP', width: 25, type: 'string' },
     // --- 20 al 32: Información del Canal y Almacén (Stores SIC) y Extras ---
     { key: 'canal', header: 'CANAL', width: 25, type: 'string' },
-    { key: 'distribuidor_sap', header: 'DISTRIBUIDOR SAP', width: 25, type: 'string' },
-    { key: 'distribuidor', header: 'DISTRIBUIDOR', width: 25, type: 'string' }, // El segundo distribuidor
+    { key: 'distribuidor_sap', header: 'GRUPO COMERCIAL', width: 25, type: 'string' },
+    // -- { key: 'distribuidor', header: 'DISTRIBUIDOR', width: 25, type: 'string' }, // El segundo distribuidor
     { key: 'nombre_almacen', header: 'NOMBRE ALMACEN', width: 25, type: 'string' },
-    { key: 'supervision', header: 'SUPERVISION', width: 25, type: 'string' },
     { key: 'grupo_zona', header: 'GRUPO ZONA', width: 25, type: 'string' },
     { key: 'zona', header: 'ZONA', width: 25, type: 'string' },
     { key: 'categoria_almacen', header: 'CATEGORIA ALMACEN', width: 25, type: 'string' },
-    { key: 'regional', header: 'REGIONAL', width: 25, type: 'string' },
-    { key: 'provincia', header: 'PROVINCIA', width: 25, type: 'string' },
-    { key: 'ciudad', header: 'CIUDAD', width: 25, type: 'string' },
+    { key: 'supervision', header: 'SUPERVISOR', width: 25, type: 'string' },
+    //-{ key: 'regional', header: 'REGIONAL', width: 25, type: 'string' },
+    //{ key: 'provincia', header: 'PROVINCIA', width: 25, type: 'string' },
+    //{ key: 'ciudad', header: 'CIUDAD', width: 25, type: 'string' },
 ];
 
 export const fieldsConsolidatedDataStoresBasicInfo: ExportFieldAvanced[] = [
