@@ -1228,103 +1228,62 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   }
 
   async syncDataStores(calculateDate: string): Promise<number> {
-    const queryWipeAll = `
-      UPDATE "db-sellout".consolidated_data_stores 
-      SET code_store = NULL
-      WHERE calculate_date = $1;
-    `;
-    await this.repository.query(queryWipeAll, [calculateDate]);
-
-    // 1. Obtener los límites de ID para la fecha de cálculo
-    const boundsQuery = `
-      SELECT MIN(id) as min_id, MAX(id) as max_id 
-      FROM "db-sellout".consolidated_data_stores 
-      WHERE calculate_date = $1;
-    `;
-    const boundsResult = await this.repository.query(boundsQuery, [calculateDate]);
-    const minId = boundsResult[0]?.min_id;
-    const maxId = boundsResult[0]?.max_id;
-
-    if (!minId || !maxId) return 0;
-
-    let totalUpdated = 0;
-    const chunkSize = 5000;
-
-    // 2. Iterar en bloques
-    for (let currentMin = minId; currentMin <= maxId; currentMin += chunkSize) {
-      const currentMax = currentMin + chunkSize - 1;
-
-      const queryUpdateMatchesChunk = `
-        UPDATE "db-sellout".consolidated_data_stores cds
-        SET code_store = t2.code_store_sic
-        FROM "db-sellout".sellout_store_master t2
-        WHERE 
-          cds.key_store = t2.search_store
+    // Actualiza solo las filas cuyo code_store realmente cambia (evita reescribir
+    // todo el período dos veces como hacía el wipe-all + rematch por bloques de ID).
+    const queryUpdateMatches = `
+      UPDATE "db-sellout".consolidated_data_stores cds
+      SET code_store = t2.code_store_sic
+      FROM "db-sellout".sellout_store_master t2
+      WHERE cds.key_store = t2.search_store
         AND cds.calculate_date = $1
         AND t2.periodo = $1
-        AND cds.id BETWEEN $2 AND $3;
-      `;
+        AND cds.code_store IS DISTINCT FROM t2.code_store_sic;
+    `;
+    const resultMatches = await this.repository.query(queryUpdateMatches, [calculateDate]);
 
-      const resultMatches = await this.repository.query(queryUpdateMatchesChunk, [
-        calculateDate,
-        currentMin,
-        currentMax,
-      ]);
+    // Limpia solo las filas que quedaron apuntando a un match que ya no existe (datos maestros cambiaron).
+    const queryClearStale = `
+      UPDATE "db-sellout".consolidated_data_stores cds
+      SET code_store = NULL
+      WHERE cds.calculate_date = $1
+        AND cds.code_store IS NOT NULL
+        AND NOT EXISTS (
+          SELECT 1 FROM "db-sellout".sellout_store_master t2
+          WHERE t2.search_store = cds.key_store AND t2.periodo = $1
+        );
+    `;
+    const resultCleared = await this.repository.query(queryClearStale, [calculateDate]);
 
-      totalUpdated += resultMatches[1] || 0;
-    }
-
-    return totalUpdated;
+    return (resultMatches[1] || 0) + (resultCleared[1] || 0);
   }
 
   async syncDataProducts(calculateDate: string): Promise<number> {
-    const queryWipeAll = `
-      UPDATE "db-sellout".consolidated_data_stores 
-      SET 
-        code_product = NULL
-      WHERE calculate_date = $1;
-    `;
-    await this.repository.query(queryWipeAll, [calculateDate]);
-
-    // 1. Obtener los límites de ID para la fecha de cálculo
-    const boundsQuery = `
-      SELECT MIN(id) as min_id, MAX(id) as max_id 
-      FROM "db-sellout".consolidated_data_stores 
-      WHERE calculate_date = $1;
-    `;
-    const boundsResult = await this.repository.query(boundsQuery, [calculateDate]);
-    const minId = boundsResult[0]?.min_id;
-    const maxId = boundsResult[0]?.max_id;
-
-    if (!minId || !maxId) return 0;
-
-    let totalUpdated = 0;
-    const chunkSize = 5000;
-
-    // 2. Iterar en bloques
-    for (let currentMin = minId; currentMin <= maxId; currentMin += chunkSize) {
-      const currentMax = currentMin + chunkSize - 1;
-
-      const queryUpdateMatchesChunk = `
-        UPDATE "db-sellout".consolidated_data_stores cds
-        SET code_product = t2.code_product_sic
-        FROM "db-sellout".sellout_product_master t2
-        WHERE 
-          cds.key_producto = t2.search_product_store
+    // Actualiza solo las filas cuyo code_product realmente cambia (evita reescribir
+    // todo el período dos veces como hacía el wipe-all + rematch por bloques de ID).
+    const queryUpdateMatches = `
+      UPDATE "db-sellout".consolidated_data_stores cds
+      SET code_product = t2.code_product_sic
+      FROM "db-sellout".sellout_product_master t2
+      WHERE cds.key_producto = t2.search_product_store
         AND cds.calculate_date = $1
         AND t2.periodo = $1
-        AND cds.id BETWEEN $2 AND $3;
-      `;
+        AND cds.code_product IS DISTINCT FROM t2.code_product_sic;
+    `;
+    const resultMatches = await this.repository.query(queryUpdateMatches, [calculateDate]);
 
-      const resultMatches = await this.repository.query(queryUpdateMatchesChunk, [
-        calculateDate,
-        currentMin,
-        currentMax,
-      ]);
+    // Limpia solo las filas que quedaron apuntando a un match que ya no existe (datos maestros cambiaron).
+    const queryClearStale = `
+      UPDATE "db-sellout".consolidated_data_stores cds
+      SET code_product = NULL
+      WHERE cds.calculate_date = $1
+        AND cds.code_product IS NOT NULL
+        AND NOT EXISTS (
+          SELECT 1 FROM "db-sellout".sellout_product_master t2
+          WHERE t2.search_product_store = cds.key_producto AND t2.periodo = $1
+        );
+    `;
+    const resultCleared = await this.repository.query(queryClearStale, [calculateDate]);
 
-      totalUpdated += resultMatches[1] || 0;
-    }
-
-    return totalUpdated;
+    return (resultMatches[1] || 0) + (resultCleared[1] || 0);
   }
 }
