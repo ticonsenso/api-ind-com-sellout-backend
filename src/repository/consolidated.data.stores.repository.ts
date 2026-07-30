@@ -1123,23 +1123,59 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
   async findByCalculateDateDataAgrupacionBasic(calculateDate: Date): Promise<ReadStream> {
     const date = calculateDate.toISOString().split("T")[0];
+
+    // cod_prod: resuelto vía product_sic (MAX prod_id por codigo_jde); vacío si el código raw es 'OTROS'
+    const codProdExpr = `CASE
+        WHEN cds.code_product = 'OTROS' THEN NULL
+        ELSE NULLIF(UPPER(COALESCE(CAST(ps.prod_id AS VARCHAR), cds.code_product)), '')
+      END`;
+    // cod_almacen: vacío si el código raw es 'NO SE VISITA'
+    const codAlmacenExpr = `CASE
+        WHEN cds.code_store = 'NO SE VISITA' THEN NULL
+        ELSE NULLIF(UPPER(cds.code_store), '')
+      END`;
+
     const qb = this.repository
       .createQueryBuilder("cds")
-      .select("cds.calculateDate", "periodo")
+      .leftJoin(
+        (subQuery) => {
+          return subQuery
+            .select("codigo_jde")
+            .addSelect("MAX(prod_id)", "prod_id")
+            .from("db-sellout.product_sic", "ps_inner")
+            .groupBy("codigo_jde");
+        },
+        "ps",
+        "ps.codigo_jde = cds.code_product AND cds.code_product <> 'OTROS'"
+      )
+      .select("MIN(cds.calculateDate)", "periodo")
       .addSelect("cds.saleDate", "fecha_venta")
-      // cod_prod ahora usa la subconsulta con la limpieza de 'OTROS'
-      .addSelect(`NULLIF(UPPER(COALESCE(
-        (SELECT CAST(MAX(ps.prod_id) AS VARCHAR) FROM "db-sellout".product_sic ps WHERE ps.codigo_jde = cds.code_product),
-        cds.code_product
-      )), '')`, "cod_prod")
-      .addSelect("NULLIF(UPPER(cds.codeStore), '')", "cod_almacen")
-      .addSelect("cds.unitsSoldDistributor", "cantidad_venta")
+      .addSelect(codProdExpr, "cod_prod")
+      .addSelect(codAlmacenExpr, "cod_almacen")
+      .addSelect("SUM(cds.unitsSoldDistributor)", "cantidad_venta")
       .addSelect("4", "mae_empresa")
-      .addSelect("cds.distributor", "distribuidor")
-      .addSelect("cds.codeStoreDistributor", "codalmacendistribuidor")
-      .addSelect("cds.codeProductDistributor", "codproddistribuidor")
-      .addSelect("cds.descriptionDistributor", "descripcion_distribuidor")
+      // Columnas a nivel distribuidor: si todos los registros agrupados coinciden se muestra,
+      // si hay mezcla de distribuidores/códigos distintos queda vacío (evita mostrar un dato parcial/engañoso).
+      .addSelect(
+        `CASE WHEN COUNT(DISTINCT cds.distributor) = 1 THEN MIN(cds.distributor) ELSE NULL END`,
+        "distribuidor"
+      )
+      .addSelect(
+        `CASE WHEN COUNT(DISTINCT cds.codeStoreDistributor) = 1 THEN MIN(cds.codeStoreDistributor) ELSE NULL END`,
+        "codalmacendistribuidor"
+      )
+      .addSelect(
+        `CASE WHEN COUNT(DISTINCT cds.codeProductDistributor) = 1 THEN MIN(cds.codeProductDistributor) ELSE NULL END`,
+        "codproddistribuidor"
+      )
+      .addSelect(
+        `CASE WHEN COUNT(DISTINCT cds.descriptionDistributor) = 1 THEN MIN(cds.descriptionDistributor) ELSE NULL END`,
+        "descripcion_distribuidor"
+      )
       .where("cds.calculateDate = :date", { date })
+      .groupBy("cds.saleDate")
+      .addGroupBy(codProdExpr)
+      .addGroupBy(codAlmacenExpr)
       .orderBy("cds.saleDate", "ASC");
 
     return qb.stream();

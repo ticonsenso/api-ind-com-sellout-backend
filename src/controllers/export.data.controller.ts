@@ -485,8 +485,9 @@ export class ExportDataController {
 
             fieldsConsolidatedDataStoresBasicInfo.forEach(field => {
                 if (field.type === 'number' && processedRow[field.key] !== null && processedRow[field.key] !== undefined) {
-                    // Convertir a string y reemplazar punto por coma
-                    processedRow[field.key] = Number(processedRow[field.key]).toString().replace('.', ',');
+                    // Mantener como número: convertirlo a texto haría que Excel lo trate como
+                    // texto y SUM()/tablas dinámicas lo ignoren.
+                    processedRow[field.key] = Number(processedRow[field.key]);
                 }
             });
 
