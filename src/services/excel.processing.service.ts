@@ -1,5 +1,5 @@
 import XLSX from "xlsx";
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import { SelloutMastersService } from "./sellout.masters.service";
 import { CreateSelloutStoreMasterDto } from "../dtos/sellout.store.master.dto";
 import { CreateSelloutProductMasterDto } from "../dtos/sellout.product.master.dto";
@@ -183,13 +183,9 @@ export class ExcelImportService {
         const registros = await this.consolidatedDataStoresRepository
           .findBySearchStoreWhichCalculeDate(item.searchStore!, fecha);
         if (registros.length === 0) continue;
-        await Promise.all(
-          registros.map(reg =>
-            this.consolidatedDataStoresRepository.update(reg.id, {
-              ...reg,
-              codeStore: item.codeStoreSic!
-            })
-          )
+        await this.consolidatedDataStoresRepository.repository.update(
+          { id: In(registros.map(reg => reg.id)) },
+          { codeStore: item.codeStoreSic! }
         );
       }
     }
@@ -199,13 +195,9 @@ export class ExcelImportService {
         const registros = await this.consolidatedDataStoresRepository
           .findBySearchProductWhichCalculeDate(item.searchProductStore!, fecha);
         if (registros.length === 0) continue;
-        await Promise.all(
-          registros.map(reg =>
-            this.consolidatedDataStoresRepository.update(reg.id, {
-              ...reg,
-              codeProduct: item.codeProductSic!
-            })
-          )
+        await this.consolidatedDataStoresRepository.repository.update(
+          { id: In(registros.map(reg => reg.id)) },
+          { codeProduct: item.codeProductSic! }
         );
       }
     }

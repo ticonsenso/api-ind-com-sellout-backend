@@ -2,6 +2,7 @@ import {Between, DataSource as TypeORMDataSource} from "typeorm";
 import {CalculationProductExtrategic} from "../models/calculation.product.extrategic.model";
 import {BaseRepository} from "./base.respository";
 import {resetSequences} from "../config/data-source";
+import {getMonthRange} from "../utils/utils";
 
 export class CalculationProductExtrategicRepository extends BaseRepository<CalculationProductExtrategic> {
   constructor(dataSource: TypeORMDataSource) {
@@ -9,14 +10,14 @@ export class CalculationProductExtrategicRepository extends BaseRepository<Calcu
   }
 
   async deleteByYearMonth(year: number, month: number) {
+    const { start, end } = getMonthRange(year, month);
 
     const subQuery = this.dataSource
       .createQueryBuilder()
       .select('c.employee_id')
       .from('calculation_product_extrategic', 'c')
       .where('c.calculate_date IS NOT NULL')
-      .andWhere('EXTRACT(YEAR  FROM c.calculate_date) = :year', { year })
-      .andWhere('EXTRACT(MONTH FROM c.calculate_date) = :month', { month })
+      .andWhere('c.calculate_date >= :start AND c.calculate_date < :end', { start, end })
       .getQuery();
 
     await this.dataSource
@@ -24,7 +25,7 @@ export class CalculationProductExtrategicRepository extends BaseRepository<Calcu
       .delete()
       .from('employees')
       .where(`id IN (${subQuery})`)
-      .setParameters({ year, month })
+      .setParameters({ start, end })
       .execute();
 
     await this.repository
@@ -33,9 +34,8 @@ export class CalculationProductExtrategicRepository extends BaseRepository<Calcu
       .from('extracted_data')
       .where(
         `calculate_date IS NOT NULL
-         AND EXTRACT(YEAR  FROM calculate_date) = :year
-         AND EXTRACT(MONTH FROM calculate_date) = :month`,
-        { year, month },
+         AND calculate_date >= :start AND calculate_date < :end`,
+        { start, end },
       )
       .execute();
 
@@ -132,14 +132,15 @@ export class CalculationProductExtrategicRepository extends BaseRepository<Calcu
     companyId?: number,
     regional?: string
   ) {
+    const { start, end } = getMonthRange(year, month);
+
     const query = this.repository
       .createQueryBuilder("calculation")
       .innerJoin("employees", "e", "e.id = calculation.employee_id")
       .select("calculation.applies_bonus", "applies_bonus")
       .addSelect("COUNT(DISTINCT calculation.employee_id)", "count") // empleados únicos
       .addSelect("SUM(calculation.value_product_extrategic)", "total_value")
-      .where("EXTRACT(MONTH FROM calculation.calculate_date) = :month", { month })
-      .andWhere("EXTRACT(YEAR FROM calculation.calculate_date) = :year", { year });
+      .where("calculation.calculate_date >= :start AND calculation.calculate_date < :end", { start, end });
 
     if (companyId) {
       query.andWhere("calculation.company_id = :companyId", { companyId });

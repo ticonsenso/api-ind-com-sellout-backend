@@ -93,6 +93,21 @@ function chunkArray<T>(arr: T[], size: number): T[][] {
   return chunks;
 }
 
+/**
+ * Rango [inicio de mes, inicio de mes siguiente) equivalente a
+ * "EXTRACT(YEAR)=year AND EXTRACT(MONTH)=month" pero sargable (permite usar
+ * un índice normal sobre la columna de fecha) y correcto sin importar qué
+ * día del mes tenga almacenado el registro.
+ */
+function getMonthRange(year: number | string, month: number | string): { start: string; end: string } {
+  const y = Number(year);
+  const m = Number(month);
+  const start = `${y}-${String(m).padStart(2, "0")}-01`;
+  const nextMonth = new Date(y, m, 1); // Date usa meses 0-indexados: esto ya es el 1° del mes siguiente
+  const end = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, "0")}-01`;
+  return { start, end };
+}
+
 function getLastDayOfMonth(dateString: string): Date {
   const date = new Date(dateString + 'T00:00:00Z');
   const year = date.getUTCFullYear();
@@ -153,6 +168,7 @@ export {
   verifyPassword,
   formatDateToYYYYMMDD,
   chunkArray,
+  getMonthRange,
   parseEuropeanNumber,
   getLastDayOfMonth,
   parseDateFromISO,

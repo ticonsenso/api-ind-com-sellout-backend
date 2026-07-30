@@ -525,8 +525,6 @@ export class SelloutMastersService {
                 const storeMaster = await this.selloutStoreMasterRepository.findBySearchStoreOnly(searchKey);
 
                 if (storeMaster?.codeStoreSic) {
-                    const storeSic = await this.storesRepository.findByStoreCodeOnly(storeMaster.codeStoreSic.toString());
-
                     const updateData: QueryDeepPartialEntity<ConsolidatedDataStores> = {
                         codeStore: storeMaster.codeStoreSic,
                         updatedAt: new Date(),
@@ -569,9 +567,6 @@ export class SelloutMastersService {
                 const productStore = await this.productStoreRepository.findBySearchProductStoreOnly(searchKey);
 
                 if (productStore?.codeProductSic) {
-
-                    const productSic = await this.productSicRepository.findByJdeCodeOnly(productStore.codeProductSic.toString());
-
                     const updateData: QueryDeepPartialEntity<ConsolidatedDataStores> = {
                         codeProduct: productStore.codeProductSic,
                         updatedAt: new Date(),

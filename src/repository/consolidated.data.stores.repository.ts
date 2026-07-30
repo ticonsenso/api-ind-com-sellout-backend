@@ -8,7 +8,7 @@ import {
   SelectQueryBuilder,
   UpdateResult,
 } from "typeorm";
-import { primerDiaDelMesString } from "../utils/utils";
+import { primerDiaDelMesString, getMonthRange } from "../utils/utils";
 import { ReadStream } from "fs";
 import { MAX } from "class-validator";
 
@@ -84,7 +84,11 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   }
 
   async findMonthlyStoresFields(monthDate: string) {
-    console.log("monthDate", monthDate);
+    const [monthDateYear, monthDateMonth] = monthDate.split("-");
+    const { start: monthStart, end: monthEnd } = getMonthRange(
+      monthDateYear,
+      monthDateMonth
+    );
     return this.repository
       .createQueryBuilder("data")
       .select([
@@ -101,10 +105,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       )
       .andWhere("data.status = true")
       .andWhere(
-        `TO_CHAR(data.calculate_date, 'YYYY-MM') = TO_CHAR(:monthDate::date, 'YYYY-MM')`,
-        {
-          monthDate,
-        }
+        "data.calculate_date >= :monthStart AND data.calculate_date < :monthEnd",
+        { monthStart, monthEnd }
       )
       .groupBy("data.distributor")
       .addGroupBy("data.code_store_distributor")
@@ -160,6 +162,11 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   }
 
   async findMonthlyProductsFields(monthDate: string) {
+    const [monthDateYear, monthDateMonth] = monthDate.split("-");
+    const { start: monthStart, end: monthEnd } = getMonthRange(
+      monthDateYear,
+      monthDateMonth
+    );
     return this.repository
       .createQueryBuilder("data")
       .select([
@@ -176,10 +183,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       )
       .andWhere("data.status = true")
       .andWhere(
-        `TO_CHAR(data.calculate_date, 'YYYY-MM') = TO_CHAR(:monthDate::date, 'YYYY-MM')`,
-        {
-          monthDate,
-        }
+        "data.calculate_date >= :monthStart AND data.calculate_date < :monthEnd",
+        { monthStart, monthEnd }
       )
       .groupBy("data.distributor")
       .addGroupBy("data.code_product_distributor")
@@ -236,9 +241,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         })
       );
 
-    console.log("Update SQL:", query.getSql());
-    console.log("Parameters:", query.getParameters());
-
     return await query.execute();
   }
 
@@ -250,27 +252,37 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     const year = date.split("-")[0];
     const month = date.split("-")[1];
 
-    const find = await this.repository
+    const { start, end } = getMonthRange(year, month);
+
+    const idsToDelete = await this.repository
       .createQueryBuilder("s")
       .leftJoin("s.matriculationTemplate", "mt")
       .where("mt.id = :matriculationId", { matriculationId })
-      .andWhere("EXTRACT(YEAR FROM s.calculateDate) = :year", { year })
-      .andWhere("EXTRACT(MONTH FROM s.calculateDate) = :month", { month })
+      .andWhere("s.calculateDate >= :start AND s.calculateDate < :end", { start, end })
+      .select("s.id")
       .getMany();
 
-    await this.repository.remove(find);
+    if (idsToDelete.length === 0) return;
+
+    await this.repository
+      .createQueryBuilder()
+      .delete()
+      .from(ConsolidatedDataStores)
+      .whereInIds(idsToDelete.map((row) => row.id))
+      .execute();
   }
 
   async findByYearAndMonth(
     year: number,
     month: number
   ): Promise<ConsolidatedDataStores[]> {
+    const { start, end } = getMonthRange(year, month);
     return this.repository
       .createQueryBuilder("s")
       .where("s.status = true")
       .andWhere(
-        "EXTRACT(YEAR FROM s.calculateDate) = :year AND EXTRACT(MONTH FROM s.calculateDate) = :month",
-        { year, month }
+        "s.calculateDate >= :start AND s.calculateDate < :end",
+        { start, end }
       )
       .andWhere(
         `
@@ -391,7 +403,6 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   ): Promise<{
     items: ConsolidatedDataStores[];
     total: number;
-    totalAll: number;
   }> {
     const baseQb = this.repository
       .createQueryBuilder("s")
@@ -447,12 +458,14 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       }
 
       if (calculateDate) {
-        const date = calculateDate?.toISOString().split("T")[0];
-        const year = date.split("-")[0];
-        const month = date.split("-")[1];
+        const date = calculateDate.toISOString().split("T")[0];
+        const [year, month] = date.split("-");
+        const { start, end } = getMonthRange(year, month);
 
-        qb.andWhere("EXTRACT(YEAR FROM s.calculateDate) = :year", { year });
-        qb.andWhere("EXTRACT(MONTH FROM s.calculateDate) = :month", { month });
+        qb.andWhere("s.calculateDate >= :monthStart AND s.calculateDate < :monthEnd", {
+          monthStart: start,
+          monthEnd: end,
+        });
       }
     };
 
@@ -463,9 +476,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
     const [items, total] = await filteredQb.getManyAndCount();
 
-    const totalAll = await this.repository.count();
-
-    return { items, total, totalAll };
+    return { items, total };
   }
 
   async findByFiltersModStores(
@@ -974,10 +985,10 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
 
     const date = calculateDate.toISOString().split("T")[0];
     const [year, month] = date.split("-");
+    const { start, end } = getMonthRange(year, month);
 
     return await qb
-      .where("EXTRACT(YEAR FROM cds.calculate_date) = :year", { year })
-      .andWhere("EXTRACT(MONTH FROM cds.calculate_date) = :month", { month })
+      .where("cds.calculate_date >= :start AND cds.calculate_date < :end", { start, end })
       .orderBy("cds.id", "ASC")
       .getMany();
   }
@@ -987,6 +998,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
   ): Promise<any[]> {
     const date = calculateDate.toISOString().split("T")[0];
     const [year, month] = date.split("-");
+    const { start, end } = getMonthRange(year, month);
 
     return await this.repository
       .createQueryBuilder("s")
@@ -995,8 +1007,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
       .addSelect("s.code_product_distributor", "codeProductDistributor")
       .addSelect("s.description_distributor", "descriptionDistributor")
       .addSelect("SUM(s.units_sold_distributor)", "unitsSoldDistributor")
-      .where("EXTRACT(YEAR FROM s.calculate_date) = :year", { year })
-      .andWhere("EXTRACT(MONTH FROM s.calculate_date) = :month", { month })
+      .where("s.calculate_date >= :start AND s.calculate_date < :end", { start, end })
       .groupBy("s.distributor")
       .addGroupBy("s.code_store_distributor")
       .addGroupBy("s.code_product_distributor")

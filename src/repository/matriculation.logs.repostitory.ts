@@ -1,7 +1,7 @@
 import { Between, DataSource } from "typeorm";
 import { MatriculationLog } from "../models/matriculation.logs.model";
 import { BaseRepository } from "./base.respository";
-import { primerDiaDelMesString } from "../utils/utils";
+import { primerDiaDelMesString, getMonthRange } from "../utils/utils";
 
 export class MatriculationLogsRepository extends BaseRepository<MatriculationLog> {
   constructor(dataSource: DataSource) {
@@ -29,18 +29,25 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
     calculateDate: Date
   ): Promise<void> {
     const date = new Date(calculateDate).toISOString().split("T")[0];
-    const year = date.split("-")[0];
-    const month = date.split("-")[1];
+    const [year, month] = date.split("-");
+    const { start, end } = getMonthRange(year, month);
 
-    const find = await this.repository
+    const idsToDelete = await this.repository
       .createQueryBuilder("l")
       .leftJoin("l.matriculation", "m")
       .where("m.id = :matriculationId", { matriculationId })
-      .andWhere("EXTRACT(YEAR FROM l.calculateDate) = :year", { year })
-      .andWhere("EXTRACT(MONTH FROM l.calculateDate) = :month", { month })
+      .andWhere("l.calculateDate >= :start AND l.calculateDate < :end", { start, end })
+      .select("l.id")
       .getMany();
 
-    await this.repository.remove(find);
+    if (idsToDelete.length === 0) return;
+
+    await this.repository
+      .createQueryBuilder()
+      .delete()
+      .from(MatriculationLog)
+      .whereInIds(idsToDelete.map((row) => row.id))
+      .execute();
   }
 
   async findByMatriculationNameAndCalculateDate(
@@ -61,8 +68,8 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
     dateString: string
   ): Promise<any[]> {
     const date = new Date(dateString);
-    const year = date.toISOString().split("T")[0].split("-")[0];
-    const month = date.toISOString().split("T")[0].split("-")[1];
+    const [year, month] = date.toISOString().split("T")[0].split("-");
+    const { start, end } = getMonthRange(year, month);
     const qb = this.dataSource
       .createQueryBuilder()
       .select([
@@ -76,10 +83,9 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
         "SUM(l.product_count) AS productCount",
       ])
       .addSelect(
-        `CASE 
+        `CASE
                 WHEN COUNT(l.id) FILTER (
-                    WHERE EXTRACT(YEAR FROM l.calculate_date) = :year
-                    AND EXTRACT(MONTH FROM l.calculate_date) = :month
+                    WHERE l.calculate_date >= :start AND l.calculate_date < :end
                 ) > 0 THEN true
                 ELSE false
             END`,
@@ -91,16 +97,15 @@ export class MatriculationLogsRepository extends BaseRepository<MatriculationLog
         "t.id, t.distributor, t.store_name, t.status, t.created_at, t.updated_at"
       )
       .having(
-        `t.status = true 
+        `t.status = true
               OR (
                   t.status = false
                   AND COUNT(l.id) > 0
                   AND COUNT(l.id) FILTER (
-                      WHERE EXTRACT(YEAR FROM l.calculate_date) = :year
-                      AND EXTRACT(MONTH FROM l.calculate_date) = :month
+                      WHERE l.calculate_date >= :start AND l.calculate_date < :end
                   ) = 0
               )`,
-        { year, month }
+        { start, end }
       );
 
     return await qb.getRawMany();

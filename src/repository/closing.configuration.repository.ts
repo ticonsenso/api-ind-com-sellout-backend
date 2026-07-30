@@ -1,6 +1,7 @@
 import {Between, Brackets, DataSource as TypeORMDataSource} from "typeorm";
 import {BaseRepository} from "./base.respository";
 import {ClosingConfiguration} from "../models/closing.configuration.model";
+import {getMonthRange} from "../utils/utils";
 
 export class ClosingConfigurationRepository extends BaseRepository<ClosingConfiguration> {
     constructor(dataSource: TypeORMDataSource) {
@@ -37,11 +38,10 @@ export class ClosingConfigurationRepository extends BaseRepository<ClosingConfig
         if (calculateMonth) {
 
             const date = calculateMonth?.toString().split('T')[0];
-            const year = date.split('-')[0];
-            const month = date.split('-')[1];
+            const [year, month] = date.split('-');
+            const { start, end } = getMonthRange(year, month);
 
-            qb.andWhere('EXTRACT(YEAR FROM s.month) = :year', { year });
-            qb.andWhere('EXTRACT(MONTH FROM s.month) = :month', { month });
+            qb.andWhere('s.month >= :start AND s.month < :end', { start, end });
         }
 
         if (page && limit) {

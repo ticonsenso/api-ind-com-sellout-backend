@@ -216,14 +216,14 @@ export class MatriculationService {
 
   async deleteMatriculationTemplate(deleteMatriculationTemplateDto: DeleteMatriculationTemplateDto): Promise<string[] | string> {
     let sms: string[] = [];
-    deleteMatriculationTemplateDto.ids.forEach(async (id) => {
+    for (const id of deleteMatriculationTemplateDto.ids) {
       const existingTemplate =
         await this.matriculationTemplateRepository.findById(id);
       if (!existingTemplate) {
         sms.push(`Matriculación de plantilla no encontrada`);
       }
       await this.matriculationTemplateRepository.delete(id);
-    });
+    }
     if (sms.length > 0) {
       return sms;
     }

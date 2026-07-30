@@ -6,6 +6,7 @@ import {AdvisorCommissionRepository} from "./advisor.commission.repository";
 import {ConsolidatedCommissionCalculationRepository} from "./consolidated.commission.calculation.repository";
 import {ResponseDataConsensoDto, SearchDataConsensoDto,} from "../dtos/search.data.consenso";
 import {plainToInstance} from "class-transformer";
+import {getMonthRange} from "../utils/utils";
 
 export class StoreManagerCalculationCommissionRepository extends BaseRepository<StoreManagerCalculationCommission> {
   private advisorComissionRepository: AdvisorCommissionRepository;
@@ -20,8 +21,35 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
   }
 
   async deleteByCalculateDate(calculateDate: Date): Promise<void> {
-    console.log("deleteByCalculateDate", calculateDate);
     await this.repository.delete({ calculateDate });
+  }
+
+  /**
+   * Arma el fragmento "AND columna = $N" para los filtros opcionales de
+   * FilterReportCommissionDto, devolviendo también el arreglo de valores en
+   * el mismo orden. Usa placeholders posicionales ($1, $2, ...) porque estos
+   * fragmentos se insertan en SQL crudo ejecutado con dataSource.query(sql, params) —
+   * nunca se concatena el valor directamente en el texto (evita inyección SQL).
+   */
+  private buildEmployeeFilterSql(filters: FilterReportCommissionDto): { filterSql: string; params: any[] } {
+    const conditions: string[] = [];
+    const params: any[] = [];
+
+    const addCondition = (column: string, value: any) => {
+      params.push(value);
+      conditions.push(`AND ${column} = $${params.length}`);
+    };
+
+    if (filters.year) addCondition('e."year"', filters.year);
+    if (filters.month) addCondition('e."month"', filters.month);
+    if (filters.companyId) addCondition("e.company_id", filters.companyId);
+    if (filters.companyPositionId) addCondition("e.company_position_id", filters.companyPositionId);
+    if (filters.section) addCondition('e."section"', filters.section);
+    if (filters.descDivision) addCondition("e.desc_division", filters.descDivision);
+    if (filters.descDepar) addCondition("e.desc_depar", filters.descDepar);
+    if (filters.subDepar) addCondition("e.sub_depar", filters.subDepar);
+
+    return { filterSql: conditions.join("\n        "), params };
   }
 
   async findByFilters(
@@ -53,9 +81,11 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
     }
 
     if (calculateDate) {
-      const formatted = calculateDate.toISOString().slice(0, 7);
-      qb.andWhere(`TO_CHAR(sm.calculateDate, 'YYYY-MM') = :formatted`, {
-        formatted,
+      const [filterYear, filterMonth] = calculateDate.toISOString().slice(0, 7).split("-");
+      const { start: monthStart, end: monthEnd } = getMonthRange(filterYear, filterMonth);
+      qb.andWhere("sm.calculateDate >= :monthStart AND sm.calculateDate < :monthEnd", {
+        monthStart,
+        monthEnd,
       });
     }
 
@@ -71,6 +101,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
       dto: SearchDataConsensoDto
     ): Promise<ResponseDataConsensoDto[]> {
       const { empresa, anio, mes } = dto;
+      const { start: monthStart, end: monthEnd } = getMonthRange(anio, mes);
       const qb = this.repository
         .createQueryBuilder("smcc")
         .select([
@@ -87,8 +118,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         .innerJoin("smcc.employee", "e")
         .innerJoin("e.company", "c")
         .innerJoin("e.companyPosition", "cp")
-        .where("EXTRACT(YEAR FROM smcc.calculateDate) = :anio", { anio })
-        .andWhere("EXTRACT(MONTH FROM smcc.calculateDate) = :mes", { mes });
+        .where("smcc.calculateDate >= :monthStart AND smcc.calculateDate < :monthEnd", { monthStart, monthEnd });
 
       if (empresa) {
         qb.andWhere("c.name = :empresa", { empresa });
@@ -108,34 +138,10 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
       month: number;
     }[]
   > {
-    let filterSql = "";
-    if (filters.year) {
-      filterSql += ' AND e."year" = ' + filters.year;
-    }
-    if (filters.month) {
-      filterSql += ' AND e."month" = ' + filters.month;
-    }
-    if (filters.companyId) {
-      filterSql += " AND e.company_id = " + filters.companyId;
-    }
-    if (filters.companyPositionId) {
-      filterSql += " AND e.company_position_id = " + filters.companyPositionId;
-    }
-    if (filters.section) {
-      filterSql += ' AND e."section" = ' + `'${filters.section}'`;
-    }
-    if (filters.descDivision) {
-      filterSql += " AND e.desc_division = " + `'${filters.descDivision}'`;
-    }
-    if (filters.descDepar) {
-      filterSql += " AND e.desc_depar = " + `'${filters.descDepar}'`;
-    }
-    if (filters.subDepar) {
-      filterSql += " AND e.sub_depar = " + `'${filters.subDepar}'`;
-    }
+    const { filterSql, params } = this.buildEmployeeFilterSql(filters);
 
     const sql = `
-      SELECT 
+      SELECT
           'asesor_comercial' AS source,
           SUM(ac.commission_total) AS gasto_comisiones,
           e."month"
@@ -147,7 +153,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
 
       UNION ALL
 
-      SELECT 
+      SELECT
           'consolidado_indurama' AS source,
           SUM(ac.total_nomina) AS gasto_comisiones,
           e."month"
@@ -159,7 +165,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
 
       UNION ALL
 
-      SELECT 
+      SELECT
           'jefe_tienda' AS source,
           SUM(ac.total_payroll_amount) AS gasto_comisiones,
           e."month"
@@ -169,11 +175,8 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
         ${filterSql}
       GROUP BY e."month"
     `;
-    console.log("SQL getTotalMonthlyExpensesRepository:", sql);
 
-    // TypeORM expects query params as array if using positional parameters, or as object for named parameters.
-    // Here we use named parameters, so pass as object.
-    const result = await this.dataSource.query(sql);
+    const result = await this.dataSource.query(sql, params);
     return result.map((row: any) => ({
       source: row.source,
       gasto_comisiones: row.gasto_comisiones !== null ? Number(row.gasto_comisiones) : 0,
@@ -190,34 +193,10 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
       no_comisionan: number;
     }[]
   > {
-     let filterSql = "";
-    if (filters.year) {
-      filterSql += ' AND e."year" = ' + filters.year;
-    }
-    if (filters.month) {
-      filterSql += ' AND e."month" = ' + filters.month;
-    }
-    if (filters.companyId) {
-      filterSql += " AND e.company_id = " + filters.companyId;
-    }
-    if (filters.companyPositionId) {
-      filterSql += " AND e.company_position_id = " + filters.companyPositionId;
-    }
-    if (filters.section) {
-      filterSql += ' AND e."section" = ' + `'${filters.section}'`;
-    }
-    if (filters.descDivision) {
-      filterSql += " AND e.desc_division = " + `'${filters.descDivision}'`;
-    }
-    if (filters.descDepar) {
-      filterSql += " AND e.desc_depar = " + `'${filters.descDepar}'`;
-    }
-    if (filters.subDepar) {
-      filterSql += " AND e.sub_depar = " + `'${filters.subDepar}'`;
-    }
+    const { filterSql, params } = this.buildEmployeeFilterSql(filters);
 
     const sql = `
-      SELECT 
+      SELECT
         'asesor_comercial' AS source,
         e."month" AS mes,
         SUM(CASE WHEN ac.commission_total > 0 THEN 1 ELSE 0 END) AS comisionan,
@@ -230,7 +209,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
 
       UNION ALL
 
-      SELECT 
+      SELECT
         'consolidado_indurama' AS source,
         e."month" AS mes,
         SUM(CASE WHEN ac.total_nomina > 0 THEN 1 ELSE 0 END) AS comisionan,
@@ -243,7 +222,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
 
       UNION ALL
 
-      SELECT 
+      SELECT
         'jefe_tienda' AS source,
         e."month" AS mes,
         SUM(CASE WHEN ac.total_payroll_amount > 0 THEN 1 ELSE 0 END) AS comisionan,
@@ -255,7 +234,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
       GROUP BY e."month"
     `;
 
-    const result = await this.dataSource.query(sql);
+    const result = await this.dataSource.query(sql, params);
     return result.map((row: any) => ({
       source: row.source,
       mes: row.mes !== null ? Number(row.mes) : null,
@@ -280,35 +259,11 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
       porcentaje_cumplimiento_utilidad: number | null;
     }[];
   }> {
-     let filterSql = "";
-    if (filters.year) {
-      filterSql += ' AND e."year" = ' + filters.year;
-    }
-    if (filters.month) {
-      filterSql += ' AND e."month" = ' + filters.month;
-    }
-    if (filters.companyId) {
-      filterSql += " AND e.company_id = " + filters.companyId;
-    }
-    if (filters.companyPositionId) {
-      filterSql += " AND e.company_position_id = " + filters.companyPositionId;
-    }
-    if (filters.section) {
-      filterSql += ' AND e."section" = ' + `'${filters.section}'`;
-    }
-    if (filters.descDivision) {
-      filterSql += " AND e.desc_division = " + `'${filters.descDivision}'`;
-    }
-    if (filters.descDepar) {
-      filterSql += " AND e.desc_depar = " + `'${filters.descDepar}'`;
-    }
-    if (filters.subDepar) {
-      filterSql += " AND e.sub_depar = " + `'${filters.subDepar}'`;
-    }
+    const { filterSql, params } = this.buildEmployeeFilterSql(filters);
 
     // Indurama (Extrategic)
     const induramaSql = `
-      SELECT 
+      SELECT
         e.name AS name,
         cp.name as cargo,
         AVG(ac.strategic_compliance_pct) as porcentaje_cumplimiento
@@ -322,7 +277,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
 
     // Asesor Comercial
     const asesorComercialSql = `
-      SELECT 
+      SELECT
         e.name as nombre,
         cp.name as cargo,
         AVG(ac.compliance_sale) as porcentaje_cumplimiento
@@ -336,7 +291,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
 
     // Jefe Tienda
     const jefeTiendaSql = `
-      SELECT 
+      SELECT
         e.name as nombre,
         cp.name as cargo,
         AVG(ac.range_compliance) as porcentaje_cumplimiento_venta,
@@ -350,9 +305,9 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
     `;
 
     const [indurama, asesorComercial, jefeTienda] = await Promise.all([
-      this.dataSource.query(induramaSql),
-      this.dataSource.query(asesorComercialSql),
-      this.dataSource.query(jefeTiendaSql),
+      this.dataSource.query(induramaSql, params),
+      this.dataSource.query(asesorComercialSql, params),
+      this.dataSource.query(jefeTiendaSql, params),
     ]);
 
     return {
@@ -391,35 +346,11 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
       rango_cumplimiento_utilidad: number | null;
     }[];
   }> {
-     let filterSql = "";
-    if (filters.year) {
-      filterSql += ' AND e."year" = ' + filters.year;
-    }
-    if (filters.month) {
-      filterSql += ' AND e."month" = ' + filters.month;
-    }
-    if (filters.companyId) {
-      filterSql += " AND e.company_id = " + filters.companyId;
-    }
-    if (filters.companyPositionId) {
-      filterSql += " AND e.company_position_id = " + filters.companyPositionId;
-    }
-    if (filters.section) {
-      filterSql += ' AND e."section" = ' + `'${filters.section}'`;
-    }
-    if (filters.descDivision) {
-      filterSql += " AND e.desc_division = " + `'${filters.descDivision}'`;
-    }
-    if (filters.descDepar) {
-      filterSql += " AND e.desc_depar = " + `'${filters.descDepar}'`;
-    }
-    if (filters.subDepar) {
-      filterSql += " AND e.sub_depar = " + `'${filters.subDepar}'`;
-    }
+    const { filterSql, params } = this.buildEmployeeFilterSql(filters);
 
     // Extrategic
     const extrategicSql = `
-      SELECT 
+      SELECT
         e.name AS name,
         cp.name as cargo,
         ac.strategic_compliance_pct as rango_cumplimiento
@@ -431,7 +362,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
     `;
     // Asesor Comercial
     const asesorComercialSql = `
-      SELECT 
+      SELECT
         e.name as nombre,
         cp.name as cargo,
         ac.range_apply_bonus as rango_cumplimiento
@@ -443,7 +374,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
     `;
     // Jefe Tienda
     const jefeTiendaSql = `
-      SELECT 
+      SELECT
         e.name as nombre,
         cp.name as cargo,
         ac.range_compliance_apl  as rango_cumplimiento_venta,
@@ -456,9 +387,9 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
     `;
 
     const [extrategic, asesor_comercial, jefe_tienda] = await Promise.all([
-      this.dataSource.query(extrategicSql),
-      this.dataSource.query(asesorComercialSql),
-      this.dataSource.query(jefeTiendaSql),
+      this.dataSource.query(extrategicSql, params),
+      this.dataSource.query(asesorComercialSql, params),
+      this.dataSource.query(jefeTiendaSql, params),
     ]);
 
     return {
@@ -497,34 +428,10 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
       mes: number;
     }[]
   > {
-     let filterSql = "";
-    if (filters.year) {
-      filterSql += ' AND e."year" = ' + filters.year;
-    }
-    if (filters.month) {
-      filterSql += ' AND e."month" = ' + filters.month;
-    }
-    if (filters.companyId) {
-      filterSql += " AND e.company_id = " + filters.companyId;
-    }
-    if (filters.companyPositionId) {
-      filterSql += " AND e.company_position_id = " + filters.companyPositionId;
-    }
-    if (filters.section) {
-      filterSql += ' AND e."section" = ' + `'${filters.section}'`;
-    }
-    if (filters.descDivision) {
-      filterSql += " AND e.desc_division = " + `'${filters.descDivision}'`;
-    }
-    if (filters.descDepar) {
-      filterSql += " AND e.desc_depar = " + `'${filters.descDepar}'`;
-    }
-    if (filters.subDepar) {
-      filterSql += " AND e.sub_depar = " + `'${filters.subDepar}'`;
-    }
+    const { filterSql, params } = this.buildEmployeeFilterSql(filters);
 
     const sql = `
-      SELECT 
+      SELECT
           'asesor_comercial' AS source,
           MAX(ac.commission_total) AS maximo,
           MIN(CASE WHEN ac.commission_total > 0 THEN ac.commission_total END) AS minimo_sin_cero,
@@ -538,7 +445,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
 
       UNION ALL
 
-      SELECT 
+      SELECT
           'consolidado_indurama' AS source,
           MAX(ac.total_nomina),
           MIN(CASE WHEN ac.total_nomina > 0 THEN ac.total_nomina END),
@@ -552,7 +459,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
 
       UNION ALL
 
-      SELECT 
+      SELECT
           'jefe_tienda' AS source,
           MAX(ac.total_payroll_amount),
           MIN(CASE WHEN ac.total_payroll_amount > 0 THEN ac.total_payroll_amount END),
@@ -565,7 +472,7 @@ export class StoreManagerCalculationCommissionRepository extends BaseRepository<
       GROUP BY e."month"
     `;
 
-    const result = await this.dataSource.query(sql);
+    const result = await this.dataSource.query(sql, params);
     return result.map((row: any) => ({
       source: row.source,
       maximo: row.maximo !== null ? Number(row.maximo) : null,

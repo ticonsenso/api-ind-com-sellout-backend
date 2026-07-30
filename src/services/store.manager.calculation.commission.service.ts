@@ -53,6 +53,12 @@ export class StoreManagerCalculationCommissionService {
         calculateDate
       );
     }
+
+    const rawRules = await this.comissionRules.findByCommissionConfigurationName(
+      "JEFE DE TIENDA"
+    );
+    const commissionRules = transformCommissionRules(rawRules!);
+
     for (const dto of dtos) {
       try {
         const groupedStore =
@@ -130,17 +136,12 @@ export class StoreManagerCalculationCommissionService {
           const contractYearMonth = dateInitialContractStr.slice(0, 7); // "YYYY-MM"
           isTemporary = contractYearMonth === calcDateStr;
         }
-        console.log(
-          "isTemporary",
-          isTemporary,
-          employee.dateInitialContract,
-          calculateDate
-        );
         const { calculationsFinal } = isTemporary
           ? { calculationsFinal: this.zeroCalculations() }
           : await this.calculationComission(
               aggregatedDto,
-              mainStoreConfig?.storeSize.name!
+              mainStoreConfig?.storeSize.name!,
+              commissionRules
             );
 
         const storeManagerCalculationComissionData = plainToClass(
@@ -213,7 +214,8 @@ export class StoreManagerCalculationCommissionService {
 
   async calculationComission(
     dto: CreateStoreManagerCalculationCommissionDto,
-    storeSizeName: string
+    storeSizeName: string,
+    commissionRules: ReturnType<typeof transformCommissionRules>
   ) {
     const sale = parseEuropeanNumber(dto.sale ?? 0);
     let saleCalculate = sale;
@@ -231,14 +233,6 @@ export class StoreManagerCalculationCommissionService {
           ? 120
           : 0;
 
-    console.log("directProfit", directProfit);
-
-    const rawRules =
-      await this.comissionRules.findByCommissionConfigurationName(
-        "JEFE DE TIENDA"
-      );
-    const commissionRules = transformCommissionRules(rawRules!);
-
     let salesCompliancePercent = getCommissionPercent(
       commissionRules,
       storeSizeName,
@@ -252,8 +246,6 @@ export class StoreManagerCalculationCommissionService {
       rangeComplianceProfit,
       "profit"
     );
-
-    console.log("profitCommissionPercent", profitCommissionPercent);
 
     let salesCommission = 0;
     let profitCommission = 0;

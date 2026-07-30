@@ -4,6 +4,7 @@ import {BaseRepository} from "./base.respository";
 import {Brackets, DataSource} from "typeorm";
 import {plainToInstance} from "class-transformer";
 import {ResponseDataConsensoDto, SearchDataConsensoDto} from "../dtos/search.data.consenso";
+import {getMonthRange} from "../utils/utils";
 
 export class AdvisorCommissionRepository extends BaseRepository<AdvisorCommission> {
   constructor(dataSource: DataSource) {
@@ -35,9 +36,11 @@ export class AdvisorCommissionRepository extends BaseRepository<AdvisorCommissio
     }
 
     if (calculateDate) {
-      const formatted = calculateDate.toISOString().slice(0, 7);
-      qb.andWhere(`TO_CHAR(ac.calculateDate, 'YYYY-MM') = :formatted`, {
-        formatted,
+      const [filterYear, filterMonth] = calculateDate.toISOString().slice(0, 7).split("-");
+      const { start: monthStart, end: monthEnd } = getMonthRange(filterYear, filterMonth);
+      qb.andWhere("ac.calculateDate >= :monthStart AND ac.calculateDate < :monthEnd", {
+        monthStart,
+        monthEnd,
       });
     }
 
@@ -105,7 +108,10 @@ export class AdvisorCommissionRepository extends BaseRepository<AdvisorCommissio
         .addSelect("EXTRACT(MONTH FROM ac.calculateDate) AS month")
         .groupBy("EXTRACT(MONTH FROM ac.calculateDate)");
     } else if (year) {
-      qb.andWhere(`EXTRACT(YEAR FROM ac.calculateDate) = :year`, { year })
+      qb.andWhere(`ac.calculateDate >= :yearStart AND ac.calculateDate < :yearEnd`, {
+        yearStart: `${year}-01-01`,
+        yearEnd: `${year + 1}-01-01`,
+      })
         .select("SUM(ac.commissionTotal) AS totalComission")
         .addSelect("EXTRACT(MONTH FROM ac.calculateDate) AS month")
         .groupBy("EXTRACT(MONTH FROM ac.calculateDate)")
@@ -116,7 +122,6 @@ export class AdvisorCommissionRepository extends BaseRepository<AdvisorCommissio
         .groupBy("EXTRACT(MONTH FROM ac.calculateDate)")
         .orderBy("month", "ASC");
     }
-    console.log(qb.getQueryAndParameters());
 
     const result = await qb.getRawMany();
 
@@ -131,6 +136,7 @@ export class AdvisorCommissionRepository extends BaseRepository<AdvisorCommissio
     dto: SearchDataConsensoDto
   ): Promise<ResponseDataConsensoDto[]> {
     const { empresa, anio, mes } = dto;
+    const { start: monthStart, end: monthEnd } = getMonthRange(anio, mes);
     const qb = this.repository
       .createQueryBuilder("ac")
       .select([
@@ -147,8 +153,7 @@ export class AdvisorCommissionRepository extends BaseRepository<AdvisorCommissio
       .innerJoin("ac.employee", "e")
       .innerJoin("e.company", "c")
       .innerJoin("e.companyPosition", "cp")
-      .where("EXTRACT(YEAR FROM ac.calculateDate) = :anio", { anio })
-      .andWhere("EXTRACT(MONTH FROM ac.calculateDate) = :mes", { mes });
+      .where("ac.calculateDate >= :monthStart AND ac.calculateDate < :monthEnd", { monthStart, monthEnd });
 
     if (empresa) {
       qb.andWhere("c.name = :empresa", { empresa });

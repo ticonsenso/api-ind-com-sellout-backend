@@ -49,7 +49,6 @@ export class ProductComplianceRepository extends BaseRepository<ProductComplianc
   ): Promise<{ data: ProductCompliance[]; total: number }> {
     const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
     const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    console.log(startDate," end ", endDate);
     // Crear query builder
     const qb = this.repository
       .createQueryBuilder("pc")
@@ -138,7 +137,10 @@ export class ProductComplianceRepository extends BaseRepository<ProductComplianc
         "compliance_range"
       )
       .innerJoin("employees", "e", "e.id = pc.employee_id")
-      .where("EXTRACT(YEAR FROM pc.calculate_date) = :year", { year });
+      .where("pc.calculate_date >= :yearStart AND pc.calculate_date < :yearEnd", {
+        yearStart: `${year}-01-01`,
+        yearEnd: `${year + 1}-01-01`,
+      });
 
     if (regional) {
       query.andWhere("e.regional ILIKE :regional", { regional: `%${regional}%` });

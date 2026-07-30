@@ -1,6 +1,7 @@
 import { Brackets, DataSource, In } from 'typeorm';
 import { MatriculationTemplate } from '../models/matriculation.templates.model';
 import { BaseRepository } from './base.respository';
+import { getMonthRange } from '../utils/utils';
 
 export class MatriculationTemplatesRepository extends BaseRepository<MatriculationTemplate> {
     constructor(dataSource: DataSource) {
@@ -33,8 +34,11 @@ export class MatriculationTemplatesRepository extends BaseRepository<Matriculati
             .createQueryBuilder('s')
             .orderBy('s.createdAt', 'DESC');
 
-        qb.andWhere(`TO_CHAR(s.calculateMonth, 'YYYY-MM') = :month`, {
-            month: calculateMonth.slice(0, 7),
+        const [monthYear, monthMonth] = calculateMonth.slice(0, 7).split('-');
+        const { start: monthStart, end: monthEnd } = getMonthRange(monthYear, monthMonth);
+        qb.andWhere('s.calculateMonth >= :monthStart AND s.calculateMonth < :monthEnd', {
+            monthStart,
+            monthEnd,
         });
 
         if (search?.trim()) {
@@ -67,11 +71,10 @@ export class MatriculationTemplatesRepository extends BaseRepository<Matriculati
         if (calculateMonth) {
 
             const date = calculateMonth?.toString().split('T')[0];
-            const year = date.split('-')[0];
-            const month = date.split('-')[1];
+            const [year, month] = date.split('-');
+            const { start, end } = getMonthRange(year, month);
 
-            qb.andWhere('EXTRACT(YEAR FROM template.calculateMonth) = :year', { year });
-            qb.andWhere('EXTRACT(MONTH FROM template.calculateMonth) = :month', { month });
+            qb.andWhere('template.calculateMonth >= :start AND template.calculateMonth < :end', { start, end });
         }
 
         if (distributor) {

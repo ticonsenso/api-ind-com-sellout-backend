@@ -3,6 +3,7 @@ import {ConsolidatedCommissionCalculation} from "../models/consolidated.commissi
 import {BaseRepository} from "./base.respository";
 import {ResponseDataConsensoDto, SearchDataConsensoDto} from "../dtos/search.data.consenso";
 import {plainToInstance} from "class-transformer";
+import {getMonthRange} from "../utils/utils";
 
 export class ConsolidatedCommissionCalculationRepository extends BaseRepository<ConsolidatedCommissionCalculation> {
   constructor(dataSource: DataSource) {
@@ -130,11 +131,22 @@ export class ConsolidatedCommissionCalculationRepository extends BaseRepository<
     if (companyId) {
       qb.andWhere("ccc.company_id = :companyId", { companyId });
     }
-    if (month) {
+    if (month && year) {
+      // Rango sargable: equivalente exacto a EXTRACT(MONTH)=month AND EXTRACT(YEAR)=year
+      const { start, end } = getMonthRange(year, month);
+      qb.andWhere("ccc.calculate_date >= :monthStart AND ccc.calculate_date < :monthEnd", {
+        monthStart: start,
+        monthEnd: end,
+      });
+    } else if (year) {
+      // Rango sargable: equivalente exacto a EXTRACT(YEAR)=year (cualquier mes)
+      qb.andWhere("ccc.calculate_date >= :yearStart AND ccc.calculate_date < :yearEnd", {
+        yearStart: `${year}-01-01`,
+        yearEnd: `${year + 1}-01-01`,
+      });
+    } else if (month) {
+      // "Este mes en cualquier año" no se puede expresar como un rango contiguo: se mantiene EXTRACT.
       qb.andWhere("EXTRACT(MONTH FROM ccc.calculate_date) = :month", { month });
-    }
-    if (year) {
-      qb.andWhere("EXTRACT(YEAR FROM ccc.calculate_date) = :year", { year });
     }
 
     const result = await qb
@@ -172,6 +184,7 @@ export class ConsolidatedCommissionCalculationRepository extends BaseRepository<
 
   async getDataNominaConsolidated(dto: SearchDataConsensoDto): Promise<ResponseDataConsensoDto[]> {
     const { empresa, anio, mes } = dto;
+    const { start: monthStart, end: monthEnd } = getMonthRange(anio, mes);
     const qb = this.repository
         .createQueryBuilder('ccc')
         .select([
@@ -188,8 +201,7 @@ export class ConsolidatedCommissionCalculationRepository extends BaseRepository<
         .innerJoin('ccc.employee', 'e')
         .innerJoin('e.company', 'c')
         .innerJoin('e.companyPosition', 'cp')
-        .where('EXTRACT(YEAR FROM ccc.calculateDate) = :anio', { anio })
-        .andWhere('EXTRACT(MONTH FROM ccc.calculateDate) = :mes', { mes });
+        .where('ccc.calculateDate >= :monthStart AND ccc.calculateDate < :monthEnd', { monthStart, monthEnd });
 
     if (empresa) {
         qb.andWhere('c.name = :empresa', { empresa });
