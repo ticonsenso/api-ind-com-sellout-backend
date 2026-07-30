@@ -690,7 +690,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         (subQuery) => {
           return subQuery
             .select("codigo_jde")
-            .addSelect("MAX(prod_id)", "prod_id")
+            // Prioriza la fila con hojas_vis = 'SI'; si el código no tiene ninguna fila 'SI', cae al MAX(prod_id) de todas
+            .addSelect("COALESCE(MAX(prod_id) FILTER (WHERE hojas_vis = 'SI'), MAX(prod_id))", "prod_id")
             .addSelect("MAX(nombre_sap)", "nombre_sap")
             .addSelect("MAX(linea_negocio_sap)", "linea_negocio")
             .addSelect("MAX(mar_desc_grupo_art)", "categoria")
@@ -1039,7 +1040,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         (subQuery) => {
           return subQuery
             .select("codigo_jde") // Campo de agrupación
-            .addSelect("MAX(prod_id)", "prod_id")
+            // Prioriza la fila con hojas_vis = 'SI'; si el código no tiene ninguna fila 'SI', cae al MAX(prod_id) de todas
+            .addSelect("COALESCE(MAX(prod_id) FILTER (WHERE hojas_vis = 'SI'), MAX(prod_id))", "prod_id")
             .addSelect("MAX(linea_negocio_sap)", "linea_de_negocio")
             .addSelect("MAX(linea_disenio_sap)", "linea")
             .addSelect("NULL", "linea_variable") // Ajustar si luego existe en tu DB
@@ -1141,7 +1143,8 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
         (subQuery) => {
           return subQuery
             .select("codigo_jde")
-            .addSelect("MAX(prod_id)", "prod_id")
+            // Prioriza la fila con hojas_vis = 'SI'; si el código no tiene ninguna fila 'SI', cae al MAX(prod_id) de todas
+            .addSelect("COALESCE(MAX(prod_id) FILTER (WHERE hojas_vis = 'SI'), MAX(prod_id))", "prod_id")
             .from("db-sellout.product_sic", "ps_inner")
             .groupBy("codigo_jde");
         },
