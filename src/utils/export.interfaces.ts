@@ -10,4 +10,5 @@ export interface ExportFieldAvanced {
     width?: number;
     transform?: (value: any, item: any) => any;
     type?: 'string' | 'number' | 'date' | 'boolean';
+    numFmt?: string;
 }

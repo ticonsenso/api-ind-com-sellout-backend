@@ -31,7 +31,7 @@ export class Permission {
   @Column({
     name: 'short_description',
     type: 'varchar',
-    length: 255,
+    length: 512,
     nullable: true,
   })
   shortDescription!: string;

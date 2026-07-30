@@ -13,10 +13,10 @@ export class SelloutStoreMaster {
     @Column({ name: 'store_distributor', type: 'varchar', length: 255 })
     storeDistributor?: string | null;
 
-    @Column({ name: 'search_store', type: 'varchar', length: 255 })
+    @Column({ name: 'search_store', type: 'varchar', length: 512 })
     searchStore?: string | null;
 
-    @Column({ name: 'code_store_sic', type: 'varchar', length: 255 })
+    @Column({ name: 'code_store_sic', type: 'varchar', length: 512 })
     codeStoreSic?: string | null;
 
     @Column({ type: 'boolean', default: true })

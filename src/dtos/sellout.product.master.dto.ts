@@ -9,7 +9,7 @@ export class CreateSelloutProductMasterDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     productDistributor?: string;
 
     @IsOptional()
@@ -19,12 +19,12 @@ export class CreateSelloutProductMasterDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     searchProductStore?: string;
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     codeProductSic?: string;
 
     @IsOptional()
@@ -46,7 +46,7 @@ export class UpdateSelloutProductMasterDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     productDistributor?: string;
 
     @IsOptional()
@@ -56,12 +56,12 @@ export class UpdateSelloutProductMasterDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     searchProductStore?: string;
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     codeProductSic?: string;
 
     @IsOptional()

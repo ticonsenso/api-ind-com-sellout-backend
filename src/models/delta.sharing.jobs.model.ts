@@ -6,13 +6,13 @@ export class DeltaSharingJob {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ name: 'job_id', type: 'varchar', length: 50, unique: true })
+    @Column({ name: 'job_id', type: 'varchar', length: 100, unique: true })
     jobId!: string;
 
     @Column({ name: 'entity_name', type: 'varchar', length: 100 })
     entityName!: string;
 
-    @Column({ name: 'status', type: 'varchar', length: 20 })
+    @Column({ name: 'status', type: 'varchar', length: 50 })
     status!: string; // 'EJECUTANDO', 'COMPLETADO', 'ERROR'
 
     @Column({ name: 'total_records', type: 'int', default: 0 })

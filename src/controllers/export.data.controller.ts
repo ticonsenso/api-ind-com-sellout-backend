@@ -433,8 +433,10 @@ export class ExportDataController {
 
             fieldsConsolidatedDataStores.forEach(field => {
                 if (field.type === 'number' && processedRow[field.key] !== null && processedRow[field.key] !== undefined) {
-                    // Convertir a string y reemplazar punto por coma
-                    processedRow[field.key] = Number(processedRow[field.key]).toString().replace('.', ',');
+                    // Mantener como número: si se convierte a texto (p.ej. "23,00"),
+                    // Excel escribe la celda como texto y SUM()/tablas dinámicas la ignoran,
+                    // haciendo que el total del consolidado no cuadre con lo cargado.
+                    processedRow[field.key] = Number(processedRow[field.key]);
                 }
             });
 

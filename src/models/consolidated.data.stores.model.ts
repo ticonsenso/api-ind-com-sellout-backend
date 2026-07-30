@@ -7,7 +7,7 @@ export class ConsolidatedDataStores {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ name: 'distributor', type: 'varchar', length: 255 })
+    @Column({ name: 'distributor', type: 'varchar', length: 100 })
     distributor?: string | null;
 
     @Column({ name: 'code_store_distributor', type: 'varchar', length: 255 })

@@ -20,7 +20,7 @@ export class KpiConfig {
   @JoinColumn({ name: 'commission_configurations_id' })
   commissionConfiguration!: CommissionConfiguration;
 
-  @Column({ name: 'kpi_name', type: 'varchar', length: 50, nullable: false })
+  @Column({ name: 'kpi_name', type: 'varchar', length: 100, nullable: false })
   kpiName!: string;
 
   @Column({ type: 'int', nullable: true })

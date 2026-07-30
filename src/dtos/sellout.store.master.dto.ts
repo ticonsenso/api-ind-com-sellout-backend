@@ -12,11 +12,11 @@ export class CreateSelloutStoreMasterDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     searchStore?: string;
 
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     codeStoreSic?: string;
 
     @IsOptional()
@@ -47,12 +47,12 @@ export class UpdateSelloutStoreMasterDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     searchStore?: string;
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     codeStoreSic?: string;
 
     @IsOptional()
@@ -100,12 +100,12 @@ export class SelloutStoreMasterFiltersDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     searchStore?: string;
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(512)
     codeStoreSic?: string;
 
     @IsOptional()

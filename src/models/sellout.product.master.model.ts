@@ -10,16 +10,16 @@ export class SelloutProductMaster {
     @Column({ type: 'varchar', length: 255 })
     distributor?: string | null;
 
-    @Column({ name: 'product_distributor', type: 'varchar', length: 255 })
+    @Column({ name: 'product_distributor', type: 'varchar', length: 512 })
     productDistributor?: string | null;
 
     @Column({ name: 'product_store', type: 'varchar', length: 255 })
     productStore?: string | null;
 
-    @Column({ name: 'search_product_store', type: 'varchar', length: 255 })
+    @Column({ name: 'search_product_store', type: 'varchar', length: 512 })
     searchProductStore?: string | null;
 
-    @Column({ name: 'code_product_sic', type: 'varchar', length: 255 })
+    @Column({ name: 'code_product_sic', type: 'varchar', length: 512 })
     codeProductSic?: string | null;
 
     @Column({ name: 'status', type: 'boolean', default: true })

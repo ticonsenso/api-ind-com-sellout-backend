@@ -457,10 +457,11 @@ export class ConsolidatedDataStoresService {
         },
         calculateDate?: Date
     ): Promise<ConsolidatedDataStoresFiltersResponseDto> {
-        const { items, totalAll } = await this.consolidatedDataStoresRepository.findByFiltersMod(page, limit, search, calculateDate);
+        const { items, totalAll, totalUnits } = await this.consolidatedDataStoresRepository.findByFiltersMod(page, limit, search, calculateDate);
         return {
             items: items,
             total: totalAll,
+            totalUnits,
         };
     }
 

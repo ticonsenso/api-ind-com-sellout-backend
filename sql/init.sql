@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS permissions (
     name VARCHAR(255) NOT NULL UNIQUE,
     status BOOLEAN DEFAULT TRUE,
     description TEXT NULL,
-    short_description VARCHAR(255) NULL,
+    short_description VARCHAR(512) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -357,7 +357,7 @@ CREATE TABLE IF NOT EXISTS kpi_config (
     company_id INT REFERENCES companies(id) ON DELETE CASCADE,
     company_position_id INT REFERENCES company_positions(id) ON DELETE CASCADE,
     commission_configurations_id INT REFERENCES commission_configurations(id) ON DELETE CASCADE,
-    kpi_name VARCHAR(50) NOT NULL,
+    kpi_name VARCHAR(100) NOT NULL,
     weight INT NOT NULL, -- Peso del KPI (suma debe ser 100)
     meta DECIMAL(10, 2), -- Meta base (para Rotación de Venta se usará meta_tb o meta_ta)
     meta_tb DECIMAL(10, 2), -- Meta en temporada baja (T.B.), solo para Rotación de Venta
@@ -733,8 +733,8 @@ CREATE TABLE IF NOT EXISTS sellout_store_master (
     id SERIAL PRIMARY KEY,
     distributor VARCHAR(255) NULL,
     store_distributor VARCHAR(255) NULL,
-    search_store VARCHAR(255) NULL UNIQUE,
-    code_store_sic VARCHAR(255) NULL,
+    search_store VARCHAR(512) NULL UNIQUE,
+    code_store_sic VARCHAR(512) NULL,
     status BOOLEAN DEFAULT TRUE,
     periodo DATE NOT NULL DEFAULT CURRENT_DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -749,10 +749,10 @@ CREATE TABLE IF NOT EXISTS sellout_store_master (
 CREATE TABLE IF NOT EXISTS sellout_product_master (
     id SERIAL PRIMARY KEY,
     distributor VARCHAR(255) NULL,
-    product_distributor VARCHAR(255) NULL,
+    product_distributor VARCHAR(512) NULL,
     product_store VARCHAR(255) NULL,
-    search_product_store VARCHAR(255) NULL,
-    code_product_sic VARCHAR(255) NULL,
+    search_product_store VARCHAR(512) NULL,
+    code_product_sic VARCHAR(512) NULL,
     status BOOLEAN DEFAULT TRUE,    
     periodo DATE NOT NULL DEFAULT CURRENT_DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -849,7 +849,7 @@ CREATE TABLE IF NOT EXISTS sellout_configuration_column_configs (
 
 CREATE TABLE IF NOT EXISTS consolidated_data_stores (
     id SERIAL PRIMARY KEY,
-    distributor VARCHAR(50) NOT NULL,
+    distributor VARCHAR(100) NOT NULL,
     code_store_distributor TEXT,
     code_product_distributor VARCHAR(255),
     description_distributor TEXT,
@@ -1305,9 +1305,9 @@ ON "db-sellout".sellout_product_master USING btree (search_product_store, period
 
 CREATE TABLE "db-sellout".sco_adm_delta_jobs (
     id SERIAL PRIMARY KEY,
-    job_id VARCHAR(50) UNIQUE NOT NULL,      -- Identificador único del proceso
+    job_id VARCHAR(100) UNIQUE NOT NULL,      -- Identificador único del proceso
     entity_name VARCHAR(100) NOT NULL,      -- Ejemplo: 'dim_producto_s08' o 'ALL'
-    status VARCHAR(20) NOT NULL,            -- 'EJECUTANDO', 'COMPLETADO', 'ERROR'
+    status VARCHAR(50) NOT NULL,            -- 'EJECUTANDO', 'COMPLETADO', 'ERROR'
     total_records INT DEFAULT 0,            -- Total de registros encontrados en Delta
     processed_records INT DEFAULT 0,        -- Cuántos vamos guardando
     error_message TEXT,                     -- Si falla, guardamos el porqué

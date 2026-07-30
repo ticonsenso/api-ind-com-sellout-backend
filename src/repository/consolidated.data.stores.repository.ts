@@ -681,6 +681,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     items: ConsolidatedDataStoresDto[]; // Asegúrate de que el DTO tenga estas nuevas propiedades
     total: number;
     totalAll: number;
+    totalUnits: number;
   }> {
     const qb = this.repository
       .createQueryBuilder("s")
@@ -800,6 +801,13 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     // === Total sin paginar ===
     const totalAll = await qb.getCount();
 
+    // === Suma de unidades sin paginar (mismos filtros aplicados) ===
+    const sumRaw = await qb
+      .clone()
+      .select("COALESCE(SUM(s.units_sold_distributor), 0)", "sum_units")
+      .getRawOne();
+    const totalUnits = Number(sumRaw?.sum_units ?? 0);
+
     // === Paginación ===
     const items = await qb
       .offset((page - 1) * limit)
@@ -851,7 +859,7 @@ export class ConsolidatedDataStoresRepository extends BaseRepository<Consolidate
     // === Total paginado ===
     const total = itemsMapped.length;
 
-    return { items: itemsMapped, total, totalAll };
+    return { items: itemsMapped, total, totalAll, totalUnits };
   }
 
   async findConsolidatedNullFieldsUnique(

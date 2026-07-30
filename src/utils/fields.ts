@@ -85,7 +85,7 @@ export const fieldsConsolidatedDataStores: ExportFieldAvanced[] = [
     { key: 'cod_almacen_distribuidor', header: 'COD. ALMACEN DISTRIBUIDOR', width: 25, type: 'string' },
     { key: 'cod_prod_distribuidor', header: 'COD. PROD DISTRIBUIDOR', width: 25, type: 'string' },
     { key: 'descripcion_distribuidor', header: 'DESCRIPCION DISTRIBUIDOR', width: 25, type: 'string' },
-    { key: 'unidades_venta_distribuidor', header: 'UNIDADES VENTA DISTRIBUIDOR', width: 25, type: 'number' },
+    { key: 'unidades_venta_distribuidor', header: 'UNIDADES VENTA DISTRIBUIDOR', width: 25, type: 'number', numFmt: '#,##0.00' },
     { key: 'cod_producto', header: 'COD. PRODUCTO', width: 25, type: 'string' },
     { key: 'cod_almacen', header: 'COD. ALMACEN', width: 25, type: 'string' },
     { key: 'fecha_venta', header: 'FECHA_VENTA', width: 25, type: 'date' },

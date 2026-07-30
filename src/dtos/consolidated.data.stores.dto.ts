@@ -5,7 +5,7 @@ import { MatriculationTemplateResponseDto } from './matriculation.templates.dto'
 export class CreateConsolidatedDataStoresDto {
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(100)
     distributor?: string;
 
     @IsOptional()
@@ -80,7 +80,7 @@ export class UpdateConsolidatedDataStoresDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(100)
     distributor?: string;
 
     @IsOptional()
@@ -154,7 +154,7 @@ export class UpdateConsolidatedDto {
 
     @IsOptional()
     @IsString()
-    @MaxLength(255)
+    @MaxLength(100)
     distributor?: string;
 
     @IsOptional()
@@ -335,6 +335,7 @@ export class ConsolidatedDataStoresDto {
 export class ConsolidatedDataStoresFiltersResponseDto {
     items!: ConsolidatedDataStoresDto[];
     total!: number;
+    totalUnits?: number;
 }
 
 export class NullFieldFilters {
